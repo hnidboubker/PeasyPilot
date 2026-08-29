@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="src/PeasyPilot.BDD/PeasyPilot.BDD.csproj" />
+  <Project Path="src/PeasyPilot.Bogus/PeasyPilot.Bogus.csproj" />
+  <Project Path="src/PeasyPilot.Core/PeasyPilot.Core.csproj" />
+  <Project Path="src/PeasyPilot.Coverage/PeasyPilot.Coverage.csproj" />
+  <Project Path="src/PeasyPilot.Integration/PeasyPilot.Integration.csproj" />
+  <Project Path="src/PeasyPilot.Moq/PeasyPilot.Moq.csproj" />
+  <Project Path="src/PeasyPilot.NUnit/PeasyPilot.NUnit.csproj" />
+  <Project Path="src/PeasyPilot.TUnit/PeasyPilot.TUnit.csproj" />
+  <Project Path="src/PeasyPilot.Unit/PeasyPilot.Unit.csproj" />
+  <Project Path="src/PeasyPilot.XUnit/PeasyPilot.XUnit.csproj" />
+</Solution>

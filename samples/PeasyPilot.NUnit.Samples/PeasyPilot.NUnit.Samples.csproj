@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="Moq" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PeasyPilot.Core\PeasyPilot.Core.csproj" />
+    <ProjectReference Include="..\..\src\PeasyPilot.NUnit\PeasyPilot.NUnit.csproj" />
+    <ProjectReference Include="..\..\src\PeasyPilot.Bogus\PeasyPilot.Bogus.csproj" />
+    <ProjectReference Include="..\..\src\PeasyPilot.Moq\PeasyPilot.Moq.csproj" />
+    <ProjectReference Include="..\..\src\PeasyPilot.Unit\PeasyPilot.Unit.csproj" />
+  </ItemGroup>
+
+</Project>
