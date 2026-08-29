@@ -1,27 +1,27 @@
+using System.Net;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Xunit;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace PeasyPilot.Integration.Tests;
 
-public class BasicIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class BasicIntegrationTests
 {
-    private readonly WebApplicationFactory<Program> _factory;
-
-    public BasicIntegrationTests(WebApplicationFactory<Program> factory)
-    {
-        _factory = factory;
-    }
-
     [Fact]
     public async Task Test1_Passing()
     {
         // Arrange
-        var client = _factory.CreateClient();
+        var builder = new WebHostBuilder()
+            .UseStartup<Startup>()
+            .UseTestServer();
+
+        await using var server = await builder.StartAsync();
+        var client = server.GetTestClient();
 
         // Act
         var response = await client.GetAsync("/");
 
         // Assert
-        Assert.True(true); // Placeholder
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }
