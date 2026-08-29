@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace PeasyPilot.Integration.Tests;
 
-public class BasicIntegrationTests : IClassFixture<WebApplicationFactory<PeasyPilot.Integration.Startup>>
+public class BasicIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
-    private readonly WebApplicationFactory<PeasyPilot.Integration.Startup> _factory;
+    private readonly WebApplicationFactory<Program> _factory;
 
-    public BasicIntegrationTests(WebApplicationFactory<PeasyPilot.Integration.Startup> factory)
+    public BasicIntegrationTests(WebApplicationFactory<Program> factory)
     {
         _factory = factory;
     }
