@@ -12,4 +12,5 @@
   <Project Path="src/PeasyPilot.TUnit/PeasyPilot.TUnit.csproj" />
   <Project Path="src/PeasyPilot.Unit/PeasyPilot.Unit.csproj" />
   <Project Path="src/PeasyPilot.XUnit/PeasyPilot.XUnit.csproj" />
+  
 </Solution>
