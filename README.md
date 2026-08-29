@@ -7,7 +7,8 @@
 PeasyPilot is a modern, modular testing framework for .NET applications designed to simplify test creation, management, and execution. It provides abstractions, utilities, and framework-specific adapters for unit, integration, and BDD testing.
 
 ![Build](https://github.com/hnidboubker/PeasyPilot/actions/workflows/build.yml/badge.svg?branch=main)
-
+![coverage](https://github.com/hnidboubker/PeasyPilot/actions/workflows/build.yml/badge.svg?branch=main)
+![release](https://github.com/hnidboubker/PeasyPilot/actions/workflows/build.yml/badge.svg?branch=main)
 ## Overview
 
 PeasyPilot consists of multiple focused modules that work together seamlessly:
