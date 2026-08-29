@@ -1,6 +1,7 @@
 
 
-![PeasyPilot](./assets/images/banner.png height="250")
+
+<img src="./assets/images/banner.png" height="250"/>
 
 # PeasyPilot - A Comprehensive .NET Testing Framework
 
