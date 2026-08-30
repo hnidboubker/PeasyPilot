@@ -1,7 +1,6 @@
-namespace PeasyPilot.NUnit;
-
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Context;
+namespace PeasyPilot.NUnit;
 
 /// <summary>
 /// Base class for NUnit test classes integrating with PeasyPilot.
