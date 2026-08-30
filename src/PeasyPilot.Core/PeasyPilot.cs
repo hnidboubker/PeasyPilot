@@ -1,4 +1,4 @@
-namespace PeasyPilot;
+namespace global::PeasyPilot;
 
 using global::PeasyPilot.Core.Assertions;
 using global::PeasyPilot.Core.Models;

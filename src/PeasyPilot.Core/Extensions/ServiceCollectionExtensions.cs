@@ -1,9 +1,9 @@
-namespace PeasyPilot.Core.Extensions;
+namespace global::PeasyPilot.Core.Extensions;
 
 using Microsoft.Extensions.DependencyInjection;
-using PeasyPilot.Core.Abstractions;
-using PeasyPilot.Core.Context;
-using PeasyPilot.Core.Configuration;
+using global::PeasyPilot.Core.Abstractions;
+using global::PeasyPilot.Core.Context;
+using global::PeasyPilot.Core.Configuration;
 
 /// <summary>
 /// Extension methods for registering PeasyPilot services in the DI container.

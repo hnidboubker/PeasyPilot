@@ -1,4 +1,4 @@
-namespace PeasyPilot.Core.Assertions;
+namespace global::PeasyPilot.Core.Assertions;
 
 /// <summary>
 /// Fluent assertion builder for test assertions.

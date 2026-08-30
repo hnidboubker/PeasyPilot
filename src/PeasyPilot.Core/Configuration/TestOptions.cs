@@ -1,4 +1,4 @@
-namespace PeasyPilot.Core.Configuration;
+namespace global::PeasyPilot.Core.Configuration;
 
 /// <summary>
 /// Configuration options for testing.

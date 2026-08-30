@@ -1,4 +1,4 @@
-namespace PeasyPilot.Core.Models;
+namespace global::PeasyPilot.Core.Models;
 
 /// <summary>
 /// Represents a request to run one or more unified test cases.

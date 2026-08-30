@@ -1,4 +1,4 @@
-namespace PeasyPilot.Core.Abstractions;
+namespace global::PeasyPilot.Core.Abstractions;
 
 /// <summary>
 /// Provides storage for test context data.

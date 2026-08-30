@@ -1,6 +1,6 @@
-namespace PeasyPilot.Core.Abstractions;
+namespace global::PeasyPilot.Core.Abstractions;
 
-using PeasyPilot.Core.Models;
+using global::PeasyPilot.Core.Models;
 
 /// <summary>
 /// Defines the contract for a test engine that can execute a request and return a unified result.
