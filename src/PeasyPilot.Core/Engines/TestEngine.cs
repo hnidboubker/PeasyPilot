@@ -1,9 +1,8 @@
-namespace PeasyPilot.Core.Engines;
-
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
 
+namespace PeasyPilot.Core.Engines;
 /// <summary>
 /// Default framework-agnostic engine that runs tests through adapters.
 /// </summary>
