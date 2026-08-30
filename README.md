@@ -77,6 +77,22 @@ dotnet add package PeasyPilot.Bogus
 dotnet add package PeasyPilot.BDD
 ```
 
+## Local Packaging Watcher
+
+Rebuild and repack packages automatically after a source or configuration change:
+
+```powershell
+./scripts/version-watch.ps1
+```
+
+On Bash environments:
+
+```bash
+./scripts/version-watch.sh
+```
+
+Generated packages are written to `artifacts/`. Stop the watcher with `Ctrl+C`.
+
 ## Quick Start
 
 ### Unit Tests with xUnit
