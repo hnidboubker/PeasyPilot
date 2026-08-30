@@ -23,4 +23,8 @@
     <ProjectReference Include="..\..\src\PeasyPilot.Unit\PeasyPilot.Unit.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

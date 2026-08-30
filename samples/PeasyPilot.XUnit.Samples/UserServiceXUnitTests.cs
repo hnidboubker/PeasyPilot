@@ -3,45 +3,7 @@ namespace PeasyPilot.XUnit.Samples;
 using Xunit;
 using PeasyPilot.XUnit;
 using PeasyPilot.Bogus;
-
-/// <summary>
-/// Sample domain model for testing.
-/// </summary>
-public class User
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; }
-}
-
-/// <summary>
-/// Sample service for user operations.
-/// </summary>
-public class UserService
-{
-    private readonly List<User> _users = new();
-
-    public User Create(User user)
-    {
-        user.Id = _users.Count + 1;
-        user.CreatedAt = DateTime.UtcNow;
-        _users.Add(user);
-        return user;
-    }
-
-    public User? GetById(int id) => _users.FirstOrDefault(u => u.Id == id);
-
-    public List<User> GetAll() => _users.ToList();
-
-    public bool Delete(int id)
-    {
-        var user = GetById(id);
-        if (user == null) return false;
-        _users.Remove(user);
-        return true;
-    }
-}
+using PeasyPilot.XUnit.Samples.Services;
 
 /// <summary>
 /// Sample xUnit tests demonstrating PeasyPilot usage.

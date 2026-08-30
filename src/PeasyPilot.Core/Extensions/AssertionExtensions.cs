@@ -1,4 +1,6 @@
 
+using PeasyPilot.Core.Assertions;
+
 namespace PeasyPilot.Core.Extensions;
 /// <summary>
 /// Entry point for fluent assertions.

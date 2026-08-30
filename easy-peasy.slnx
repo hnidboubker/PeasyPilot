@@ -1,7 +1,9 @@
 <Solution>
-  <Project Path="samples/PeasyPilot.NUnit.Samples/PeasyPilot.NUnit.Samples.csproj" />
-  <Project Path="samples/PeasyPilot.TUnit.Samples/PeasyPilot.TUnit.Samples.csproj" />
-  <Project Path="samples/PeasyPilot.XUnit.Samples/PeasyPilot.XUnit.Samples.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="samples/PeasyPilot.NUnit.Samples/PeasyPilot.NUnit.Samples.csproj" />
+    <Project Path="samples/PeasyPilot.TUnit.Samples/PeasyPilot.TUnit.Samples.csproj" />
+    <Project Path="samples/PeasyPilot.XUnit.Samples/PeasyPilot.XUnit.Samples.csproj" />
+  </Folder>
   <Project Path="src/PeasyPilot.BDD/PeasyPilot.BDD.csproj" />
   <Project Path="src/PeasyPilot.Bogus/PeasyPilot.Bogus.csproj" />
   <Project Path="src/PeasyPilot.Core/PeasyPilot.Core.csproj" />
