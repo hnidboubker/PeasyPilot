@@ -67,7 +67,7 @@ while ($true) {
     if (Test-RelevantChange $changedPath) {
         Write-Host 'Modification détectée. Relance du build et du package...'
         Invoke-BuildAndPack
-        Get-Event -SourceIdentifier 'PeasyPilot.VersionWatcher.*' | Remove-Event
+        Get-Event | Where-Object { $sourceIdentifiers -contains $_.SourceIdentifier } | Remove-Event
     }
 }
 }
