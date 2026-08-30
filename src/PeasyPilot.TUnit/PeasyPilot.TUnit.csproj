@@ -9,7 +9,7 @@
     <!-- NuGet package metadata -->
 		<IsPackable>true</IsPackable>
 		<PackageId>PeasyPilot.TUnit</PackageId>
-		<Version>0.1.0</Version>
+		<Version>0.1.1</Version>
      <PackageIcon>Logo.png</PackageIcon>
 		<Authors>NID BOUBKER Houssine</Authors>
   	<Description>A modern, fast and flexible .NET testing framework.</Description>
