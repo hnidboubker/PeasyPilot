@@ -1,6 +1,6 @@
 namespace PeasyPilot.Core.Tests.Core;
 
-using static PeasyPilot.PeasyPilot;
+using static PeasyPilot.Core.PeasyPilot;
 using Xunit;
 
 public class PeasyPilotApiTests

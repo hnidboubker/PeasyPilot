@@ -1,7 +1,7 @@
-namespace global::PeasyPilot.Core.Engines;
+namespace PeasyPilot.Core.Engines;
 
-using global::PeasyPilot.Core.Abstractions;
-using global::PeasyPilot.Core.Models;
+using PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Models;
 
 /// <summary>
 /// Default engine implementation that executes a unified test run request.

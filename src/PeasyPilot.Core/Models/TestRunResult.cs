@@ -1,4 +1,4 @@
-namespace global::PeasyPilot.Core.Models;
+namespace PeasyPilot.Core.Models;
 
 /// <summary>
 /// Represents the outcome of a unified test run.

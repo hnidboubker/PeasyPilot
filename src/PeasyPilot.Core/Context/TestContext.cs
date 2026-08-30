@@ -1,6 +1,6 @@
-namespace global::PeasyPilot.Core.Context;
+namespace PeasyPilot.Core.Context;
 
-using global::PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Abstractions;
 using System.Collections.Concurrent;
 
 /// <summary>
