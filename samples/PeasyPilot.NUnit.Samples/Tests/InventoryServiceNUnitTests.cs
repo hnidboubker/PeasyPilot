@@ -15,7 +15,7 @@ public class InventoryServiceNUnitTests : PeasyPilotNUnitTestBase
 {
     private InventoryService _service = null!;
 
-    [NUnitFramework.SetUp]
+    [SetUp]
     public override void Setup()
     {
         base.Setup();
