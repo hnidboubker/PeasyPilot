@@ -1,7 +1,3 @@
-param(
-    [int]$IntervalSeconds = 2
-)
-
 $ErrorActionPreference = 'Stop'
 $rootDirectory = Split-Path -Parent $PSScriptRoot
 $artifactsDirectory = Join-Path $rootDirectory 'artifacts'
@@ -18,14 +14,11 @@ if (-not (Test-Path $dotnetPath)) {
     throw 'The .NET SDK was not found. Install it or add dotnet to PATH.'
 }
 
-function Get-LastChangeUtc {
-    Get-ChildItem $rootDirectory -File -Recurse |
-        Where-Object {
-            $_.FullName -notmatch '[\\/](\.git|artifacts|bin|obj)[\\/]' -and
-            $extensions -contains $_.Extension
-        } |
-        Measure-Object -Property LastWriteTimeUtc -Maximum |
-        Select-Object -ExpandProperty Maximum
+function Test-RelevantChange {
+    param([string]$Path)
+
+    return $Path -notmatch '[\\/](\.git|artifacts|bin|obj)([\\/]|$)' -and
+        $extensions -contains [System.IO.Path]::GetExtension($Path)
 }
 
 function Invoke-BuildAndPack {
@@ -50,17 +43,35 @@ function Invoke-BuildAndPack {
         Select-Object -ExpandProperty FullName
 }
 
+$watcher = [System.IO.FileSystemWatcher]::new($rootDirectory)
+$watcher.IncludeSubdirectories = $true
+$watcher.NotifyFilter = [System.IO.NotifyFilters]'FileName, LastWrite, DirectoryName'
+$watcher.EnableRaisingEvents = $true
+$sourceIdentifiers = 'PeasyPilot.VersionWatcher.Changed', 'PeasyPilot.VersionWatcher.Created', 'PeasyPilot.VersionWatcher.Deleted', 'PeasyPilot.VersionWatcher.Renamed'
+$subscriptions = @(
+    Register-ObjectEvent -InputObject $watcher -EventName Changed -SourceIdentifier $sourceIdentifiers[0]
+    Register-ObjectEvent -InputObject $watcher -EventName Created -SourceIdentifier $sourceIdentifiers[1]
+    Register-ObjectEvent -InputObject $watcher -EventName Deleted -SourceIdentifier $sourceIdentifiers[2]
+    Register-ObjectEvent -InputObject $watcher -EventName Renamed -SourceIdentifier $sourceIdentifiers[3]
+)
+
+try {
 Write-Host "Surveillance de $rootDirectory (Ctrl+C pour arrêter)"
 Invoke-BuildAndPack
-$lastChangeUtc = Get-LastChangeUtc
 
 while ($true) {
-    Start-Sleep -Seconds $IntervalSeconds
-    $currentChangeUtc = Get-LastChangeUtc
+    $changeEvent = Wait-Event -SubscriptionId $subscriptions.Id
+    $changedPath = $changeEvent.SourceEventArgs.FullPath
+    Remove-Event -EventIdentifier $changeEvent.EventIdentifier
 
-    if ($currentChangeUtc -gt $lastChangeUtc) {
+    if (Test-RelevantChange $changedPath) {
         Write-Host 'Modification détectée. Relance du build et du package...'
         Invoke-BuildAndPack
-        $lastChangeUtc = Get-LastChangeUtc
+        Get-Event -SourceIdentifier 'PeasyPilot.VersionWatcher.*' | Remove-Event
     }
+}
+}
+finally {
+    $subscriptions | Unregister-Event
+    $watcher.Dispose()
 }
