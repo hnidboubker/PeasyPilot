@@ -57,7 +57,7 @@ public sealed class TestPipelineOrchestrator : ITestPipelineOrchestrator
         IEnumerable<TestCase> filteredTests = impactedTestsList;
         if (options.Filter != null)
         {
-            filteredTests = impactedTestsList.Where(t => options.Filter.IsMatch(t));
+            filteredTests = impactedTestsList.Where(t => options.Filter.Matches(t));
         }
         var scheduledTestsList = filteredTests.ToList();
         var scheduledCount = scheduledTestsList.Count;
