@@ -1,9 +1,7 @@
-namespace PeasyPilot.XUnit.Samples;
+namespace PeasyPilot.XUnit.Samples.Tests;
 
 using Xunit;
 using PeasyPilot.XUnit;
-using PeasyPilot.Unit.Builders;
-using PeasyPilot.Unit.Fixtures;
 using PeasyPilot.XUnit.Samples.Services;
 
 /// <summary>

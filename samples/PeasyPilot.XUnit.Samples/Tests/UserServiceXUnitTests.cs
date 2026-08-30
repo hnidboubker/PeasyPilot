@@ -1,4 +1,4 @@
-namespace PeasyPilot.XUnit.Samples;
+namespace PeasyPilot.XUnit.Samples.Tests;
 
 using Xunit;
 using PeasyPilot.XUnit;
