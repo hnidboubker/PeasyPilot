@@ -486,4 +486,4 @@ PeasyPilot follows semantic versioning:
 - Minor: New features
 - Patch: Bug fixes
 
-Current version: 1.0.0
+Current version: 0.1.1
