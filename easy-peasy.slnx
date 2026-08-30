@@ -2,6 +2,7 @@
   <Folder Name="/src/">
     <Project Path="src/PeasyPilot.BDD/PeasyPilot.BDD.csproj" />
     <Project Path="src/PeasyPilot.Bogus/PeasyPilot.Bogus.csproj" />
+    <Project Path="src/PeasyPilot.CLI/PeasyPilot.CLI.csproj" />
     <Project Path="src/PeasyPilot.Core/PeasyPilot.Core.csproj" />
     <Project Path="src/PeasyPilot.Coverage/PeasyPilot.Coverage.csproj" />
     <Project Path="src/PeasyPilot.Integration/PeasyPilot.Integration.csproj" />
