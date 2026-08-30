@@ -1,8 +1,7 @@
-namespace PeasyPilot.Core.Filters;
 
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Models;
-
+namespace PeasyPilot.Core.Filters;
 /// <summary>
 /// Filters tests by name, case-insensitive.
 /// </summary>
