@@ -3,6 +3,7 @@ namespace PeasyPilot.XUnit.Samples;
 using Xunit;
 using PeasyPilot.XUnit;
 using PeasyPilot.Bogus;
+using PeasyPilot.XUnit.Samples.Models;
 using PeasyPilot.XUnit.Samples.Services;
 
 /// <summary>

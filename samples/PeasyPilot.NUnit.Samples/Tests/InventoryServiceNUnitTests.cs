@@ -1,9 +1,9 @@
 namespace PeasyPilot.NUnit.Samples;
 
-
+using global::NUnit.Framework;
 using PeasyPilot.NUnit;
-
-
+using NUnitAssert = NUnit.Framework.Assert;
+using NUnitIs = NUnit.Framework.Is;
 
 /// <summary>
 /// Sample NUnit tests demonstrating PeasyPilot usage.

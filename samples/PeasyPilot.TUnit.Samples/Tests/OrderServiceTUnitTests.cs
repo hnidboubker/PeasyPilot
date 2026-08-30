@@ -1,5 +1,6 @@
 namespace PeasyPilot.TUnit.Samples.Tests;
 
+using global::TUnit;
 using PeasyPilot.Core;
 using PeasyPilot.Core.Extensions;
 using PeasyPilot.TUnit;
