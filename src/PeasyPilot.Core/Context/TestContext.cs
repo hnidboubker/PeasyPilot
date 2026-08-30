@@ -1,7 +1,10 @@
-namespace PeasyPilot.Core.Context;
+using System.Collections.Concurrent;
 
 using PeasyPilot.Core.Abstractions;
-using System.Collections.Concurrent;
+
+namespace PeasyPilot.Core.Context;
+
+
 
 /// <summary>
 /// Thread-safe context for storing test data.
