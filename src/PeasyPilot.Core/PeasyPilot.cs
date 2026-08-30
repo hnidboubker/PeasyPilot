@@ -1,12 +1,12 @@
 namespace PeasyPilot.Core;
 
-using global::PeasyPilot.Core.Assertions;
-using global::PeasyPilot.Core.Models;
+using PeasyPilot.Core.Assertions;
+using PeasyPilot.Core.Models;
 
 /// <summary>
 /// Entry point for framework-free, attribute-less testing.
 /// </summary>
-public static class PeasyPilot
+public static class TestRunner
 {
     /// <summary>
     /// Executes a test body without requiring xUnit/NUnit/TUnit attributes.
