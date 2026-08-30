@@ -1,7 +1,7 @@
 namespace PeasyPilot;
 
-using PeasyPilot.Core.Assertions;
-using PeasyPilot.Core.Models;
+using global::PeasyPilot.Core.Assertions;
+using global::PeasyPilot.Core.Models;
 
 /// <summary>
 /// Entry point for framework-free, attribute-less testing.
