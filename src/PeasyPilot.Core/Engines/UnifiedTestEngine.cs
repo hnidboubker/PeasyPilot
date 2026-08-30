@@ -37,14 +37,4 @@ public sealed class UnifiedTestEngine : ITestEngine
             Status = TestRunStatus.Passed
         });
     }
-
-    public static Task RunAsync(TestRunRequest request, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task RunAsync(TestRunRequest request, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
 }
