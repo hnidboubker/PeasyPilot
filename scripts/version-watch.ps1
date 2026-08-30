@@ -6,6 +6,17 @@ $ErrorActionPreference = 'Stop'
 $rootDirectory = Split-Path -Parent $PSScriptRoot
 $artifactsDirectory = Join-Path $rootDirectory 'artifacts'
 $extensions = @('.cs', '.csproj', '.props', '.targets', '.slnx', '.json', '.md', '.png', '.ps1', '.sh')
+$dotnetCommand = Get-Command dotnet -ErrorAction SilentlyContinue
+$dotnetPath = if ($null -ne $dotnetCommand) {
+    $dotnetCommand.Source
+}
+else {
+    Join-Path $env:ProgramFiles 'dotnet\dotnet.exe'
+}
+
+if (-not (Test-Path $dotnetPath)) {
+    throw 'The .NET SDK was not found. Install it or add dotnet to PATH.'
+}
 
 function Get-LastChangeUtc {
     Get-ChildItem $rootDirectory -File -Recurse |
@@ -19,7 +30,7 @@ function Get-LastChangeUtc {
 
 function Invoke-BuildAndPack {
     Write-Host 'Build de la solution...'
-    & dotnet build (Join-Path $rootDirectory 'easy-peasy.slnx') -c Release
+    & $dotnetPath build (Join-Path $rootDirectory 'easy-peasy.slnx') -c Release
     if ($LASTEXITCODE -ne 0) {
         Write-Host 'Le build a échoué. Surveillance maintenue.' -ForegroundColor Red
         return
@@ -29,7 +40,7 @@ function Invoke-BuildAndPack {
     New-Item $artifactsDirectory -ItemType Directory -Force | Out-Null
 
     Write-Host 'Package de la solution...'
-    & dotnet pack (Join-Path $rootDirectory 'easy-peasy.slnx') -c Release --no-build -o $artifactsDirectory
+    & $dotnetPath pack (Join-Path $rootDirectory 'easy-peasy.slnx') -c Release --no-build -o $artifactsDirectory
     if ($LASTEXITCODE -ne 0) {
         Write-Host 'Le packaging a échoué. Surveillance maintenue.' -ForegroundColor Red
         return
