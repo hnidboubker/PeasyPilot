@@ -7,12 +7,12 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
-  <!--<ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="TUnit" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="Moq" />
-  </ItemGroup>-->
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\PeasyPilot.Core\PeasyPilot.Core.csproj" />
