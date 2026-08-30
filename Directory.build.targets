@@ -1,5 +1,18 @@
 <Project>
   <PropertyGroup>
-    
+    <ArtifactsDirectory>$(MSBuildThisFileDirectory)artifacts</ArtifactsDirectory>
+    <PackageOutputPath Condition="'$(PackageOutputPath)' == '' and '$(IsPackable)' == 'true'">$(ArtifactsDirectory)</PackageOutputPath>
+    <BaseOutputPath Condition="'$(BaseOutputPath)' == ''">$(ArtifactsDirectory)/bin/</BaseOutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(ArtifactsDirectory)/obj/</BaseIntermediateOutputPath>
   </PropertyGroup>
+
+  <Target Name="EnsureArtifactsDirectory" BeforeTargets="Build;Pack;Restore;Publish">
+    <MakeDir Directories="$(ArtifactsDirectory)" />
+  </Target>
+
+  <Target Name="SetDefaultPackageVersion" BeforeTargets="Pack" Condition="'$(IsPackable)' == 'true' and '$(Version)' == ''">
+    <PropertyGroup>
+      <Version>0.1.0-local</Version>
+    </PropertyGroup>
+  </Target>
 </Project>
