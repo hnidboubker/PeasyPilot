@@ -1,7 +1,9 @@
 namespace PeasyPilot.Core.Tests.Engines;
 
 using PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Engines;
 using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Filters;
 using PeasyPilot.Core.Models;
 using Xunit;
 
