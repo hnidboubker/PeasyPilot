@@ -1,3 +1,5 @@
+using PeasyPilot.Core.Models;
+
 namespace PeasyPilot.Core.Abstractions;
 
 using PeasyPilot.Core.Models;
