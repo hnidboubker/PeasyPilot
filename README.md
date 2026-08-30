@@ -101,6 +101,7 @@ Generated packages are written to `artifacts/`. Stop the watcher with `Ctrl+C`.
 using Xunit;
 using PeasyPilot.XUnit;
 using PeasyPilot.Bogus;
+using Assert = PeasyPilot.Core.Assertions.Assert;
 
 public class CalculatorTests : PeasyPilotTestBase
 {
@@ -293,6 +294,12 @@ Assert.That(result)
 Assert.That(errorMessage)
     .IsNotEqualTo("Success")
     .IsNotNull();
+```
+
+When the test framework also exposes an `Assert` type, use this alias to keep the PeasyPilot API available as `Assert.That(...)`:
+
+```csharp
+using Assert = PeasyPilot.Core.Assertions.Assert;
 ```
 
 ## Module Details
