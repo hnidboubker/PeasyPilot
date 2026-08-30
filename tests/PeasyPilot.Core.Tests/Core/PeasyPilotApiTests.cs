@@ -1,7 +1,6 @@
 namespace PeasyPilot.Core.Tests.Core;
 
-using PeasyPilot.Core;
-using static PeasyPilot.Core.PeasyPilot;
+using static PeasyPilot.PeasyPilot;
 using Xunit;
 
 public class PeasyPilotApiTests
@@ -16,7 +15,7 @@ public class PeasyPilotApiTests
             Assert.NotNull(value);
         });
 
-        Assert.Equal(TestRunStatus.Passed, result.Status);
+        Assert.Equal(PeasyPilot.Core.Models.TestRunStatus.Passed, result.Status);
         Assert.Equal(1, result.Passed);
     }
 }

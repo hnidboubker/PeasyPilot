@@ -1,4 +1,4 @@
-namespace PeasyPilot.Core;
+namespace PeasyPilot;
 
 using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Models;
