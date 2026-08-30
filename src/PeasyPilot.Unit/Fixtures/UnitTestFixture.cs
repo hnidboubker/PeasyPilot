@@ -1,8 +1,7 @@
-﻿namespace PeasyPilot.Unit.Fixtures;
-
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Context;
 
+namespace PeasyPilot.Unit.Fixtures;
 /// <summary>
 /// Base fixture for unit tests providing common test setup and utilities.
 /// </summary>

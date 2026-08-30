@@ -1,9 +1,8 @@
-namespace PeasyPilot.NUnit;
-
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
 
+namespace PeasyPilot.NUnit;
 /// <summary>
 /// Adapts NUnit to the shared PeasyPilot execution model.
 /// </summary>
