@@ -1,8 +1,7 @@
-namespace PeasyPilot.Core.Reporting;
-
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Models;
 
+namespace PeasyPilot.Core.Reporting;
 /// <summary>
 /// Provides a default diagnostic strategy for failed results.
 /// </summary>

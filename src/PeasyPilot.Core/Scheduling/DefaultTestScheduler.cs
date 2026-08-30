@@ -1,9 +1,8 @@
-namespace PeasyPilot.Core.Scheduling;
-
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
 
+namespace PeasyPilot.Core.Scheduling;
 /// <summary>
 /// Default in-memory implementation of a test scheduler.
 /// </summary>

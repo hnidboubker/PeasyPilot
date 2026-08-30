@@ -1,8 +1,7 @@
-namespace PeasyPilot.Core.Reporting;
-
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Models;
 
+namespace PeasyPilot.Core.Reporting;
 /// <summary>
 /// Simple console reporter for a test run result.
 /// </summary>

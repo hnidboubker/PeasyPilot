@@ -1,8 +1,6 @@
-namespace PeasyPilot.Core.Discovery;
-
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Models;
-
+namespace PeasyPilot.Core.Discovery;
 /// <summary>
 /// Default in-memory implementation of test discovery.
 /// </summary>
