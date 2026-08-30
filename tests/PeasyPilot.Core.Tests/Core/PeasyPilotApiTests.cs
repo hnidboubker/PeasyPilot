@@ -12,10 +12,9 @@ public class PeasyPilotApiTests
         {
             var value = 2 + 3;
             Assert.Equal(5, value);
-            Assert.NotNull(value);
         });
 
-        Assert.Equal(PeasyPilot.Core.Models.TestRunStatus.Passed, result.Status);
+        Assert.Equal(PeasyPilot.Core.Eums.TestRunStatus.Passed, result.Status);
         Assert.Equal(1, result.Passed);
     }
 }
