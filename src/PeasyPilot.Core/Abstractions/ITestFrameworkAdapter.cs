@@ -1,7 +1,5 @@
-namespace PeasyPilot.Core.Abstractions;
-
 using PeasyPilot.Core.Models;
-
+namespace PeasyPilot.Core.Abstractions;
 /// <summary>
 /// Adapts a concrete test framework to the shared PeasyPilot model.
 /// </summary>

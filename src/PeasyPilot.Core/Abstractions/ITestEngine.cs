@@ -1,7 +1,5 @@
-namespace PeasyPilot.Core.Abstractions;
-
 using PeasyPilot.Core.Models;
-
+namespace PeasyPilot.Core.Abstractions;
 /// <summary>
 /// Defines the contract for a test engine that can execute a request and return a unified result.
 /// </summary>
