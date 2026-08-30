@@ -1,18 +1,20 @@
 <Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PeasyPilot.BDD/PeasyPilot.BDD.csproj" />
+    <Project Path="src/PeasyPilot.Bogus/PeasyPilot.Bogus.csproj" />
+    <Project Path="src/PeasyPilot.Core/PeasyPilot.Core.csproj" />
+    <Project Path="src/PeasyPilot.Coverage/PeasyPilot.Coverage.csproj" />
+    <Project Path="src/PeasyPilot.Integration/PeasyPilot.Integration.csproj" />
+    <Project Path="src/PeasyPilot.Moq/PeasyPilot.Moq.csproj" />
+    <Project Path="src/PeasyPilot.NUnit/PeasyPilot.NUnit.csproj" />
+    <Project Path="src/PeasyPilot.TUnit/PeasyPilot.TUnit.csproj" />
+    <Project Path="src/PeasyPilot.Unit/PeasyPilot.Unit.csproj" />
+    <Project Path="src/PeasyPilot.XUnit/PeasyPilot.XUnit.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="samples/PeasyPilot.NUnit.Samples/PeasyPilot.NUnit.Samples.csproj" />
     <Project Path="samples/PeasyPilot.TUnit.Samples/PeasyPilot.TUnit.Samples.csproj" />
     <Project Path="samples/PeasyPilot.XUnit.Samples/PeasyPilot.XUnit.Samples.csproj" />
   </Folder>
-  <Project Path="src/PeasyPilot.BDD/PeasyPilot.BDD.csproj" />
-  <Project Path="src/PeasyPilot.Bogus/PeasyPilot.Bogus.csproj" />
-  <Project Path="src/PeasyPilot.Core/PeasyPilot.Core.csproj" />
-  <Project Path="src/PeasyPilot.Coverage/PeasyPilot.Coverage.csproj" />
-  <Project Path="src/PeasyPilot.Integration/PeasyPilot.Integration.csproj" />
-  <Project Path="src/PeasyPilot.Moq/PeasyPilot.Moq.csproj" />
-  <Project Path="src/PeasyPilot.NUnit/PeasyPilot.NUnit.csproj" />
-  <Project Path="src/PeasyPilot.TUnit/PeasyPilot.TUnit.csproj" />
-  <Project Path="src/PeasyPilot.Unit/PeasyPilot.Unit.csproj" />
-  <Project Path="src/PeasyPilot.XUnit/PeasyPilot.XUnit.csproj" />
   
 </Solution>

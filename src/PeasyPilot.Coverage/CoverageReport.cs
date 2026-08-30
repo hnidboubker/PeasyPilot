@@ -52,15 +52,3 @@ public class CoverageReport
                $"  Branch Coverage: {BranchCoveragePercentage:F2}% ({BranchesCovered}/{TotalBranches})";
     }
 }
-
-/// <summary>
-/// Provider for collecting code coverage information.
-/// </summary>
-public interface ICoverageProvider
-{
-    /// <summary>
-    /// Gets the coverage report asynchronously.
-    /// </summary>
-    /// <returns>The coverage report.</returns>
-    Task<CoverageReport> GetCoverageAsync();
-}

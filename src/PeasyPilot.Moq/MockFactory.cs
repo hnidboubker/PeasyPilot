@@ -1,6 +1,6 @@
-using PeasyPilot.Core.Abstractions;
 using Moq;
-using System;
+
+using PeasyPilot.Core.Abstractions;
 
 namespace PeasyPilot.Moq;
 
