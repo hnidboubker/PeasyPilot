@@ -3,6 +3,7 @@ namespace PeasyPilot.Core.Tests.Discovery;
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Discovery;
 using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.ImpactAnalysis;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Scheduling;
 using Xunit;
