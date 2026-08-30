@@ -38,6 +38,11 @@ public sealed class UnifiedTestEngine : ITestEngine
         });
     }
 
+    public static Task RunAsync(TestRunRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task RunAsync(TestRunRequest request, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
