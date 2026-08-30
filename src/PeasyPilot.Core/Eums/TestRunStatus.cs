@@ -1,4 +1,4 @@
-namespace PeasyPilot.Core.Models;
+namespace PeasyPilot.Core.Eums;
 
 /// <summary>
 /// Defines the possible result states for a unified test run.

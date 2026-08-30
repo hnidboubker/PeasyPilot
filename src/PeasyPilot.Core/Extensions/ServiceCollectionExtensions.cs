@@ -3,10 +3,6 @@ using PeasyPilot.Core.Configuration;
 using PeasyPilot.Core.Context;
 using Microsoft.Extensions.DependencyInjection;
 namespace PeasyPilot.Core.Extensions;
-
-
-
-
 /// <summary>
 /// Extension methods for registering PeasyPilot services in the DI container.
 /// </summary>

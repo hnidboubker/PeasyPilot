@@ -1,3 +1,5 @@
+using PeasyPilot.Core.Eums;
+
 namespace PeasyPilot.Core.Models;
 
 /// <summary>
