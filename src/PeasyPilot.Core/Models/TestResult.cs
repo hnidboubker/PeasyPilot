@@ -28,6 +28,11 @@ public class TestResult
     public string? Message { get; set; }
 
     /// <summary>
+    /// Gets or sets standardized failure details when status is Failed.
+    /// </summary>
+    public TestFailure? Failure { get; set; }
+
+    /// <summary>
     /// Gets or sets the execution duration.
     /// </summary>
     public TimeSpan Duration { get; set; }

@@ -16,6 +16,11 @@ public class TestCase
     public string Category { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the test classification kind.
+    /// </summary>
+    public TestKind Kind { get; set; } = TestKind.Unit;
+
+    /// <summary>
     /// Gets or sets optional metadata attached to the test case.
     /// </summary>
     public Dictionary<string, string> Metadata { get; set; } = new();
