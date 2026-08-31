@@ -352,4 +352,4 @@ For issues or questions:
 
 ## Version
 
-Current package version: **0.1.1**
+Current package version: **0.1.2**

@@ -40,7 +40,7 @@ jobs:
       - name: NuGet login (OIDC - temp API key)
         uses: NuGet/login@v1
         with:
-          user: ${{secrets.Nuget_UserName}}
+          user: ${{ secrets.NUGET_USERNAME }}
 
       - name: Push to NuGet
         run: dotnet nuget push ./bin/Release/*.nupkg \
