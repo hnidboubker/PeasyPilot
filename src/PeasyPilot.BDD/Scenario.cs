@@ -3,6 +3,8 @@ namespace PeasyPilot.BDD;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Models;
 
 /// <summary>
 /// Represents a Gherkin scenario step.
@@ -208,5 +210,73 @@ public class Scenario
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Converts this scenario into a unified PeasyPilot <see cref="TestCase"/>.
+    /// </summary>
+    /// <param name="featureName">Optional parent feature name.</param>
+    /// <returns>A unified test case instance with Kind = TestKind.Bdd.</returns>
+    public TestCase ToTestCase(string? featureName = null)
+    {
+        return new TestCase
+        {
+            Name = string.IsNullOrEmpty(featureName) ? Name : $"{featureName} - {Name}",
+            Category = string.IsNullOrEmpty(featureName) ? "BDD" : featureName,
+            Kind = TestKind.Bdd,
+            Metadata = new Dictionary<string, string>
+            {
+                ["Gherkin"] = ToString(),
+                ["StepCount"] = _steps.Count.ToString()
+            }
+        };
+    }
+
+    /// <summary>
+    /// Executes the scenario and returns a unified PeasyPilot <see cref="TestResult"/>.
+    /// </summary>
+    /// <param name="featureName">Optional parent feature name.</param>
+    /// <returns>The unified execution result.</returns>
+    public async Task<TestResult> ExecuteAndAsTestResultAsync(string? featureName = null)
+    {
+        var testCase = ToTestCase(featureName);
+        var start = DateTime.UtcNow;
+
+        try
+        {
+            await ExecuteAsync();
+            var valid = Validate();
+
+            return new TestResult
+            {
+                Name = testCase.Name,
+                Category = testCase.Category,
+                Status = valid ? TestRunStatus.Passed : TestRunStatus.Failed,
+                Duration = DateTime.UtcNow - start,
+                Message = valid ? "Scenario validation passed." : "Scenario validation failed.",
+                Failure = valid ? null : new TestFailure
+                {
+                    Message = "One or more Then step validations returned false.",
+                    Expected = "All steps valid (true)",
+                    Actual = "Validation failed"
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new TestResult
+            {
+                Name = testCase.Name,
+                Category = testCase.Category,
+                Status = TestRunStatus.Failed,
+                Duration = DateTime.UtcNow - start,
+                Message = ex.Message,
+                Failure = new TestFailure
+                {
+                    Message = ex.Message,
+                    StackTrace = ex.StackTrace
+                }
+            };
+        }
     }
 }

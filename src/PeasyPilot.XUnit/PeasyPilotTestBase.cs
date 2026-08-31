@@ -1,9 +1,8 @@
-namespace PeasyPilot.XUnit;
-
 using Xunit;
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Context;
 
+namespace PeasyPilot.XUnit;
 /// <summary>
 /// Base class for xUnit test classes integrating with PeasyPilot.
 /// </summary>

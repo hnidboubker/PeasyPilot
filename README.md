@@ -19,7 +19,8 @@ PeasyPilot is a modern, modular testing framework for .NET applications designed
 
 PeasyPilot consists of multiple focused modules that work together seamlessly:
 
-- **PeasyPilot.Core** - Core abstractions and utilities
+- **PeasyPilot.Core** - Core abstractions, discovery, impact analysis, scheduling, pipeline orchestration, reporting, and history storage
+- **PeasyPilot.CLI** - Command-line test runner tool
 - **PeasyPilot.Unit** - Unit testing utilities and builders
 - **PeasyPilot.Integration** - Integration testing fixtures
 - **PeasyPilot.Bogus** - Fake data generation
@@ -313,7 +314,30 @@ The foundation of the framework providing:
 - `IMockFactory` - Mock creation abstraction
 - Fluent assertion API (`Assert.That<T>`)
 - Test configuration (`TestOptions`)
-- Exception types for testing scenarios
+- `ITestDiscovery` & `ITestScheduler` - Framework-agnostic discovery & execution
+- `ITestImpactAnalyzer` - Code-change impact detection
+- `ITestPipelineOrchestrator` - End-to-end execution pipeline (Discovery -> Impact Analysis -> Filter -> Schedule -> Report -> Diagnose)
+- `ITestRunStore` - Execution history persistence (`InMemoryTestRunStore`, `FileTestRunStore`)
+- `JsonFileReporter` & `JUnitXmlReporter` - Structured CI/CD report generators
+- `AddPeasyPilotPipeline()` - Full Dependency Injection registration
+
+### PeasyPilot.CLI
+
+Command-line runner tool for executing PeasyPilot pipelines:
+
+```bash
+# Run tests with name filter
+peasypilot --filter Customer
+
+# Run impact analysis on changed files
+peasypilot --changed-files CustomerService.cs,OrderService.cs
+
+# Export results to JUnit XML
+peasypilot --format junit --output test-results.xml
+
+# View test execution history
+peasypilot history
+```
 
 ### PeasyPilot.Unit
 

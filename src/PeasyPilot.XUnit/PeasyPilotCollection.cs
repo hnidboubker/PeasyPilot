@@ -1,7 +1,5 @@
-namespace PeasyPilot.XUnit;
-
 using Xunit;
-
+namespace PeasyPilot.XUnit;
 /// <summary>
 /// Collection definition for shared fixtures across xUnit tests.
 /// </summary>

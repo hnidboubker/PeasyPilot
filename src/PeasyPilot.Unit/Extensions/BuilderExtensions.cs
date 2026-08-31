@@ -1,7 +1,5 @@
-namespace PeasyPilot.Unit.Extensions;
-
 using PeasyPilot.Unit.Builders;
-
+namespace PeasyPilot.Unit.Extensions;
 /// <summary>
 /// Extension methods for builder pattern operations.
 /// </summary>

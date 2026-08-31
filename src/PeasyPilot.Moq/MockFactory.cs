@@ -1,9 +1,6 @@
 using Moq;
-
-using PeasyPilot.Core.Abstractions;
-
 namespace PeasyPilot.Moq;
-
+using PeasyPilot.Core.Abstractions;
 /// <summary>
 /// Factory for creating mock objects using Moq.
 /// </summary>

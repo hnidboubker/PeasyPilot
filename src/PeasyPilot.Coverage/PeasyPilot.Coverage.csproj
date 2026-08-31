@@ -22,6 +22,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ICoverageProvider.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PeasyPilot.Core\PeasyPilot.Core.csproj" />
   </ItemGroup>
 
