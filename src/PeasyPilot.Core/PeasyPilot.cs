@@ -1,9 +1,9 @@
-namespace PeasyPilot.Core;
+
 
 using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
-
+namespace PeasyPilot.Core;
 /// <summary>
 /// Entry point for framework-free, attribute-less testing.
 /// </summary>
