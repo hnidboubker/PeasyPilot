@@ -1,10 +1,8 @@
-
-
 ![PeasyPilot](./assets/images/banner.png)
 
-# PeasyPilot - A Comprehensive .NET Testing Framework
+# PeasyPilot
 
-PeasyPilot is a modern, modular testing framework for .NET applications designed to simplify test creation, management, and execution. It provides abstractions, utilities, and framework-specific adapters for unit, integration, and BDD testing.
+A modular .NET testing framework for building, orchestrating, and running unit, integration, and BDD-style testing workflows with a consistent API.
 
 ![Build](https://github.com/hnidboubker/PeasyPilot/actions/workflows/build.yml/badge.svg?branch=main)
 ![coverage](https://github.com/hnidboubker/PeasyPilot/actions/workflows/coverage.yml/badge.svg?branch=main)
@@ -12,75 +10,70 @@ PeasyPilot is a modern, modular testing framework for .NET applications designed
 [![NuGet](https://img.shields.io/nuget/v/PeasyPilot.Unit)](https://www.nuget.org/packages/PeasyPilot.Unit)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/PeasyPilot.Unit)](https://www.nuget.org/packages/PeasyPilot.Unit)
 [![.NET](https://img.shields.io/badge/.NET-8.0%20%7C%209.0%20%7C%2010.0-purple)](https://dotnet.microsoft.com/)
-![master](https://img.shields.io/github/last-commit/badges/shields/master)
-
 
 ## Overview
 
-PeasyPilot consists of multiple focused modules that work together seamlessly:
+PeasyPilot is composed of focused packages that work together to provide a lightweight, extensible testing foundation for .NET projects.
 
-- **PeasyPilot.Core** - Core abstractions, discovery, impact analysis, scheduling, pipeline orchestration, reporting, and history storage
-- **PeasyPilot.CLI** - Command-line test runner tool
-- **PeasyPilot.Unit** - Unit testing utilities and builders
-- **PeasyPilot.Integration** - Integration testing fixtures
-- **PeasyPilot.Bogus** - Fake data generation
-- **PeasyPilot.Moq** - Mocking support
-- **PeasyPilot.BDD** - Behavior-driven development
-- **PeasyPilot.Coverage** - Code coverage tracking
-- **PeasyPilot.XUnit** - XUnit framework integration
-- **PeasyPilot.NUnit** - NUnit framework integration
-- **PeasyPilot.TUnit** - TUnit framework integration
+### Included packages
+
+- **PeasyPilot.Core** – core abstractions, test context, discovery, orchestration, reporting, and DI integration
+- **PeasyPilot.CLI** – command-line runner for filtering and scheduling tests
+- **PeasyPilot.Unit** – builder-oriented utilities and shared unit-test helpers
+- **PeasyPilot.Integration** – integration testing support and fixtures
+- **PeasyPilot.Bogus** – fake data generation via Bogus
+- **PeasyPilot.Moq** – mock factory abstractions for Moq
+- **PeasyPilot.BDD** – BDD-style feature and scenario model
+- **PeasyPilot.Coverage** – coverage reporting support
+- **PeasyPilot.XUnit** – xUnit base class integration
+- **PeasyPilot.NUnit** – NUnit base class integration
+- **PeasyPilot.TUnit** – TUnit base class integration
 
 ## Features
 
-### 🎯 Core Features
-- **Unified Test Context** - Manage test state across your test suite
-- **Fluent Assertions** - Write readable, chainable assertions
-- **Builder Pattern Support** - Create complex test objects easily
-- **Test Data Factories** - Generate realistic test data with Bogus
-- **Mocking Framework** - Create mocks using Moq
-- **BDD Support** - Write scenarios in Gherkin format
-
-### 🔧 Framework Integration
-- Native support for xUnit, NUnit, and TUnit
-- Base classes for each framework with common functionality
-- Collection fixtures and setup/teardown hooks
-- Async-friendly lifecycle management
-
-### 📊 Testing Utilities
-- Code coverage reporting
-- Integration test fixtures with database support
-- Web application testing with ASP.NET Core TestHost
-- Comprehensive helper utilities
+- Unified test context and execution pipeline
+- Fluent assertions through `Assert.That(...)`
+- Builder pattern support for test object creation
+- Fake data generation with Bogus
+- Mock creation abstractions with Moq
+- xUnit, NUnit, and TUnit lifecycle integration
+- CLI execution with filter and impact-analysis flags
+- CI-friendly JSON and JUnit report output
 
 ## Installation
 
-Add PeasyPilot to your test project:
+Add the core packages to your test project:
 
 ```bash
 dotnet add package PeasyPilot.Core
 dotnet add package PeasyPilot.Unit
 ```
 
-For specific frameworks and features:
+For specific frameworks or tooling:
 
 ```bash
-# For xUnit tests
+# xUnit support
 dotnet add package PeasyPilot.XUnit
 
-# For mocking
+# NUnit support
+dotnet add package PeasyPilot.NUnit
+
+# TUnit support
+dotnet add package PeasyPilot.TUnit
+
+# Mocking
 dotnet add package PeasyPilot.Moq
 
-# For fake data
+# Bogus data factory
 dotnet add package PeasyPilot.Bogus
 
-# For BDD
+# BDD support
 dotnet add package PeasyPilot.BDD
 ```
 
-## Local Packaging Watcher
+## Local packaging watcher
 
-Rebuild and repack packages automatically after a source or configuration change:
+Rebuild and repack NuGet packages automatically after source or configuration changes:
 
 ```powershell
 ./scripts/version-watch.ps1
@@ -92,32 +85,26 @@ On Bash environments:
 ./scripts/version-watch.sh
 ```
 
-Generated packages are written to `artifacts/`. Stop the watcher with `Ctrl+C`.
+Generated packages are written to `artifacts/` and the watcher stops with `Ctrl+C`.
 
-## Quick Start
+## Quick start
 
-### Unit Tests with xUnit
+### xUnit example
 
 ```csharp
 using Xunit;
 using PeasyPilot.XUnit;
-using PeasyPilot.Bogus;
 using Assert = PeasyPilot.Core.Assertions.Assert;
 
 public class CalculatorTests : PeasyPilotTestBase
 {
-    private readonly TestDataFactory _dataFactory = new();
-
     [Fact]
     public void Add_WithValidNumbers_ReturnsCorrectSum()
     {
-        // Arrange
         var calculator = new Calculator();
-        
-        // Act
+
         var result = calculator.Add(2, 3);
-        
-        // Assert
+
         Assert.That(result)
             .IsEqualTo(5)
             .IsNotNull();
@@ -125,7 +112,7 @@ public class CalculatorTests : PeasyPilotTestBase
 }
 ```
 
-### Unit Tests with NUnit
+### NUnit example
 
 ```csharp
 using NUnit.Framework;
@@ -145,50 +132,32 @@ public class UserServiceTests : PeasyPilotNUnitTestBase
     [Test]
     public void GetUser_WithValidId_ReturnsUser()
     {
-        // Arrange
         var userId = 1;
 
-        // Act
         var user = _service.GetUser(userId);
 
-        // Assert
         Assert.That(user, Is.Not.Null);
         Assert.That(user.Id, Is.EqualTo(userId));
     }
 }
 ```
 
-### Integration Tests
+### TUnit example
 
 ```csharp
-using Xunit;
-using PeasyPilot.Integration.Fixtures;
+using PeasyPilot.TUnit;
 
-public class ApiIntegrationTests : IClassFixture<WebApplicationTestFactory<Startup>>
+public class SampleTests : PeasyPilotTUnitTestBase
 {
-    private readonly WebApplicationTestFactory<Startup> _factory;
-
-    public ApiIntegrationTests(WebApplicationTestFactory<Startup> factory)
+    public async Task Example()
     {
-        _factory = factory;
-    }
-
-    [Fact]
-    public async Task GetEndpoint_ReturnsOkResult()
-    {
-        // Arrange
-        var client = _factory.CreateClient();
-
-        // Act
-        var response = await client.GetAsync("/api/users");
-
-        // Assert
-        Assert.True(response.IsSuccessStatusCode);
+        var value = 42;
+        await Assert.That(value).IsEqualTo(42);
     }
 }
 ```
 
-### BDD Tests
+### BDD example
 
 ```csharp
 using Xunit;
@@ -199,52 +168,33 @@ public class UserRegistrationBddTests
     [Fact]
     public async Task UserRegistration_ValidData_SuccessfullyRegisters()
     {
-        // Arrange
         var feature = new Feature("User Registration");
         var scenario = feature.AddScenario("Register a new user");
 
         scenario
-            .Given("a new user with valid email", async () =>
-            {
-                // Setup user data
-                await Task.CompletedTask;
-            })
-            .When("the user submits the registration form", async () =>
-            {
-                // Perform registration
-                await Task.CompletedTask;
-            })
-            .Then("the registration should succeed", () =>
-            {
-                // Verify success
-                return true;
-            });
+            .Given("a new user with valid email", async () => await Task.CompletedTask)
+            .When("the user submits the registration form", async () => await Task.CompletedTask)
+            .Then("the registration should succeed", () => true);
 
-        // Act
         await scenario.ExecuteAsync();
 
-        // Assert
         Assert.True(scenario.Validate());
     }
 }
 ```
 
-### Test Data Generation
+### Test data generation
 
 ```csharp
 using PeasyPilot.Bogus;
-using PeasyPilot.Core.Abstractions;
 
 var dataFactory = new TestDataFactory();
 
-// Create a single object
 var user = dataFactory.Create<User>();
-
-// Create multiple objects
 var users = dataFactory.CreateMany<User>(5);
 ```
 
-### Builder Pattern
+### Builder pattern
 
 ```csharp
 using PeasyPilot.Unit.Builders;
@@ -264,7 +214,6 @@ public class UserBuilder : BuilderBase<User>
     }
 }
 
-// Usage
 var user = new UserBuilder()
     .WithName("John Doe")
     .WithEmail("john@example.com")
@@ -275,13 +224,12 @@ var user = new UserBuilder()
 
 ```csharp
 using PeasyPilot.Moq;
-using Moq;
 
 var mockFactory = new MockFactory();
 var userRepository = mockFactory.Create(typeof(IUserRepository));
 ```
 
-### Fluent Assertions
+### Fluent assertions
 
 ```csharp
 using PeasyPilot.Core.Assertions;
@@ -291,161 +239,23 @@ var result = Calculate(5, 3);
 Assert.That(result)
     .IsEqualTo(8)
     .IsNotNull();
-
-Assert.That(errorMessage)
-    .IsNotEqualTo("Success")
-    .IsNotNull();
 ```
 
-When the test framework also exposes an `Assert` type, use this alias to keep the PeasyPilot API available as `Assert.That(...)`:
+When the current test framework also exposes an `Assert` type, use the alias below to keep the PeasyPilot API accessible as `Assert.That(...)`:
 
 ```csharp
 using Assert = PeasyPilot.Core.Assertions.Assert;
 ```
 
-## Module Details
+## Dependency injection
 
-### PeasyPilot.Core
-
-The foundation of the framework providing:
-
-- `ITestContext` - Thread-safe test data storage
-- `ITestDataFactory` - Test data creation abstraction
-- `IMockFactory` - Mock creation abstraction
-- Fluent assertion API (`Assert.That<T>`)
-- Test configuration (`TestOptions`)
-- `ITestDiscovery` & `ITestScheduler` - Framework-agnostic discovery & execution
-- `ITestImpactAnalyzer` - Code-change impact detection
-- `ITestPipelineOrchestrator` - End-to-end execution pipeline (Discovery -> Impact Analysis -> Filter -> Schedule -> Report -> Diagnose)
-- `ITestRunStore` - Execution history persistence (`InMemoryTestRunStore`, `FileTestRunStore`)
-- `JsonFileReporter` & `JUnitXmlReporter` - Structured CI/CD report generators
-- `AddPeasyPilotPipeline()` - Full Dependency Injection registration
-
-### PeasyPilot.CLI
-
-Command-line runner tool for executing PeasyPilot pipelines:
-
-```bash
-# Run tests with name filter
-peasypilot --filter Customer
-
-# Run impact analysis on changed files
-peasypilot --changed-files CustomerService.cs,OrderService.cs
-
-# Export results to JUnit XML
-peasypilot --format junit --output test-results.xml
-
-# View test execution history
-peasypilot history
-```
-
-### PeasyPilot.Unit
-
-Unit testing utilities including:
-
-- `BuilderBase<T>` - Abstract builder for the builder pattern
-- `UnitTestFixture` - Base fixture class
-- Extension methods for fluent configuration
-- Helper utilities for test data and object operations
-
-### PeasyPilot.Integration
-
-Integration testing support:
-
-- `IntegrationTestFixture` - Base class with IAsyncLifetime support
-- `WebApplicationTestFactory<T>` - ASP.NET Core test host factory
-- `ITestDatabase` - Database operations abstraction
-- Startup configuration for test applications
-
-### PeasyPilot.Bogus
-
-Fake data generation using the Bogus library:
-
-- `TestDataFactory` - Creates realistic test data
-- Implements `ITestDataFactory`
-- Generates single or multiple objects
-
-### PeasyPilot.Moq
-
-Mocking framework integration:
-
-- `MockFactory` - Creates mock objects using Moq
-- Implements `IMockFactory`
-- Type-based mock creation
-
-### PeasyPilot.BDD
-
-Behavior-driven development support:
-
-- `Scenario` - Represents a BDD scenario with Given/When/Then
-- `Feature` - Organizes scenarios
-- Gherkin format output
-- Async execution support
-
-### PeasyPilot.Coverage
-
-Code coverage analysis:
-
-- `CoverageReport` - Tracks line and branch coverage
-- `ICoverageProvider` - Provider abstraction
-- Coverage percentage calculations
-
-### Framework Adapters (XUnit, NUnit, TUnit)
-
-Framework-specific base classes:
-
-- **XUnit**: `PeasyPilotTestBase` with `IAsyncLifetime`
-- **NUnit**: `PeasyPilotNUnitTestBase` with setup/teardown
-- **TUnit**: `PeasyPilotTUnitTestBase` with async hooks
-
-All provide:
-- Automatic `TestContext` initialization
-- Support for test data factories and mocks
-- Framework-specific lifecycle management
-
-## Best Practices
-
-### 1. Use Test Fixtures
-Inherit from framework-specific base classes to get automatic context setup.
-
-### 2. Leverage Builders
-Use the builder pattern for complex object construction:
-
-```csharp
-new UserBuilder()
-    .WithName("Jane")
-    .WithEmail("jane@example.com")
-    .Build();
-```
-
-### 3. Isolate Tests
-Use `TestContext` to isolate test data:
-
-```csharp
-var testData = GetOrCreateTestData("user", () => new User { ... });
-```
-
-### 4. Use Fluent Assertions
-Make assertions more readable:
-
-```csharp
-Assert.That(result).IsEqualTo(expected).IsNotNull();
-```
-
-### 5. Organize with BDD
-Use scenarios for complex business logic testing.
-
-## Configuration
-
-### Service Collection Extension
-
-Register PeasyPilot services:
+Register PeasyPilot services in the container:
 
 ```csharp
 services.AddPeasyPilotCore();
 ```
 
-With custom options:
+Or with custom options:
 
 ```csharp
 services.AddPeasyPilotCore(options =>
@@ -455,82 +265,91 @@ services.AddPeasyPilotCore(options =>
 });
 ```
 
-## Project Structure
+The package also exposes a full pipeline registration helper:
 
+```csharp
+services.AddPeasyPilotPipeline();
 ```
+
+## CLI usage
+
+```bash
+# Show help
+peasypilot --help
+
+# Run only matching tests
+peasypilot --filter Customer
+
+# Run impact analysis on a changed file set
+peasypilot --changed-files CustomerService.cs,OrderService.cs
+
+# Export JUnit XML results
+peasypilot --format junit --output test-results.xml
+
+# View execution history
+peasypilot history
+```
+
+## Project structure
+
+```text
 src/
-├── PeasyPilot.Core/          # Core abstractions
-│   ├── Abstractions/         # Interfaces
-│   ├── Assertions/           # Fluent assertion API
-│   ├── Context/              # Test context implementation
-│   ├── Exceptions/           # Custom exceptions
-│   ├── Extensions/           # DI extensions
-│   ├── Helpers/              # Type helpers
-│   └── Configuration/        # Test configuration
-├── PeasyPilot.Unit/          # Unit testing utilities
-├── PeasyPilot.Integration/   # Integration testing
-├── PeasyPilot.Bogus/         # Fake data generation
-├── PeasyPilot.Moq/           # Mocking support
-├── PeasyPilot.BDD/           # BDD scenarios
-├── PeasyPilot.Coverage/      # Coverage reporting
+├── PeasyPilot.Core/          # core abstractions and orchestration
+├── PeasyPilot.CLI/           # CLI runner
+├── PeasyPilot.Unit/          # builders and helpers
+├── PeasyPilot.Integration/   # integration fixtures
+├── PeasyPilot.Bogus/         # fake data generation
+├── PeasyPilot.Moq/           # mocking support
+├── PeasyPilot.BDD/           # BDD model and execution
+├── PeasyPilot.Coverage/      # coverage support
 ├── PeasyPilot.XUnit/         # xUnit adapter
 ├── PeasyPilot.NUnit/         # NUnit adapter
-└── PeasyPilot.TUnit/         # TUnit adapter
+├── PeasyPilot.TUnit/         # TUnit adapter
+└── Extensions/
+    └── ...
+
 tests/
-└── PeasyPilot.Core.Tests/    # Core tests
+└── PeasyPilot.Core.Tests/
 ```
 
-## Target Framework
+## Target frameworks
 
-- **.NET 8.0, 9.0 and 10.0** - Multi-targeted for supported .NET platforms
-- C# 13 with nullable reference types enabled
-- Full async/await support
+- **.NET 8.0**
+- **.NET 9.0**
+- **.NET 10.0**
+
+The repository is configured with multi-targeting in the project files and uses nullable reference types plus async-friendly testing patterns.
 
 ## Dependencies
 
-- **Core**: Microsoft.Extensions.DependencyInjection
-- **Bogus**: Bogus (for fake data)
-- **Moq**: Moq (for mocking)
-- **Integration**: Microsoft.AspNetCore.Mvc.Testing
-- **XUnit**: xUnit
-- **NUnit**: NUnit
-- **TUnit**: TUnit
+- `Microsoft.Extensions.DependencyInjection`
+- `Bogus` (for fake data generation)
+- `Moq` (for mocking)
+- `xUnit`, `NUnit`, and `TUnit` for test framework adapters
+- ASP.NET Core testing support for integration scenarios
 
 ## Contributing
 
-Contributions are welcome! Areas for improvement:
+Contributions are welcome. Areas of interest include:
 
-- Additional test framework adapters
-- Performance improvements
-- Extended helper utilities
-- Documentation and examples
+- additional framework adapters
+- coverage improvements
+- helper utilities and assertions
+- CLI enhancements
+- documentation and sample projects
 
 ## License
 
-PeasyPilot is provided as-is for testing purposes.
+PeasyPilot is distributed under the MIT license.
 
 ## Support
 
 For issues or questions:
-1. Check existing documentation
-2. Review example tests in the repository
-3. Consult individual module documentation
 
-## Roadmap
+1. Review the project documentation and examples
+2. Check the existing samples under `samples/`
+3. Open an issue in the repository with a minimal repro
 
-- [ ] Additional framework adapters (TestNG-style)
-- [ ] Performance profiling utilities
-- [ ] Distributed testing support
-- [ ] Advanced mocking scenarios
-- [ ] Integration with popular CI/CD platforms
-- [ ] Visual test reporting
-- [ ] Property-based testing support
+## Version
 
-## Versioning
-
-PeasyPilot follows semantic versioning:
-- Major: Breaking changes
-- Minor: New features
-- Patch: Bug fixes
-
-Current version: 0.1.1
+Current package version: **0.1.1**
