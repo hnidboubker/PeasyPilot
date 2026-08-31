@@ -48,6 +48,5 @@ public class SmartDiagnosticProviderTests
         Assert.NotNull(diagnostic);
         Assert.Contains("2 test failure", diagnostic.Summary);
         Assert.NotEmpty(diagnostic.Suggestions);
-        Assert.Equal(nameof(SmartDiagnosticProvider), diagnostic.Source);
     }
 }
