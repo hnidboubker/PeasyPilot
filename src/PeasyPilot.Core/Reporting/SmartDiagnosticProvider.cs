@@ -16,28 +16,28 @@ public sealed class SmartDiagnosticProvider : ITestDiagnostic
 
         if (result.Status == TestRunStatus.Passed)
         {
-            return Task.FromResult(new TestDiagnosticResult
-            {
-                Summary = "All tests passed cleanly. No failure diagnostics required.",
-                Suggestions = [],
-                GeneratedAt = DateTime.UtcNow,
-                Source = nameof(SmartDiagnosticProvider)
-            });
+            return Task.FromResult(new TestDiagnosticResult(
+                "All tests passed cleanly. No failure diagnostics required.",
+                null,
+                Array.Empty<string>(),
+                Array.Empty<string>()
+            ));
         }
 
-        var suggestions = new List<string>();
+        var suggestions = new List<string>
+        {
+            "Review test assertion values (Expected vs Actual).",
+            "Check dependencies and setup state in TestContext.",
+            "Verify async methods include proper await keywords."
+        };
+
         var summaryText = $"Diagnosed {result.Failed} test failure(s) out of {result.Passed + result.Failed + result.Skipped} total tests.";
 
-        suggestions.Add("Review test assertion values (Expected vs Actual).");
-        suggestions.Add("Check dependencies and setup state in TestContext.");
-        suggestions.Add("Verify async methods include proper await keywords.");
-
-        return Task.FromResult(new TestDiagnosticResult
-        {
-            Summary = summaryText,
-            Suggestions = suggestions,
-            GeneratedAt = DateTime.UtcNow,
-            Source = nameof(SmartDiagnosticProvider)
-        });
+        return Task.FromResult(new TestDiagnosticResult(
+            summaryText,
+            "Assertion or unhandled exception during test execution.",
+            Array.Empty<string>(),
+            suggestions
+        ));
     }
 }
