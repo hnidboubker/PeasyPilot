@@ -1,36 +1,44 @@
 param(
-    [string]$RootPath = "."
+    [string]$RootPath = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 )
 
-$projects = Get-ChildItem `
-    -Path $RootPath `
-    -Filter "*.csproj" `
-    -Recurse
+$ErrorActionPreference = 'Stop'
 
-foreach ($project in $projects) {
+$excludedDirectories = @('.git', 'artifacts', 'bin', 'obj')
 
-    [xml]$csproj = Get-Content $project.FullName
-
-    $versionNode = $csproj.Project.PropertyGroup |
-        Where-Object { $_.Version } |
-        Select-Object -First 1
-
-    if ($null -eq $versionNode) {
-        Write-Host "$($project.Name) -> pas de version, ignoré"
-        continue
+$projects = Get-ChildItem -Path $RootPath -File -Recurse -Filter '*.csproj' |
+    Where-Object {
+        $relativePath = [System.IO.Path]::GetRelativePath($RootPath, $_.FullName)
+        $segments = $relativePath -split '[\\/]'
+        -not ($segments | Where-Object { $excludedDirectories -contains $_ })
     }
 
-    $oldVersion = [Version]$versionNode.Version
+if (-not $projects) {
+    Write-Host "Aucun fichier .csproj trouvé dans $RootPath"
+    return
+}
 
-    $newVersion = [Version]::new(
-        $oldVersion.Major,
-        $oldVersion.Minor,
-        $oldVersion.Build + 1
-    )
+foreach ($project in $projects) {
+    try {
+        [xml]$csproj = Get-Content -Path $project.FullName -Raw
 
-    $versionNode.Version = $newVersion.ToString()
+        $versionNode = $csproj.SelectSingleNode("//*[local-name()='Project']/*[local-name()='PropertyGroup']/*[local-name()='Version']")
 
-    $csproj.Save($project.FullName)
+        if ($null -eq $versionNode -or [string]::IsNullOrWhiteSpace($versionNode.InnerText)) {
+            Write-Host "$($project.Name) -> pas de Version, ignoré"
+            continue
+        }
 
-    Write-Host "$($project.Name) : $oldVersion -> $newVersion"
+        $oldVersionText = $versionNode.InnerText.Trim()
+        $oldVersion = [Version]::Parse($oldVersionText)
+        $newVersion = [Version]::new($oldVersion.Major, $oldVersion.Minor, $oldVersion.Build + 1)
+
+        $versionNode.InnerText = $newVersion.ToString()
+        $csproj.Save($project.FullName)
+
+        Write-Host "$($project.Name): $oldVersionText -> $newVersion"
+    }
+    catch {
+        Write-Warning "$($project.FullName): impossible de mettre à jour la version - $($_.Exception.Message)"
+    }
 }
