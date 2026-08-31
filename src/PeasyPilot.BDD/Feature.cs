@@ -1,6 +1,9 @@
 namespace PeasyPilot.BDD;
 
 using System.Collections.Generic;
+using System.Linq;
+using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Models;
 
 /// <summary>
 /// Feature builder for organizing BDD scenarios.
@@ -70,5 +73,45 @@ public class Feature
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Converts all scenarios in this feature into a collection of unified <see cref="TestCase"/> instances.
+    /// </summary>
+    /// <returns>Collection of unified test cases.</returns>
+    public IReadOnlyCollection<TestCase> ToTestCases()
+    {
+        return _scenarios.Select(s => s.ToTestCase(Name)).ToList();
+    }
+
+    /// <summary>
+    /// Executes all scenarios in this feature and returns an aggregated <see cref="TestRunResult"/>.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>Aggregated test run result.</returns>
+    public async Task<TestRunResult> ExecuteAndAsTestRunResultAsync(CancellationToken cancellationToken = default)
+    {
+        var start = DateTime.UtcNow;
+        var results = new List<TestResult>();
+
+        foreach (var scenario in _scenarios)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var res = await scenario.ExecuteAndAsTestResultAsync(Name);
+            results.Add(res);
+        }
+
+        var passed = results.Count(r => r.Status == TestRunStatus.Passed);
+        var failed = results.Count(r => r.Status == TestRunStatus.Failed);
+        var skipped = results.Count(r => r.Status == TestRunStatus.Skipped);
+
+        return new TestRunResult
+        {
+            Passed = passed,
+            Failed = failed,
+            Skipped = skipped,
+            Duration = DateTime.UtcNow - start,
+            Status = failed > 0 ? TestRunStatus.Failed : TestRunStatus.Passed
+        };
     }
 }
