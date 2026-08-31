@@ -25,8 +25,8 @@ public static class SnapshotAssert
         ArgumentNullException.ThrowIfNull(actual);
         ArgumentNullException.ThrowIfNull(expectedSnapshotJson);
 
-        var actualJson = JsonSerializer.Serialize(actual, JsonOptions).Trim();
-        var normalizedExpected = expectedSnapshotJson.Trim();
+        var actualJson = JsonSerializer.Serialize(actual, JsonOptions).Replace("\r\n", "\n").Trim();
+        var normalizedExpected = expectedSnapshotJson.Replace("\r\n", "\n").Trim();
 
         if (!string.Equals(actualJson, normalizedExpected, StringComparison.Ordinal))
         {
