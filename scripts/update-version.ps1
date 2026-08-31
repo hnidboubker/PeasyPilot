@@ -5,16 +5,25 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $excludedDirectories = @('.git', 'artifacts', 'bin', 'obj')
+$normalizedRoot = [System.IO.Path]::GetFullPath($RootPath)
 
-$projects = Get-ChildItem -Path $RootPath -File -Recurse -Filter '*.csproj' |
+$projects = Get-ChildItem -Path $normalizedRoot -File -Recurse -Filter '*.csproj' |
     Where-Object {
-        $relativePath = [System.IO.Path]::GetRelativePath($RootPath, $_.FullName)
+        $fullPath = $_.FullName
+        $relativePath = $fullPath
+        if ($fullPath.StartsWith($normalizedRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+            $relativePath = $fullPath.Substring($normalizedRoot.Length)
+            if ($relativePath.StartsWith('\') -or $relativePath.StartsWith('/')) {
+                $relativePath = $relativePath.Substring(1)
+            }
+        }
+
         $segments = $relativePath -split '[\\/]'
         -not ($segments | Where-Object { $excludedDirectories -contains $_ })
     }
 
 if (-not $projects) {
-    Write-Host "Aucun fichier .csproj trouvé dans $RootPath"
+    Write-Host "Aucun fichier .csproj trouvé dans $normalizedRoot"
     return
 }
 
