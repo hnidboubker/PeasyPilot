@@ -452,3 +452,10 @@ Thumbs.db
 
 
 .artifacts/
+
+.agents/*
+!.agents/.gitkeep
+
+.claude/*
+!.claude/.gitkeep
+
