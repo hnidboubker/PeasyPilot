@@ -39,6 +39,35 @@ for validation — it has not been independently reviewed line-by-line by the ow
   begins (`issue-resolution`).
 - No assuming, no modifying without validation, no deleting without explicit
   agreement — this applies repo-wide, not just to governance files.
+- Files `.agents/09_MCP_GITHUB_CONFIG.md`, `10_COMPLETE_WORKFLOW.md`,
+  `11_MAINTENANCE_AI_CONTEXT_INDEX.md`, plus root `AI_CONTEXT.md` and
+  `PROJECT_INDEX.md`, were added 2026-09-04, modeled on
+  `G:\MCS\Github\apps\test-vs-extensions-vsix\.agents\09-11` after the owner
+  pointed to that project as a reference and confirmed both additions (see
+  `.agents/09_MCP_GITHUB_CONFIG.md` and `.agents/11_MAINTENANCE_AI_CONTEXT_INDEX.md`).
+- The GitHub MCP auto-issue integration (`.agents/09_MCP_GITHUB_CONFIG.md`) is
+  documented but explicitly **not configured** for PeasyPilot as of 2026-09-04 —
+  don't assume `auto-issue-on-bug-detection` can actually reach GitHub until the
+  owner confirms the token/config exists.
+- On 2026-09-05, the full governance set (PeasyPilot's own, as the cleanest existing
+  example) was propagated to every other project under `G:\MCS\Github\apps` via a
+  new reusable script, `G:\MCS\Github\apps\scaffold-governance.ps1` (companion to
+  the existing `sync-auto-issue-skill.ps1`). The script only creates missing files
+  — it never overwrites anything that already existed. Stack-dependent files
+  (`03_CHECKLIST_BEFORE_COMMIT.md`, `04_LANGUAGE_SPECIFIC.md`, `05_ARCHITECTURE.md`,
+  `07_AUDIT_REQUIREMENTS.md`) were written as TODO skeletons in projects that
+  lacked them, since the script has no real knowledge of each project's stack —
+  those need filling in with real content the next time work happens in that repo.
+  Some existing projects were found to have extra, non-canonical files
+  (`00_START_MEMORY.md`, `01_START_HERE.md`) that were left untouched (not part of
+  the canonical 00-11 set, not referenced by any project's `CLAUDE.md` reading
+  order, and not deleted without explicit agreement).
+- Project-level `CLAUDE.md` and `AGENTS.md` were added 2026-09-04 (previously only
+  the global `C:\Users\DevOps\.claude\CLAUDE.md` existed). `CLAUDE.md` holds the
+  mandatory reading order and core rules only (no tech description — that's
+  `AI_CONTEXT.md` / `.agents/05_ARCHITECTURE.md`, per owner's choice). `AGENTS.md`
+  is a short pointer to `CLAUDE.md`, not a duplicate — kept deliberately thin so it
+  never drifts out of sync.
 
 ## Open Questions
 
@@ -57,4 +86,9 @@ for validation — it has not been independently reviewed line-by-line by the ow
   `.agents/00_START_HERE.md`, `.agents/02_QUESTION_PROTOCOL.md`, `.agents/01_RULES.md`,
   `.agents/03_CHECKLIST_BEFORE_COMMIT.md`, `.agents/04_LANGUAGE_SPECIFIC.md`,
   `.agents/05_ARCHITECTURE.md`, `.agents/06_SKILLS_AVAILABLE.md`,
-  `.agents/07_AUDIT_REQUIREMENTS.md`, `.agents/08_AUTO_ISSUE_SKILL.md`.
+  `.agents/07_AUDIT_REQUIREMENTS.md`, `.agents/08_AUTO_ISSUE_SKILL.md`,
+  `.agents/09_MCP_GITHUB_CONFIG.md`, `.agents/10_COMPLETE_WORKFLOW.md`,
+  `.agents/11_MAINTENANCE_AI_CONTEXT_INDEX.md`.
+- `AI_CONTEXT.md` and `PROJECT_INDEX.md` (repo root) exist to satisfy
+  `.agents/11_MAINTENANCE_AI_CONTEXT_INDEX.md` and give a fast orientation/GPS on
+  top of this file — keep them current per that file's guidance.

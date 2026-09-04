@@ -1,38 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
-    <PackAsTool>true</PackAsTool>
-    <ToolCommandName>peasypilot</ToolCommandName>
-    <PackageId>PeasyPilot.CLI</PackageId>
-    <Title>PeasyPilot CLI</Title>
-    
-
-
-<!-- NuGet package metadata -->
-    <IsPackable>true</IsPackable> 
-    <Version>1.0.1</Version>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- NuGet package metadata -->
+    <IsPackable>true</IsPackable>
+    <PackageId>PeasyPilot.Generator</PackageId>
+    <Version>0.1.0</Version>
     <PackageIcon>Logo.png</PackageIcon>
     <Authors>NID BOUBKER Houssine</Authors>
-    <Description>Command line runner and test orchestrator for PeasyPilot.</Description>
-    <PackageTags>dotnet;framework;coverage;testing;unittests;xunit;nunit;tunit;tests</PackageTags>
+    <Description>Reflection-driven test scaffolding for PeasyPilot: generates test class skeletons (mocked dependencies, Bogus data, signature-driven edge-case variants) for a given type.</Description>
+    <PackageTags>dotnet;framework;coverage;testing;unittests;xunit;nunit;tunit;tests;generator</PackageTags>
     <RepositoryUrl>https://github.com/hnidboubker/PeasyPilot</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!-- XML documentation -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-
-
-
-
-
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\PeasyPilot.Core\PeasyPilot.Core.csproj" />
-    <ProjectReference Include="..\PeasyPilot.Generator\PeasyPilot.Generator.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="\" />
@@ -40,5 +27,4 @@
   <ItemGroup>
     <None Include="../../assets/logos/Logo.png" Pack="true" PackagePath="\" />
   </ItemGroup>
-
 </Project>
