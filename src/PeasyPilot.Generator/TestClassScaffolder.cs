@@ -49,7 +49,7 @@ public sealed class TestClassScaffolder
         var sb = new StringBuilder();
 
         AppendHeader(sb, targetType, methods.Count);
-        AppendUsings(sb, targetType, framework);
+        AppendUsings(sb, targetType, framework, CollectReferencedNamespaces(ctorParams, methods));
         sb.AppendLine();
         sb.AppendLine($"namespace {ns};");
         sb.AppendLine();
@@ -80,7 +80,7 @@ public sealed class TestClassScaffolder
         sb.AppendLine("// </auto-generated>");
     }
 
-    private static void AppendUsings(StringBuilder sb, Type targetType, TestFrameworkKind framework)
+    private static void AppendUsings(StringBuilder sb, Type targetType, TestFrameworkKind framework, IEnumerable<string> extraNamespaces)
     {
         sb.AppendLine("using System;");
         sb.AppendLine("using System.Collections.Generic;");
@@ -106,10 +106,65 @@ public sealed class TestClassScaffolder
                 break;
         }
 
-        if (!string.IsNullOrEmpty(targetType.Namespace))
+        var namespaces = new SortedSet<string>(StringComparer.Ordinal) { targetType.Namespace ?? string.Empty };
+        foreach (var ns in extraNamespaces)
         {
-            sb.AppendLine($"using {targetType.Namespace};");
+            namespaces.Add(ns);
         }
+
+        foreach (var ns in namespaces)
+        {
+            if (!string.IsNullOrEmpty(ns) && !ns.StartsWith("System", StringComparison.Ordinal))
+            {
+                sb.AppendLine($"using {ns};");
+            }
+        }
+    }
+
+    private static IEnumerable<string> CollectReferencedNamespaces(ParameterInfo[] ctorParams, List<MethodInfo> methods)
+    {
+        var seen = new HashSet<string>();
+
+        foreach (var type in ctorParams.Select(p => p.ParameterType)
+                     .Concat(methods.SelectMany(m => m.GetParameters().Select(p => p.ParameterType)))
+                     .Concat(methods.Select(m => m.ReturnType)))
+        {
+            foreach (var leaf in LeafTypes(type))
+            {
+                if (!string.IsNullOrEmpty(leaf.Namespace) && seen.Add(leaf.Namespace))
+                {
+                    yield return leaf.Namespace;
+                }
+            }
+        }
+    }
+
+    private static IEnumerable<Type> LeafTypes(Type type)
+    {
+        var underlying = Nullable.GetUnderlyingType(type);
+        if (underlying is not null)
+        {
+            foreach (var leaf in LeafTypes(underlying)) yield return leaf;
+            yield break;
+        }
+
+        if (type.IsArray)
+        {
+            foreach (var leaf in LeafTypes(type.GetElementType()!)) yield return leaf;
+            yield break;
+        }
+
+        if (type.IsGenericType)
+        {
+            foreach (var arg in type.GetGenericArguments())
+            {
+                foreach (var leaf in LeafTypes(arg)) yield return leaf;
+            }
+
+            yield break;
+        }
+
+        yield return type;
     }
 
     private static void AppendClassOpening(StringBuilder sb, string className, TestFrameworkKind framework)
@@ -128,12 +183,14 @@ public sealed class TestClassScaffolder
 
     private static void AppendFields(StringBuilder sb, Type targetType, ParameterInfo[] ctorParams)
     {
+        // Not readonly: these are assigned from the framework's async setup hook
+        // (InitializeAsync/Setup/BeforeEachAsync), not from a constructor.
         foreach (var param in ctorParams)
         {
-            sb.AppendLine($"    private readonly {ParameterScenarios.FormatTypeName(param.ParameterType)} {FieldName(param)};");
+            sb.AppendLine($"    private {ParameterScenarios.FormatTypeName(param.ParameterType)} {FieldName(param)} = default!;");
         }
 
-        sb.AppendLine($"    private readonly {ParameterScenarios.FormatTypeName(targetType)} _sut;");
+        sb.AppendLine($"    private {ParameterScenarios.FormatTypeName(targetType)} _sut = default!;");
     }
 
     private static void AppendSetup(StringBuilder sb, TestFrameworkKind framework, Type targetType, ParameterInfo[] ctorParams)

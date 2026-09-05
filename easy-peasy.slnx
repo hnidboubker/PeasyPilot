@@ -15,6 +15,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/PeasyPilot.Core.Tests/PeasyPilot.Core.Tests.csproj" />
+    <Project Path="tests/PeasyPilot.Generator.Tests/PeasyPilot.Generator.Tests.csproj" />
     <Project Path="samples/PeasyPilot.NUnit.Samples/PeasyPilot.NUnit.Samples.csproj" />
     <Project Path="samples/PeasyPilot.TUnit.Samples/PeasyPilot.TUnit.Samples.csproj" />
     <Project Path="samples/PeasyPilot.XUnit.Samples/PeasyPilot.XUnit.Samples.csproj" />
