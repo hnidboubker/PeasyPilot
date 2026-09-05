@@ -25,6 +25,7 @@ PeasyPilot is composed of focused packages that work together to provide a light
 - **PeasyPilot.Moq** – mock factory abstractions for Moq
 - **PeasyPilot.BDD** – BDD-style feature and scenario model
 - **PeasyPilot.Coverage** – coverage reporting support
+- **PeasyPilot.Generator** – reflection-based test class scaffolding for xUnit, NUnit, TUnit
 - **PeasyPilot.XUnit** – xUnit base class integration
 - **PeasyPilot.NUnit** – NUnit base class integration
 - **PeasyPilot.TUnit** – TUnit base class integration
@@ -69,7 +70,26 @@ dotnet add package PeasyPilot.Bogus
 
 # BDD support
 dotnet add package PeasyPilot.BDD
+
+# Test scaffolding with Generator
+dotnet add package PeasyPilot.Generator
 ```
+
+## Test Class Scaffolding (Generator)
+
+Generate test class skeletons by reflecting on public constructors and methods:
+
+```bash
+peasypilot generate --assembly ./bin/Release/net10.0/MyApp.dll --type MyApp.Services.UserService
+```
+
+This creates a test class with:
+- Constructor dependency injection (mocked interfaces, faked concrete types)
+- Happy-path tests for each public method
+- Edge-case variants (null, empty string, zero, enum members, empty collections)
+- Placeholder assertions marked `// TODO` for manual implementation
+
+Output defaults to `Tests/Generated/UserServiceTests.Generated.cs` — customize with `--output`.
 
 ## Local packaging watcher
 

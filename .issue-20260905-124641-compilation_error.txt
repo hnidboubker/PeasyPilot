@@ -1,0 +1,71 @@
+╔════════════════════════════════════════════════════════════════╗
+║ AUTO-ISSUE-ON-BUG-DETECTION                                   ║
+╚════════════════════════════════════════════════════════════════╝
+
+Issue: Build failed: Compilation error - CS0246: FactAttribute not found
+Type: compilation_error
+Time: 2026-09-05 12:46:32
+Branch: feature/test-generation-skills
+Commit: 50e4dd7
+Status: READY_FOR_CREATION
+
+╔════════════════════════════════════════════════════════════════╗
+║ ERROR DETAILS                                                  ║
+╚════════════════════════════════════════════════════════════════╝
+
+Error Message:
+CS0246: FactAttribute not found
+
+File: tests/PeasyPilot.Bogus.Tests/TestDataFactoryTests.cs
+
+Details:
+xUnit package not resolving despite being declared in .csproj. Blocks Issue #3 regression tests.
+
+╔════════════════════════════════════════════════════════════════╗
+║ ISSUE BODY (for GitHub)                                        ║
+╚════════════════════════════════════════════════════════════════╝
+
+## Problem
+Auto-detected: compilation_error
+
+### Error Message
+\\\
+CS0246: FactAttribute not found
+\\\
+
+## Details
+- **Detected:** 2026-09-05 12:46:32
+- **Branch:** feature/test-generation-skills
+- **Commit:** 50e4dd7
+- **Auto-created:** Yes (auto-issue-on-bug-detection skill)
+- **Status:** Awaiting diagnosis
+
+- **File:** `tests/PeasyPilot.Bogus.Tests/TestDataFactoryTests.cs`
+- **Additional Details:**
+xUnit package not resolving despite being declared in .csproj. Blocks Issue #3 regression tests.
+
+## Next Steps
+1. Issue created automatically (tracking enabled)
+2. Diagnosis: Root cause analysis
+3. Fix: Implementation
+4. Tests: Validation
+5. Ready for commit
+
+---
+*This issue was automatically created by the auto-issue-on-bug-detection skill.*
+*See: .agents/08_AUTO_ISSUE_SKILL.md*
+
+╔════════════════════════════════════════════════════════════════╗
+║ NEXT STEPS                                                     ║
+╚════════════════════════════════════════════════════════════════╝
+
+1. Install gh CLI: https://cli.github.com/
+2. Authenticate: gh auth login
+3. Create issue manually:
+   gh issue create \
+     --title "Build failed: Compilation error - CS0246: FactAttribute not found" \
+     --body "@./.issue-20260905-124641-compilation_error.txt" \
+     --label "bug,auto-detected" \
+     --assignee "hnidboubker"
+
+Or copy the issue body above to GitHub web interface.

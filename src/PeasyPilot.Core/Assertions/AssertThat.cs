@@ -21,6 +21,11 @@ public class AssertThat<T>
     }
 
     /// <summary>
+    /// Gets the actual value being asserted.
+    /// </summary>
+    public T Actual => _actual;
+
+    /// <summary>
     /// Asserts that the value is equal to the expected value.
     /// </summary>
     /// <param name="expected">The expected value.</param>
