@@ -17,8 +17,9 @@ public class UserService
         return user;
     }
 
-    public User? GetById(int id) => _users.FirstOrDefault(u => u.Id == id);
+    public User? GetById(int? id) => _users.FirstOrDefault(u => u.Id == id);
 
+    
     public List<User> GetAll() => _users.ToList();
 
     public bool Delete(int id)

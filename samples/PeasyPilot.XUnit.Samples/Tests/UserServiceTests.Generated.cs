@@ -56,8 +56,10 @@ public class UserServiceTests : PeasyPilotTestBase
 
         // Assert
         Assert.That(result).IsNotNull(); // TODO: replace with a real assertion for this behavior.
+        Assert.That(result.Id).IsEqualTo(id);
         await Task.CompletedTask;
     }
+
 
     [Fact]
     [Trait("net10-skip", "true")]
@@ -71,6 +73,8 @@ public class UserServiceTests : PeasyPilotTestBase
 
         // Assert
         Assert.That(result).IsNotNull(); // TODO: replace with a real assertion for this behavior.
+        Assert.That(result.Id).IsEqualTo(id);
+        await Task.CompletedTask;
         await Task.CompletedTask;
     }
 
@@ -86,6 +90,8 @@ public class UserServiceTests : PeasyPilotTestBase
 
         // Assert
         Assert.That(result).IsNotNull(); // TODO: replace with a real assertion for this behavior.
+        Assert.That(result.Id).IsEqualTo(id);
+     
         await Task.CompletedTask;
     }
 
