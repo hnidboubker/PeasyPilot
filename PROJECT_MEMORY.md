@@ -116,6 +116,17 @@ for validation — it has not been independently reviewed line-by-line by the ow
   - All existing tests pass; new Bogus tests pass; solution builds cleanly (0 errors).
   - Prepared for commit: `Fixes #3` will auto-close the issue on push.
 
+**[2026-09-05] Test Generation Skills Created (feature/test-generation-skills):**
+  - Created 3 new specialized skills for test generation:
+    - `peasypilot-test-generator-xunit.md` — Framework-specific for xUnit
+    - `peasypilot-test-generator-nunit.md` — Framework-specific for NUnit
+    - `peasypilot-test-generator-tunit.md` — Framework-specific for TUnit
+  - Each skill is optional, helping users generate framework-specific test scaffolds
+  - Generic `peasypilot-test-generator` skill remains default (auto-detects framework)
+  - All skills follow PeasyPilot patterns and integrate with Bogus/Moq
+  - Updated `.agents/06_SKILLS_AVAILABLE.md` with new skill documentation
+  - Prepared for PR: `feature/test-generation-skills` → `main`
+
 ## Open Questions
 
 - Is there an existing `.agents/` template from another Houssine project that should
