@@ -125,7 +125,27 @@ for validation — it has not been independently reviewed line-by-line by the ow
   - Generic `peasypilot-test-generator` skill remains default (auto-detects framework)
   - All skills follow PeasyPilot patterns and integrate with Bogus/Moq
   - Updated `.agents/06_SKILLS_AVAILABLE.md` with new skill documentation
-  - Prepared for PR: `feature/test-generation-skills` → `main`
+  - PR #7 created: `feature/test-generation-skills` → `main`
+
+**[2026-09-05] Issue #4 Decisions (Test-Generator):**
+  - **Edge cases (no public constructor, only static methods, etc.)**: Generate with empty
+    `[Fact]`/`[Test]` placeholder; document that user must manually provide test logic.
+    Root cause: reflection-based scaffold cannot infer behavior from signatures alone.
+  - **--output default path**: Default to `{TestProject}/Generated/{ClassName}Tests.Generated.cs`
+    (mirrors existing sample layout). User can override with explicit `--output`.
+  - **README.md update**: Add `PeasyPilot.Generator` to package list with quick-start example.
+  - **Create_HappyPath test**: Revisit once #3 (TestDataFactory) is merged; should now pass
+    instead of throwing `InvalidOperationException`.
+
+**[2026-09-05] Issue #5 Tier 1 - Starting (Architecture Improvements):**
+  - Collapsing test-base classes: Extracting common async/await lifecycle into
+    `PeasyPilotTestBase` (Core) with framework-specific `[Fact]`/`[Test]` handling.
+  - CLI reporter registry: Replacing hardcoded json/junit with `ITestReporterFactory`
+    registration pattern; makes HtmlFileReporter, RichConsoleReporter accessible.
+  - Filter combinators: Adding `.And()`, `.Or()`, `.Negate()` to `ITestFilter` for
+    composition (currently must hand-write composite classes).
+  - AssertThat.Subject: Exposing private `_subject` via public property for custom
+    assertion extension libraries (currently inaccessible).
 
 ## Open Questions
 
