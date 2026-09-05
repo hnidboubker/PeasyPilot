@@ -1,3 +1,5 @@
+using Xunit;
+
 namespace PeasyPilot.Bogus.Tests;
 
 /// <summary>
@@ -87,8 +89,6 @@ public class TestDataFactoryTests
 }
 
 // Test model classes
-namespace PeasyPilot.Bogus.Tests;
-
 public class SimpleTestClass
 {
     public string Name { get; set; } = string.Empty;
