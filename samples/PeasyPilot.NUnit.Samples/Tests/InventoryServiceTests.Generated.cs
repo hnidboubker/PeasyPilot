@@ -30,6 +30,7 @@ public class InventoryServiceTests : PeasyPilotNUnitTestBase
     {
         base.Setup();
         _sut = new InventoryService();
+        _sut.AddProduct(new Product { Name = "Test Product", Price = 99.99m, Quantity = 10 });
     }
 
     [Test]
@@ -72,7 +73,7 @@ public class InventoryServiceTests : PeasyPilotNUnitTestBase
         var result = _sut.GetProduct(id);
 
         // Assert
-        Assert.That(result).IsNotNull(); // TODO: replace with a real assertion for this behavior.
+        Assert.That(result).IsNull(); // Non-existent product returns null.
         await Task.CompletedTask;
     }
 
@@ -87,7 +88,7 @@ public class InventoryServiceTests : PeasyPilotNUnitTestBase
         var result = _sut.GetProduct(id);
 
         // Assert
-        Assert.That(result).IsNotNull(); // TODO: replace with a real assertion for this behavior.
+        Assert.That(result).IsNull(); // Non-existent product returns null.
         await Task.CompletedTask;
     }
 

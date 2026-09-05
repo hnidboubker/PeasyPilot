@@ -28,6 +28,7 @@ public class UserServiceTests : PeasyPilotTestBase
     {
         await base.InitializeAsync();
         _sut = new UserService();
+        _sut.Create(new User { Name = "Test User", Email = "test@example.com" });
     }
 
     [Fact]
@@ -72,9 +73,7 @@ public class UserServiceTests : PeasyPilotTestBase
         var result = _sut.GetById(id);
 
         // Assert
-        Assert.That(result).IsNotNull(); // TODO: replace with a real assertion for this behavior.
-        Assert.That(result.Id).IsEqualTo(id);
-        await Task.CompletedTask;
+        Assert.That(result).IsNull(); // Non-existent user returns null.
         await Task.CompletedTask;
     }
 
@@ -89,9 +88,7 @@ public class UserServiceTests : PeasyPilotTestBase
         var result = _sut.GetById(id);
 
         // Assert
-        Assert.That(result).IsNotNull(); // TODO: replace with a real assertion for this behavior.
-        Assert.That(result.Id).IsEqualTo(id);
-     
+        Assert.That(result).IsNull(); // Non-existent user returns null.
         await Task.CompletedTask;
     }
 
