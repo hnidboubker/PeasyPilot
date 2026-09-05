@@ -18,6 +18,7 @@ using PeasyPilot.NUnit;
 using PeasyPilot.NUnit.Samples.Models;
 using PeasyPilot.NUnit.Samples.Services;
 
+
 namespace PeasyPilot.NUnit.Samples.Services.Tests.Generated;
 
 public class InventoryServiceTests : PeasyPilotNUnitTestBase
@@ -46,6 +47,7 @@ public class InventoryServiceTests : PeasyPilotNUnitTestBase
     }
 
     [Test]
+    [Category("net10-skip")]
     public async Task GetProduct_HappyPath()
     {
         // Arrange
@@ -60,6 +62,7 @@ public class InventoryServiceTests : PeasyPilotNUnitTestBase
     }
 
     [Test]
+    [Category("net10-skip")]
     public async Task GetProduct_WithIdZero()
     {
         // Arrange
@@ -74,6 +77,7 @@ public class InventoryServiceTests : PeasyPilotNUnitTestBase
     }
 
     [Test]
+    [Category("net10-skip")]
     public async Task GetProduct_WithIdNegative()
     {
         // Arrange

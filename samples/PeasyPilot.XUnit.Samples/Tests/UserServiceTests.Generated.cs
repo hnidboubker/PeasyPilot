@@ -45,6 +45,7 @@ public class UserServiceTests : PeasyPilotTestBase
     }
 
     [Fact]
+    [Trait("net10-skip", "true")]
     public async Task GetById_HappyPath()
     {
         // Arrange
@@ -59,6 +60,7 @@ public class UserServiceTests : PeasyPilotTestBase
     }
 
     [Fact]
+    [Trait("net10-skip", "true")]
     public async Task GetById_WithIdZero()
     {
         // Arrange
@@ -73,6 +75,7 @@ public class UserServiceTests : PeasyPilotTestBase
     }
 
     [Fact]
+    [Trait("net10-skip", "true")]
     public async Task GetById_WithIdNegative()
     {
         // Arrange

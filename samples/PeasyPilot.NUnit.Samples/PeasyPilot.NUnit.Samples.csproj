@@ -13,6 +13,7 @@
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="Moq" />
+    <PackageReference Include="xunit.extensibility.core" />
   </ItemGroup>
 
   <ItemGroup>

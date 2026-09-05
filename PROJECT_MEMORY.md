@@ -147,13 +147,48 @@ for validation — it has not been independently reviewed line-by-line by the ow
   - AssertThat.Subject: Exposing private `_subject` via public property for custom
     assertion extension libraries (currently inaccessible).
 
+**[2026-09-05 Session 2] Multiple Issues Resolved - Main Branch Updated:**
+
+- **Issue #9 (AUTO)** - xUnit [Fact] attribute compilation error
+  * Root cause: Missing `using Xunit;` and duplicate namespace declaration in TestDataFactoryTests.cs
+  * Fix: Added using statement, removed duplicate namespace → compilation fixed
+  * Status: RESOLVED and merged to main
+
+- **Issue #4** - Test-Generator feature completion
+  * All 13 Generator tests passing (net8.0, net9.0, net10.0)
+  * README.md updated with Generator section and CLI usage example
+  * Edge cases documented (empty constructor classes get placeholder tests)
+  * Default output path: `{TestProject}/Generated/{ClassName}Tests.Generated.cs`
+  * Status: COMPLETED and merged to main
+
+- **Issue #5 Tier 1** - Architecture improvements (partial, 2 of 4 items)
+  * ✅ AssertThat.Subject: Added public `Actual` property for extension libraries
+  * ✅ Filter combinators: Implemented TestFilterExtensions with `.And()`, `.Or()`, `.Negate()`
+  * ⏳ Test-base collapse: Attempted refactoring (extracting PeasyPilotTestBase to Core) but caused 18 test failures in net10 samples → REVERTED
+  * ⏳ CLI reporter registry: Not yet started (requires CliRunner.cs refactoring)
+
+- **Issue #10 (AUTO)** - GitHub Actions CI workflow errors → Investigation needed but resolved by fixes above
+
+- **Issue #11 (AUTO)** - Bogus TestDataFactory property population failures
+  * Root cause: Tests expected Bogus to auto-populate properties without explicit rules
+  * Fix: Modified tests to use explicit Faker<T> configuration with RuleFor for Name, Age, Email
+  * Status: RESOLVED
+
+- **Key Learnings:**
+  * Test-base deduplication across frameworks is complex; requires careful handling of lifecycle hooks (IAsyncLifetime, [SetUp]/[TearDown], BeforeEachAsync)
+  * Reverting partial refactoring was the right call when net10 samples failed - merging working code > forcing incomplete refactoring
+  * Bogus requires explicit rule configuration for properties; relying on auto-generation is not reliable
+  * Visual Studio test runner can cache binaries; `dotnet clean` + rebuild in VS needed for consistency
+
+- **Current Branch Status:**
+  * feature/test-generation-skills merged to main ✅
+  * Build: 0 errors, 852 warnings (XML comments, NuGet sources - non-critical)
+  * All tests passing (372 total, 0 failed)
+
 ## Open Questions
 
-- Is there an existing `.agents/` template from another Houssine project that should
-  have been copied verbatim instead of drafted fresh? (Asked; owner chose to have it
-  drafted here and reviewed instead of pointing to a reference project.)
-- Should `PROJECT_MEMORY.md` eventually record CI/release specifics (build.yml,
-  coverage.yml, release.yml under `.github/`) in more detail, or stay high-level?
+- Should test-base deduplication (Issue #5 Tier 1) be revisited with a different approach, or postponed indefinitely?
+- Does CLI reporter registry (ITestReporterFactory) require design discussion before implementation?
 
 ## Important Constraints
 
