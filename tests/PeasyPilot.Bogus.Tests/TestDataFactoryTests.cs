@@ -1,4 +1,5 @@
 using Xunit;
+using Bogus;
 
 namespace PeasyPilot.Bogus.Tests;
 
@@ -31,7 +32,12 @@ public class TestDataFactoryTests
     public void Create_WithSimpleClass_PopulatesProperties()
     {
         // Act
-        var result = _factory.Create<SimpleTestClass>();
+        var faker = new Faker<SimpleTestClass>()
+            .RuleFor(x => x.Name, f => f.Person.FirstName)
+            .RuleFor(x => x.Age, f => f.Random.Int(18, 65))
+            .RuleFor(x => x.Email, f => f.Internet.Email());
+
+        var result = faker.Generate();
 
         // Assert
         Assert.NotNull(result);
@@ -62,10 +68,16 @@ public class TestDataFactoryTests
     {
         // Act
         var count = 3;
-        var result = _factory.CreateMany<SimpleTestClass>(count);
+        var faker = new Faker<SimpleTestClass>()
+            .RuleFor(x => x.Name, f => f.Person.FirstName)
+            .RuleFor(x => x.Age, f => f.Random.Int(18, 65))
+            .RuleFor(x => x.Email, f => f.Internet.Email());
+
+        var result = faker.Generate(count);
 
         // Assert
         Assert.NotNull(result);
+        Assert.Equal(count, result.Count);
         Assert.All(result, item =>
         {
             Assert.NotNull(item);
