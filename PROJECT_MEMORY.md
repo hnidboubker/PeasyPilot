@@ -106,6 +106,16 @@ for validation — it has not been independently reviewed line-by-line by the ow
   NUnit: 9/13 pass (4 expected failures, same empty-service pattern as XUnit).
   TUnit: all generated tests pass.
 
+**[2026-09-05] Issue #3 resolved:**
+  - Fixed `PeasyPilot.Bogus.TestDataFactory.Create<T>()` and `CreateMany<T>(int)` by
+    removing reflection and calling `Faker<T>().Generate()` directly. Root cause was
+    reflection signature mismatch: code looked for `Generate(Type.EmptyTypes)` but
+    Bogus has `Generate(string? ruleSets = null)`.
+  - Created `tests/PeasyPilot.Bogus.Tests` with 5 regression tests covering happy path,
+    property population, collection generation, and complex types.
+  - All existing tests pass; new Bogus tests pass; solution builds cleanly (0 errors).
+  - Prepared for commit: `Fixes #3` will auto-close the issue on push.
+
 ## Open Questions
 
 - Is there an existing `.agents/` template from another Houssine project that should
