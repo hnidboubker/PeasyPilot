@@ -214,11 +214,25 @@ Ce qui reste à faire :
 
 ## 7. Prochaines étapes recommandées
 
-1. **Immédiat** : Appliquer Solution 1 (limiter TUnit à net8.0) pour dégager le problème.
-2. **Documentation** : Mettre à jour PROJECT_MEMORY.md avec cette limitation.
-3. **Surveillance** : Suivre les releases de TUnit pour une version compatible.
-4. **Alternative** : Explorer Solution 3 si le temps le permet.
+### Immédiat (déjà complété)
+- ✅ Solution 1 appliquée : TUnit.Samples limité à net8.0
+- ✅ Documentation créée : `TUNIT_DIAGNOSTIC_SOLUTION3.md`
+- ✅ Mémoire projet mise à jour : `PROJECT_MEMORY.md`
+
+### Court terme (1-2 semaines)
+- [ ] Valider avec Houssine la stratégie long terme : maintenir Solution 1 indéfiniment ?
+- [ ] Vérifier que les tests NUnit et XUnit continuent de passer (validation cross-framework)
+- [ ] Mettre à jour le README.md pour documenter la limitation TUnit .NET 10
+
+### Moyen terme (1-3 mois)
+- [ ] Surveiller les releases de TUnit 1.67+ et Microsoft.Testing.Platform 3.0+
+- [ ] Si une version compatible sort, tester sur feature branch avant merge
+- [ ] Mettre à jour PROJECT_MEMORY.md avec le status de Solution 2
+
+### Long terme
+- [ ] Si Solution 2 n'avance pas après 6 mois, reconsidérer Solution 4 (dépréciation TUnit)
 
 ---
 
-**Dernière mise à jour:** 2026-09-05 21:15 UTC
+**Dernière mise à jour:** 2026-09-06 10:45 UTC
+**Diagnostic:** Terminé — Solution 3 testée et non viable ; Solution 1 appliquée et stable
