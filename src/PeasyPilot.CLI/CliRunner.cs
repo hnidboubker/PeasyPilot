@@ -43,6 +43,11 @@ public static class CliRunner
             return await ShowHistoryAsync(store);
         }
 
+        if (args.Length > 0 && args[0] == "suggest-tests")
+        {
+            return await SuggestTestsCommand.RunAsync(args[1..]);
+        }
+
         // Parse arguments for test execution
         string? filterName = null;
         string[]? changedFiles = null;
@@ -135,14 +140,24 @@ public static class CliRunner
     {
         Console.WriteLine("PeasyPilot CLI - Unified Test Runner");
         Console.WriteLine("Usage:");
-        Console.WriteLine("  peasypilot [options]");
-        Console.WriteLine("  peasypilot history");
+        Console.WriteLine("  peasypilot [options]                                       Run tests");
+        Console.WriteLine("  peasypilot history                                         Show test execution history");
+        Console.WriteLine("  peasypilot suggest-tests --assembly <path> --type <name>  Generate test suite proposal");
         Console.WriteLine();
-        Console.WriteLine("Options:");
+        Console.WriteLine("Test Execution Options:");
         Console.WriteLine("  -f, --filter <name>         Filter tests by name (case insensitive)");
         Console.WriteLine("  -c, --changed-files <f1,f2> Run impact analysis for comma-separated changed files");
         Console.WriteLine("  -fmt, --format <format>     Output format: console, json, junit");
         Console.WriteLine("  -o, --output <path>         File path to save JSON or JUnit report");
+        Console.WriteLine();
+        Console.WriteLine("Test Suggestion Options:");
+        Console.WriteLine("  -a, --assembly <path>       Assembly path to analyze (required)");
+        Console.WriteLine("  -t, --type <name>           Target type name to generate tests for (required)");
+        Console.WriteLine("  -fw, --framework <fw>       Target framework: xunit, nunit, tunit (default: xunit)");
+        Console.WriteLine("  -o, --output-dir <dir>      Output directory (default: ./generated-tests)");
+        Console.WriteLine("  -fmt, --format <fmt>        Output format: json, cs, both (default: json)");
+        Console.WriteLine("  --force                     Overwrite existing proposal files");
+        Console.WriteLine();
         Console.WriteLine("  -h, --help                  Show help information");
     }
 }

@@ -4,6 +4,7 @@
     <Project Path="src/PeasyPilot.Bogus/PeasyPilot.Bogus.csproj" />
     <Project Path="src/PeasyPilot.CLI/PeasyPilot.CLI.csproj" />
     <Project Path="src/PeasyPilot.Core/PeasyPilot.Core.csproj" />
+    <Project Path="src/PeasyPilot.TestAssistant/PeasyPilot.TestAssistant.csproj" />
     <Project Path="src/PeasyPilot.Coverage/PeasyPilot.Coverage.csproj" />
     <Project Path="src/PeasyPilot.Integration/PeasyPilot.Integration.csproj" />
     <Project Path="src/PeasyPilot.Moq/PeasyPilot.Moq.csproj" />
@@ -14,6 +15,7 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/PeasyPilot.Core.Tests/PeasyPilot.Core.Tests.csproj" />
+    <Project Path="tests/PeasyPilot.TestAssistant.Tests/PeasyPilot.TestAssistant.Tests.csproj" />
     <Project Path="samples/PeasyPilot.NUnit.Samples/PeasyPilot.NUnit.Samples.csproj" />
     <Project Path="samples/PeasyPilot.TUnit.Samples/PeasyPilot.TUnit.Samples.csproj" />
     <Project Path="samples/PeasyPilot.XUnit.Samples/PeasyPilot.XUnit.Samples.csproj" />
