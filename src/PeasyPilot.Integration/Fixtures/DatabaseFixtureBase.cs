@@ -22,7 +22,7 @@ public abstract class DatabaseFixtureBase : IntegrationTestFixture, ITestDatabas
     public abstract Task ResetAsync();
 
     /// <inheritdoc />
-    public override async Task DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
         await CleanupAsync();
     }
