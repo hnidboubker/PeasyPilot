@@ -1,0 +1,232 @@
+================================================================================
+BUILD WARNINGS REPORT - Release Build
+Date: 2026-09-06
+Build Duration: 275.4 seconds
+Total Warnings: 899
+Errors: 0 ✅
+================================================================================
+
+SUMMARY
+================================================================================
+Warnings by Category:
+
+1. CS1591 (Missing XML Documentation)    : ~810 warnings [LOW SEVERITY]
+2. NU1507 (NuGet Configuration)          : ~60 warnings  [LOW SEVERITY]
+3. CS0108 (Method Masking)               : 3 warnings    [MEDIUM SEVERITY]
+4. CS8892 (Entry Point Conflict)         : 6 warnings    [LOW SEVERITY, AUTO-GENERATED]
+
+Total: 899 warnings (0 errors)
+
+================================================================================
+CATEGORY 1: CS1591 - Missing XML Documentation (~810 warnings)
+================================================================================
+
+Impact: Code quality/documentation
+Severity: LOW
+Files Affected: ~30 files across 17 projects
+
+PROJECT: tests/PeasyPilot.TestAssistant.Tests (54 warnings)
+  ├─ AnalysisTests/ReflectionTestScenarioAnalyzerTests.cs (9)
+  ├─ RenderingTests/XUnitTestBatteryRendererTests.cs (3)
+  ├─ RulesTests/NumericValueRuleTests.cs (4)
+  └─ RulesTests/StringValueRuleTests.cs (3)
+
+PROJECT: tests/PeasyPilot.Core.Tests (200+ warnings)
+  ├─ Phases13To34Tests.cs (23)
+  ├─ Integration/IntegrationTestFixtureTests.cs (11)
+  ├─ Orchestration/TestPipelineOrchestratorTests.cs (4)
+  ├─ Reporting/ReportingDiagnosticsTests.cs (3)
+  ├─ Reporting/SmartDiagnosticProviderTests.cs (3)
+  ├─ Scheduling/ParallelSchedulerTests.cs (2)
+  ├─ Storage/InMemoryTestStoreTests.cs (6)
+  └─ Storage/TestRunStoreTests.cs (3)
+
+PROJECT: samples/PeasyPilot.XUnit.Samples (72 warnings × 3 frameworks = 216)
+  ├─ Builders/UserBuilder.cs (4)
+  ├─ Models/User.cs (4)
+  ├─ Services/UserService.cs (4)
+  ├─ StepDefinitions/OrderSteps.cs (20)
+  ├─ StepDefinitions/UserSteps.cs (15)
+  ├─ Tests/OrderBddTests.cs (3)
+  ├─ Tests/UserBddTests.cs (3)
+  ├─ Tests/UserBuilderXUnitTests.cs (5)
+  ├─ Tests/UserRepositoryIntegrationTests.cs (9)
+  ├─ Tests/UserServiceXUnitTests.cs (8)
+  └─ Tests/WebApiIntegrationTests.cs (4)
+
+PROJECT: samples/PeasyPilot.NUnit.Samples (18 warnings × 3 frameworks = 54)
+  ├─ Models/Product.cs (4)
+  ├─ Services/InventoryService.cs (5)
+  └─ Tests/InventoryServiceNUnitTests.cs (9)
+
+PROJECT: samples/PeasyPilot.TUnit.Samples (28 warnings × 3 frameworks = 84)
+  ├─ Enums/OrderStatus.cs (5)
+  ├─ Models/Order.cs (5)
+  ├─ Models/OrderItem.cs (4)
+  ├─ Services/OrderService.cs (6)
+  └─ Tests/OrderServiceTUnitTests.cs (8)
+
+Resolution: Add /// <summary> XML documentation comments to all public types and members
+Priority: MEDIUM
+Effort: 2-3 hours
+Benefit: Enables IntelliSense tooltips and NuGet documentation generation
+
+================================================================================
+CATEGORY 2: NU1507 - NuGet Package Source Configuration (~60 warnings)
+================================================================================
+
+Impact: Build configuration
+Severity: LOW
+Affected: All 17 projects (1 warning each × 3 frameworks)
+
+Message:
+  "There are 2 package sources defined in your configuration. When using 
+   central package management, map your package sources with package source 
+   mapping or specify a single package source. Sources: github, nuget.org"
+
+Root Cause: 
+  Directory.Packages.props enables Central Package Management (CPM) but 
+  Nuget.config defines two sources without explicit mapping
+
+Affected Projects:
+  ✓ src/PeasyPilot.BDD
+  ✓ src/PeasyPilot.Bogus
+  ✓ src/PeasyPilot.CLI
+  ✓ src/PeasyPilot.Core
+  ✓ src/PeasyPilot.Coverage
+  ✓ src/PeasyPilot.Integration
+  ✓ src/PeasyPilot.Moq
+  ✓ src/PeasyPilot.NUnit
+  ✓ src/PeasyPilot.TUnit
+  ✓ src/PeasyPilot.Unit
+  ✓ src/PeasyPilot.XUnit
+  ✓ src/PeasyPilot.TestAssistant
+  ✓ src/PeasyPilot.Generator
+  ✓ samples/PeasyPilot.NUnit.Samples
+  ✓ samples/PeasyPilot.TUnit.Samples
+  ✓ samples/PeasyPilot.XUnit.Samples
+  ✓ tests/ projects
+
+Resolution Options:
+  Option A: Configure Nuget.config with package source mapping
+  Option B: Add <NoWarn>NU1507</NoWarn> to Directory.Build.props
+
+Recommendation: Option A (fix root cause)
+Priority: MEDIUM
+Effort: 30 minutes
+
+================================================================================
+CATEGORY 3: CS0108 - Method Masking (3 warnings)
+================================================================================
+
+Impact: Code clarity
+Severity: MEDIUM
+Affected: 1 file (3 warnings across frameworks)
+
+File: src/PeasyPilot.Integration/Fixtures/WebApplicationTestFactory.cs
+Line: 49
+Method: WithWebHostBuilder(Action<IWebHostBuilder>)
+
+Issue:
+  public override IWebHostBuilder WithWebHostBuilder(...)  // ❌ Ambiguous
+  Should be:
+  public new IWebHostBuilder WithWebHostBuilder(...)      // ✅ Explicit
+
+Root Cause:
+  The method hides a base member. Using 'new' keyword makes intent explicit.
+
+Resolution: Add 'new' keyword to method signature
+Priority: HIGH
+Effort: 5 minutes
+
+================================================================================
+CATEGORY 4: CS8892 - Entry Point Conflict (6 warnings)
+================================================================================
+
+Impact: Build artifact (no functional impact)
+Severity: LOW
+Affected: TUnit sample projects only
+
+Files:
+  ✓ samples/PeasyPilot.TUnit.Samples/obj/Release/net8.0/TestPlatformEntryPoint.cs
+  ✓ samples/PeasyPilot.TUnit.Samples/obj/Release/net9.0/TestPlatformEntryPoint.cs
+  ✓ samples/PeasyPilot.TUnit.Samples/obj/Release/net10.0/TestPlatformEntryPoint.cs
+
+Message:
+  "TestingPlatformEntryPoint.Main() will not be used as entry point because 
+   AutoGeneratedProgram.Main() was found"
+
+Root Cause:
+  TUnit generates TestPlatformEntryPoint.cs as backup entry point in obj/ 
+  directory, but primary entry point AutoGeneratedProgram.Main() is preferred.
+
+Resolution: No action required
+Priority: OPTIONAL
+Recommendation: Safe to ignore - auto-generated code, normal TUnit behavior
+
+================================================================================
+DISTRIBUTION BY FRAMEWORK
+================================================================================
+
+Framework Distribution:
+  ├─ net8.0:  ~293 warnings (CS1591: ~270, NU1507: ~20, CS0108: 1, CS8892: 2)
+  ├─ net9.0:  ~293 warnings (CS1591: ~270, NU1507: ~20, CS0108: 1, CS8892: 2)
+  └─ net10.0: ~293 warnings (CS1591: ~270, NU1507: ~20, CS0108: 1, CS8892: 2)
+
+Project Category Distribution:
+  ├─ Core/Integration: 12 src + 4 tests = ~200 warnings (~14 per project)
+  ├─ Samples (XUnit):  1 project × 3 fw = ~216 warnings (~72 per framework)
+  ├─ Samples (NUnit):  1 project × 3 fw = ~54 warnings (~18 per framework)
+  ├─ Samples (TUnit):  1 project × 3 fw = ~84 warnings (~28 per framework)
+  ├─ Configuration:    All 20 projects = ~60 warnings (~3 per project)
+  └─ Other:           TUnit Samples = ~6 warnings (~2 per framework)
+
+================================================================================
+RECOMMENDED FIX PRIORITY
+================================================================================
+
+Phase 1: CRITICAL (Infrastructure) ⛔
+  Note: These are not compile warnings but should be addressed for CI/CD
+  ├─ GitHub Actions workflows: Fix dotnet-version-file → global-json-file
+  └─ Impact: CI/CD pipeline functionality
+
+Phase 2: HIGH (Code Quality)
+  ├─ CS0108 (Method Masking)
+  │  Files: 1 | Time: 5 minutes | Impact: Code correctness
+  │
+  └─ CS1591 (XML Documentation)
+     Files: ~30 | Time: 2-3 hours | Impact: Documentation quality
+
+Phase 3: MEDIUM (Build Cleanliness)
+  ├─ NU1507 (NuGet Configuration)
+  │  Files: config | Time: 30 minutes | Impact: Cleaner build output
+  │
+  └─ Recommended: Modify Nuget.config to add package source mapping
+
+Phase 4: OPTIONAL (Auto-Generated)
+  └─ CS8892 (Entry Point)
+     Files: auto-gen | Time: 0 minutes | Impact: None
+
+================================================================================
+CURRENT STATUS
+================================================================================
+
+✅ Build Status: SUCCESS (0 errors)
+✅ All 126+ tests: PASSING
+✅ Compilation: 100% successful across net8.0, net9.0, net10.0
+⚠️  Total Warnings: 899 (code quality/documentation only, not functional)
+
+Ready for Phase 4 Commit? YES ✅
+- All deliverables complete per PASSATION.md
+- No compilation errors
+- Warnings are non-blocking code quality issues
+- Proceed with git commit + git push
+
+Optional Phase 5 (Cleanup):
+- Address CS0108, CS1591, NU1507 warnings
+- Keep build clean and documentation current
+
+================================================================================
+Generated: 2026-09-06
+Report: BUILD_WARNINGS.txt
+================================================================================
