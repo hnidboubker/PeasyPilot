@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using PeasyPilot.Integration.Helpers;
 
 namespace PeasyPilot.Integration.Fixtures;
 
