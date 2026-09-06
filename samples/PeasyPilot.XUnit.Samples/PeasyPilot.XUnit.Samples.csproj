@@ -21,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\PeasyPilot.Core\PeasyPilot.Core.csproj" />
     <ProjectReference Include="..\..\src\PeasyPilot.XUnit\PeasyPilot.XUnit.csproj" />
-    <ProjectReference Include="..\..\src\PeasyPilot.BDD\PeasyPilot.BDD.csproj" />
     <ProjectReference Include="..\..\src\PeasyPilot.Integration\PeasyPilot.Integration.csproj" />
     <ProjectReference Include="..\..\src\PeasyPilot.Bogus\PeasyPilot.Bogus.csproj" />
     <ProjectReference Include="..\..\src\PeasyPilot.Moq\PeasyPilot.Moq.csproj" />
