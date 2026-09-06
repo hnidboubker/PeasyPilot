@@ -1,46 +1,103 @@
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Continue'
 $rootDirectory = Split-Path -Parent $PSScriptRoot
 $artifactsDirectory = Join-Path $rootDirectory 'artifacts'
+$solutionPath = Join-Path $rootDirectory 'easy-peasy.slnx'
 $extensions = @('.cs', '.csproj', '.props', '.targets', '.slnx', '.json', '.md', '.png', '.ps1', '.sh')
+
+# Find dotnet executable
+$dotnetPath = $null
 $dotnetCommand = Get-Command dotnet -ErrorAction SilentlyContinue
-$dotnetPath = if ($null -ne $dotnetCommand) {
-    $dotnetCommand.Source
-}
-else {
-    Join-Path $env:ProgramFiles 'dotnet\dotnet.exe'
+if ($dotnetCommand) {
+    $dotnetPath = $dotnetCommand.Source
+} else {
+    $candidates = @(
+        (Join-Path $env:ProgramFiles 'dotnet\dotnet.exe'),
+        'dotnet'
+    )
+    foreach ($candidate in $candidates) {
+        if (Test-Path $candidate -ErrorAction SilentlyContinue) {
+            $dotnetPath = $candidate
+            break
+        }
+    }
 }
 
-if (-not (Test-Path $dotnetPath)) {
-    throw 'The .NET SDK was not found. Install it or add dotnet to PATH.'
+if (-not $dotnetPath) {
+    Write-Host '[ERROR] dotnet not found. Install .NET SDK or add to PATH.' -ForegroundColor Red
+    exit 1
 }
+
+Write-Host "[INFO] dotnet: $dotnetPath" -ForegroundColor Cyan
+Write-Host "[INFO] solution: $solutionPath" -ForegroundColor Cyan
+Write-Host "[INFO] artifacts: $artifactsDirectory" -ForegroundColor Cyan
+Write-Host ""
 
 function Test-RelevantChange {
     param([string]$Path)
 
-    return $Path -notmatch '[\\/](\.git|artifacts|bin|obj)([\\/]|$)' -and
-        $extensions -contains [System.IO.Path]::GetExtension($Path)
+    # Ignore system/build files
+    if ($Path -match '[\\/](\.git|\.vs|artifacts|bin|obj|packages|\.idea)([\\/]|$)') {
+        return $false
+    }
+
+    # Check extension
+    if ($extensions -notcontains [System.IO.Path]::GetExtension($Path)) {
+        return $false
+    }
+
+    return $true
 }
 
 function Invoke-BuildAndPack {
-    Write-Host 'Build de la solution...'
-    & $dotnetPath build (Join-Path $rootDirectory 'easy-peasy.slnx') -c Release
+    Write-Host "`n[BUILD] Starting build and pack..." -ForegroundColor Green
+
+    $startTime = Get-Date
+
+    # Build
+    Write-Host "[BUILD] Executing: $dotnetPath build `"$solutionPath`" -c Release" -ForegroundColor Cyan
+    & $dotnetPath build "$solutionPath" -c Release
+
     if ($LASTEXITCODE -ne 0) {
-        Write-Host 'Le build a échoué. Surveillance maintenue.' -ForegroundColor Red
-        return
+        Write-Host "[ERROR] Build failed (exit code: $LASTEXITCODE)" -ForegroundColor Red
+        Write-Host "[INFO] Watching for changes..." -ForegroundColor Yellow
+        return $false
     }
 
-    Remove-Item $artifactsDirectory -Recurse -Force -ErrorAction SilentlyContinue
+    # Prepare artifacts
+    if (Test-Path $artifactsDirectory) {
+        Write-Host "[CLEAN] Removing existing artifacts..." -ForegroundColor Cyan
+        Remove-Item $artifactsDirectory -Recurse -Force -ErrorAction SilentlyContinue
+    }
+
     New-Item $artifactsDirectory -ItemType Directory -Force | Out-Null
+    Write-Host "[PACK] Executing: $dotnetPath pack `"$solutionPath`" -c Release -o `"$artifactsDirectory`"" -ForegroundColor Cyan
 
-    Write-Host 'Package de la solution...'
-    & $dotnetPath pack (Join-Path $rootDirectory 'easy-peasy.slnx') -c Release --no-build -o $artifactsDirectory
+    # Pack
+    & $dotnetPath pack "$solutionPath" -c Release -o "$artifactsDirectory" --no-build
+
     if ($LASTEXITCODE -ne 0) {
-        Write-Host 'Le packaging a échoué. Surveillance maintenue.' -ForegroundColor Red
-        return
+        Write-Host "[ERROR] Pack failed (exit code: $LASTEXITCODE)" -ForegroundColor Red
+        Write-Host "[INFO] Watching for changes..." -ForegroundColor Yellow
+        return $false
     }
 
-    Get-ChildItem $artifactsDirectory -File -Recurse -Include '*.nupkg', '*.snupkg' |
-        Select-Object -ExpandProperty FullName
+    # List packages
+    Write-Host "`n[SUCCESS] Packages created:" -ForegroundColor Green
+    $packages = @(Get-ChildItem $artifactsDirectory -File -Include '*.nupkg', '*.snupkg' -ErrorAction SilentlyContinue)
+
+    if ($packages.Count -eq 0) {
+        Write-Host "[WARNING] No packages found in artifacts directory" -ForegroundColor Yellow
+    } else {
+        foreach ($pkg in $packages) {
+            Write-Host "  ✓ $($pkg.Name) ($([Math]::Round($pkg.Length / 1KB, 2)) KB)" -ForegroundColor Green
+        }
+    }
+
+    $duration = (Get-Date) - $startTime
+    Write-Host "`n[SUCCESS] Build and pack completed in $($duration.TotalSeconds)s" -ForegroundColor Green
+    Write-Host "[INFO] Watching for changes..." -ForegroundColor Yellow
+
+    return $true
 }
 
 $watcher = [System.IO.FileSystemWatcher]::new($rootDirectory)

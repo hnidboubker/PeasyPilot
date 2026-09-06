@@ -6,7 +6,7 @@
     <!-- NuGet package metadata -->
     <IsPackable>true</IsPackable>
     <PackageId>PeasyPilot.Bogus</PackageId>
-    <Version>0.1.2</Version>
+    <Version>0.1.3</Version>
     <PackageIcon>Logo.png</PackageIcon>
     <Authors>NID BOUBKER Houssine</Authors>
     <Description>A modern, fast and flexible .NET testing framework.</Description>

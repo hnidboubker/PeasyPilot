@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
@@ -7,12 +6,9 @@
     <ToolCommandName>peasypilot</ToolCommandName>
     <PackageId>PeasyPilot.CLI</PackageId>
     <Title>PeasyPilot CLI</Title>
-    
-
-
-<!-- NuGet package metadata -->
-    <IsPackable>true</IsPackable> 
-    <Version>1.0.1</Version>
+    <!-- NuGet package metadata -->
+    <IsPackable>true</IsPackable>
+    <Version>1.0.2</Version>
     <PackageIcon>Logo.png</PackageIcon>
     <Authors>NID BOUBKER Houssine</Authors>
     <Description>Command line runner and test orchestrator for PeasyPilot.</Description>
@@ -23,13 +19,7 @@
     <!-- XML documentation -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-
-
-
-
-
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\PeasyPilot.Core\PeasyPilot.Core.csproj" />
     <ProjectReference Include="..\PeasyPilot.TestAssistant\PeasyPilot.TestAssistant.csproj" />
@@ -40,5 +30,4 @@
   <ItemGroup>
     <None Include="../../assets/logos/Logo.png" Pack="true" PackagePath="\" />
   </ItemGroup>
-
 </Project>

@@ -77,21 +77,41 @@ dotnet add package PeasyPilot.Bogus
 dotnet add package PeasyPilot.BDD
 ```
 
-## Local packaging watcher
+## Packaging & Distribution
+
+### Quick Build & Pack
+
+```bash
+# Build and pack all projects
+dotnet build -c Release
+dotnet pack -c Release -o artifacts
+```
+
+### Automatic Watch Mode
 
 Rebuild and repack NuGet packages automatically after source or configuration changes:
 
+**PowerShell (Windows):**
 ```powershell
 ./scripts/version-watch.ps1
 ```
 
-On Bash environments:
-
+**Bash (Linux/Mac):**
 ```bash
 ./scripts/version-watch.sh
 ```
 
 Generated packages are written to `artifacts/` and the watcher stops with `Ctrl+C`.
+
+### Complete Guide
+
+See **[PACKAGING.md](./docs/PACKAGING.md)** for:
+- Build and pack workflows
+- Watch script usage
+- Multi-targeting verification
+- Publishing to NuGet.org
+- CI/CD integration
+- Versioning strategy
 
 ## Quick start
 
@@ -485,7 +505,9 @@ PeasyPilot is distributed under the MIT license.
 
 Complete guides for using PeasyPilot:
 
-### BDD Testing
+### Testing Guides
+
+#### BDD Testing
 - 📖 **[BDD Guide](./docs/BDD_GUIDE.md)** — Complete guide to behavior-driven testing
   - Feature file creation (Gherkin syntax)
   - Step definition patterns and bindings
@@ -494,14 +516,26 @@ Complete guides for using PeasyPilot:
   - Parameter extraction and type conversion
   - Troubleshooting and best practices
 
-### Integration Testing
+#### Integration Testing
 - 📖 **[Integration Testing Guide](./docs/INTEGRATION_TESTING.md)** — Integration test patterns
   - Database fixtures and lifecycle management
   - Test factory abstractions
   - Web application testing
   - DI container integration
 
+### Build & Deployment
+
+#### Packaging
+- 📖 **[Packaging Guide](./docs/PACKAGING.md)** — Building and distributing NuGet packages
+  - Build and pack workflows
+  - Automated watch mode
+  - Multi-framework support (net8.0, net9.0, net10.0)
+  - Publishing to NuGet.org
+  - CI/CD integration
+  - Versioning strategy
+
 ### Samples
+
 Working examples in `samples/`:
 - `PeasyPilot.XUnit.Samples/` — xUnit with BDD and integration tests
   - Feature files: `features/users.feature`, `features/orders.feature`
