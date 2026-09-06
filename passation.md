@@ -82,68 +82,135 @@ Pourquoi ça n'a pas fonctionné :
 Conclusion :
 - TUnit a un bug de compatibilité réel, indépendant de la version du package.
 
+---
+
+**Tentative 3 — Explorer une configuration MSBuild alternative (Solution 3, 2026-09-06)**
+
+Approche testée :
+
+1. **Variable d'environnement `DOTNET_TEST_RUNNER_VSTEST=0`**
+   - Exécution : `$env:DOTNET_TEST_RUNNER_VSTEST=0; dotnet test samples/PeasyPilot.TUnit.Samples/`
+   - Résultat : ❌ Même erreur MSBuild
+
+2. **Propriété MSBuild `TestingPlatformDisableCustomTestTarget=true`**
+   - Recherche dans Microsoft.Testing.Platform.MSBuild.targets
+   - Résultat : ❌ Cette propriété ne contrôle que la suppression du custom `-t:Test` target, pas le VSTest blocker
+
+3. **Autres propriétés explorées**
+   - Aucune propriété MSBuild supplémentaire trouvée capable de contourner la condition de blocage
+   - Conclusion : Le blocage est volontaire et aucun contournement MSBuild ne peut le désactiver
+
+Résultat global :
+- ❌ Aucune alternative MSBuild ou variable d'environnement ne peut contourner le blocage
+
+Pourquoi ça n'a pas fonctionné :
+- Le blocage dans Microsoft.Testing.Platform 2.4.0 est une **décision de conception intentionnelle**, pas un bug.
+- L'erreur est générée au **niveau MSBuild** (par un élément `<Error>`) lors du parsing des cibles, avant même que le runner ne soit invoqué.
+- Microsoft a ajouté cette vérification pour forcer les développeurs à migrer du VSTest vers la nouvelle Testing Platform.
+- Le check porte sur `$(_SdkMajorVersion) >= '10'`, une variable auto-calculée du SDK au moment de la compilation — pas modifiable par projet.
+
+Conclusion :
+- **Solution 3 n'est pas viable.** Les alternatives MSBuild n'existent pas et ne pourraient pas fonctionner même si elles existaient.
+- Le problème ne peut être résolu que par :
+  - Une mise à jour de TUnit utilisant une version compatible de Microsoft.Testing.Platform, ou
+  - Microsoft.Testing.Platform 3.0+ qui supporterait nativement le .NET 10 SDK, ou
+  - Abandonner TUnit en faveur de NUnit/XUnit (qui fonctionnent correctement)
+
 ## 5. Solutions envisagées
 
-**Solution 1 — Limiter TUnit à net8.0 uniquement (recommandée)**
+**Solution 1 — Limiter TUnit à net8.0 uniquement (APPLIQUÉE)**
 
 Description :
 - Changer `TargetFrameworks` de `net8.0;net9.0;net10.0` à `net8.0`.
-- Les tests TUnit continueraient de fonctionner sur net8.0.
-
-Pourquoi ça pourrait fonctionner :
-- TUnit fonctionne correctement sur net8.0 (testé et validé).
-- Élimine l'erreur de build immédiatement.
+- Les tests TUnit continueraient de fonctionner sur net8.0 uniquement.
 
 État actuel :
-- Non testée (mais logiquement viable).
+- ✅ **APPLIQUÉE** (2026-09-06) : TUnit.Samples.csproj TargetFrameworks = "net8.0"
+- Tests TUnit net8.0 : ✅ Passent correctement
+- Build : 0 erreurs, 763 avertissements (non-critiques)
 
-Risques / inconvénients :
+Pourquoi ça fonctionne :
+- TUnit fonctionne correctement sur net8.0 (testé et validé).
+- Élimine l'erreur de build MSBuild immédiatement.
+
+Limitations / inconvénients :
 - Perte de couverture de test TUnit sur net9.0/net10.0.
-- Les samples TUnit ne validaraient pas les versions récentes.
+- Les samples TUnit ne valident plus les versions récentes.
+- CI workflow utilise des filtres pour exclure les tests TUnit sur net10.0 (workaround, pas idéal)
 
-Ce qui reste à faire :
-- Appliquer le changement.
-- Vérifier que les tests TUnit net8.0 passent.
-- Documenter cette limitation dans PROJECT_MEMORY.md.
+Documentation :
+- Limitation documentée dans PROJECT_MEMORY.md (2026-09-06)
+- Lien : `TUNIT_DIAGNOSTIC_SOLUTION3.md` pour contexte complet
 
 ---
 
-**Solution 2 — Attendre une fix officielle de TUnit**
+**Solution 2 — Attendre une fix officielle de TUnit (RECOMMANDÉE À LONG TERME)**
 
 Description :
-- Aucune action. Surveiller les releases TUnit pour une version compatible.
+- TUnit team ou Microsoft doit mettre à jour Microsoft.Testing.Platform pour supporter nativement le .NET 10 SDK.
 
 État actuel :
+- ⏳ **EN ATTENTE** : GitHub issue créée (issue #13) pour tracker le problème
 - Aucun ETA connu pour une fix officielle.
 
+Pourquoi ça pourrait fonctionner :
+- Microsoft pourrait sortir Microsoft.Testing.Platform 3.0+ avec support .NET 10 SDK complet.
+- TUnit pourrait alors mettre à jour sa dépendance.
+
 Risques / inconvénients :
-- Délai indéterminé.
-- Le workflow CI continue d'afficher l'avertissement.
+- Délai indéterminé (mois/années possibles).
+- Le workflow CI continuerait d'afficher le workaround.
+
+Ce qui reste à faire :
+- Surveiller les releases TUnit et Microsoft.Testing.Platform
+- Mettre à jour PROJECT_MEMORY.md si une nouvelle version compatible sort
 
 ---
 
-**Solution 3 — Explorer une configuration MSBuild alternative**
-
-Description :
-- Chercher si une autre propriété ou configuration existe pour forcer la compatibilité.
-- Exemple : `<UseVSTestRunner>false</UseVSTestRunner>` ou équivalent.
+**Solution 3 — Explorer une configuration MSBuild alternative (NON VIABLE)**
 
 État actuel :
-- À explorer ; aucune configuration documentée connue pour TUnit.
+- ❌ **TESTÉE ET ÉCHOUÉE** (2026-09-06)
+
+Pourquoi ça n'a pas fonctionné :
+- Aucune variable d'environnement (`DOTNET_TEST_RUNNER_VSTEST=0`) ne contourne le blocage
+- Aucune propriété MSBuild supplémentaire ne peut désactiver le blocage intentionnel
+- Le blocage est une décision Microsoft au niveau du SDK, pas une configuration de projet
+
+Conclusion :
+- **Solution 3 n'est pas viable** (testé, confirmé non fonctionnel)
+
+---
+
+**Solution 4 — Dépréc ier TUnit (ALTERNATIVE EN CAS DE BESOIN)**
+
+Description :
+- Supprimer l'adapter TUnit du projet et recommander NUnit ou XUnit aux utilisateurs.
+
+État actuel :
+- Non appliquée (pas recommandée sauf en dernier recours)
+
+Pourquoi ça pourrait fonctionner :
+- NUnit ✅ et XUnit ✅ fonctionnent correctement sur net8.0, net9.0, net10.0
+- Simplifie la maintenance du projet
 
 Risques / inconvénients :
-- Peut ne pas exister ou ne pas résoudre le problème.
+- Perte de support TUnit pour les utilisateurs du framework
+- TUnit continuerait d'avoir le même problème externalement (hors de ce projet)
 
 Ce qui reste à faire :
-- Consulter la documentation officielle TUnit sur Microsoft.Testing.Platform.
+- À considérer uniquement si Solution 2 (upstream fix) n'avance pas après 6 mois
 
 ## 6. État actuel du travail
 
 - **Issue #13 créée** sur GitHub : "[AUTO] TUnit Microsoft.Testing.Platform compatibility - .NET 9/10"
   - URL: https://github.com/hnidboubker/PeasyPilot/issues/13
-- **Branche créée** : `fix/tunit-net10-platform` (aucune modification finalisée)
-- **Code** : Revert à l'état original (aucune solution appliquée)
-- **Conclusion dans Issue #13** : Non-bloquant mais sans solution simple immédiate.
+  - Contient : description complète du problème et diagnostic
+- **Diagnostic complet** : `TUNIT_DIAGNOSTIC_SOLUTION3.md` créé (2026-09-06) avec analyse technique approfondie
+- **Solution appliquée** : TUnit.Samples TargetFrameworks limité à net8.0 (Solution 1)
+- **Code** : Solution 1 appliquée et fonctionnelle
+- **PROJECT_MEMORY.md** : Mise à jour avec findings de Solution 3 (2026-09-06)
+- **Conclusion** : Diagnostic terminé ; Solution 1 (workaround) appliquée et stable ; Solutions 2/3 status documenté
 
 ## 7. Prochaines étapes recommandées
 
