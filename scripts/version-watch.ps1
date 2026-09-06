@@ -1,189 +1,478 @@
-$ErrorActionPreference = 'Continue'
-$rootDirectory = Split-Path -Parent $PSScriptRoot
-$artifactsDirectory = Join-Path $rootDirectory 'artifacts'
-$solutionPath = Join-Path $rootDirectory 'easy-peasy.slnx'
-$extensions = @('.cs', '.csproj', '.props', '.targets', '.slnx', '.json', '.md', '.png', '.ps1', '.sh')
+param(
+[string]$ProjectPath = ".",
+[ValidateSet("Debug", "Release")]
+[string]$Configuration = "Release",
+[switch]$Watch
+)
 
-# Find dotnet executable
-$dotnetPath = $null
-$dotnetCommand = Get-Command dotnet -ErrorAction SilentlyContinue
-if ($dotnetCommand) {
-    $dotnetPath = $dotnetCommand.Source
-} else {
-    $candidates = @(
-        (Join-Path $env:ProgramFiles 'dotnet\dotnet.exe'),
-        'dotnet'
-    )
-    foreach ($candidate in $candidates) {
-        if (Test-Path $candidate -ErrorAction SilentlyContinue) {
-            $dotnetPath = $candidate
-            break
-        }
-    }
+$ErrorActionPreference = "Stop"
+
+============================================================
+Configuration
+============================================================
+
+$extensions = @(
+'.cs',
+'.csproj',
+'.props',
+'.targets',
+'.sln',
+'.slnx',
+'.json',
+'.md',
+'.ps1',
+'.sh'
+)
+
+Résout le dossier du projet
+
+$rootDirectory = (Resolve-Path $ProjectPath).Path
+
+============================================================
+Helpers
+============================================================
+
+function Write-Info {
+param([string]$Message)
+Write-Host "[INFO] $Message" -ForegroundColor Cyan
 }
 
-if (-not $dotnetPath) {
-    Write-Host '[ERROR] dotnet not found. Install .NET SDK or add to PATH.' -ForegroundColor Red
+function Write-Success {
+param([string]$Message)
+Write-Host "[SUCCESS] $Message" -ForegroundColor Green
+}
+
+function Write-ErrorMessage {
+param([string]$Message)
+Write-Host "[ERROR] $Message" -ForegroundColor Red
+}
+
+function Write-WarningMessage {
+param([string]$Message)
+Write-Host "[WARNING] $Message" -ForegroundColor Yellow
+}
+
+============================================================
+Find dotnet
+============================================================
+
+$dotnetCommand = Get-Command dotnet -ErrorAction SilentlyContinue
+
+if (-not $dotnetCommand) {
+Write-ErrorMessage "dotnet not found."
+Write-Host "Install the .NET SDK or add dotnet to PATH." -ForegroundColor Yellow
+exit 1
+}
+
+$dotnetPath = $dotnetCommand.Source
+
+Write-Info "dotnet: $dotnetPath"
+Write-Info "project directory: $rootDirectory"
+Write-Info "configuration: $Configuration"
+Write-Host ""
+
+============================================================
+Find solution / project automatically
+============================================================
+
+$solutionFiles = @(
+Get-ChildItem -Path $rootDirectory -Filter ".slnx" -File -ErrorAction SilentlyContinue
+Get-ChildItem -Path $rootDirectory -Filter ".sln" -File -ErrorAction SilentlyContinue
+)
+
+$projectFiles = @(
+Get-ChildItem -Path $rootDirectory -Filter "*.csproj" -File -ErrorAction SilentlyContinue
+)
+
+$buildTarget = $null
+
+if ($solutionFiles.Count -gt 0) {
+
+# Priorité au .slnx
+$slnx = $solutionFiles | Where-Object { $_.Extension -eq ".slnx" } | Select-Object -First 1
+
+if ($slnx) {
+    $buildTarget = $slnx.FullName
+}
+else {
+    $buildTarget = ($solutionFiles | Select-Object -First 1).FullName
+}
+
+
+}
+elseif ($projectFiles.Count -eq 1) {
+
+$buildTarget = $projectFiles[0].FullName
+
+
+}
+elseif ($projectFiles.Count -gt 1) {
+
+Write-WarningMessage "Multiple .csproj files found."
+
+Write-Host ""
+Write-Host "Projects found:" -ForegroundColor Yellow
+
+for ($i = 0; $i -lt $projectFiles.Count; $i++) {
+    Write-Host "  [$i] $($projectFiles[$i].Name)"
+}
+
+Write-Host ""
+
+$selection = Read-Host "Select project number"
+
+if ($selection -notmatch '^\d+$' -or
+    [int]$selection -ge $projectFiles.Count) {
+
+    Write-ErrorMessage "Invalid project selection."
     exit 1
 }
 
-Write-Host "[INFO] dotnet: $dotnetPath" -ForegroundColor Cyan
-Write-Host "[INFO] solution: $solutionPath" -ForegroundColor Cyan
-Write-Host "[INFO] artifacts: $artifactsDirectory" -ForegroundColor Cyan
-Write-Host ""
+$buildTarget = $projectFiles[[int]$selection].FullName
 
-function Test-RelevantChange {
-    param([string]$Path)
 
-    # Ignore system/build files
-    if ($Path -match '[\\/](\.git|\.vs|artifacts|bin|obj|packages|\.idea)([\\/]|$)') {
-        return $false
-    }
+}
+else {
 
-    # Check extension
-    if ($extensions -notcontains [System.IO.Path]::GetExtension($Path)) {
-        return $false
-    }
+Write-ErrorMessage "No .sln, .slnx or .csproj found in:"
+Write-Host "  $rootDirectory" -ForegroundColor Yellow
+exit 1
 
-    return $true
+
 }
 
+Write-Info "Build target: $buildTarget"
+Write-Host ""
+
+============================================================
+Artifacts
+============================================================
+
+$artifactsDirectory = Join-Path $rootDirectory "artifacts"
+
+============================================================
+Test relevant changes
+============================================================
+
+function Test-RelevantChange {
+param(
+[string]$Path
+)
+
+if (-not $Path) {
+    return $false
+}
+
+# Ignore build/system folders
+if ($Path -match '[\\/](\.git|\.vs|artifacts|bin|obj|packages|\.idea)([\\/]|$)') {
+    return $false
+}
+
+$extension = [System.IO.Path]::GetExtension($Path)
+
+return $extensions -contains $extension
+
+
+}
+
+============================================================
+Build + Pack
+============================================================
+
 function Invoke-BuildAndPack {
-    Write-Host "`n[BUILD] Starting build and pack..." -ForegroundColor Green
 
-    $startTime = Get-Date
+Write-Host ""
+Write-Host "============================================================" -ForegroundColor DarkGray
+Write-Host " BUILD" -ForegroundColor Green
+Write-Host "============================================================" -ForegroundColor DarkGray
 
+$startTime = Get-Date
+
+try {
+
+    # --------------------------------------------------------
     # Build
-    Write-Host "[BUILD] Executing: $dotnetPath build `"$solutionPath`" -c Release" -ForegroundColor Cyan
-    & $dotnetPath build "$solutionPath" -c Release
+    # --------------------------------------------------------
+
+    Write-Info "Running dotnet build..."
+
+    & $dotnetPath build `
+        "$buildTarget" `
+        "-c" `
+        "$Configuration"
 
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "[ERROR] Build failed (exit code: $LASTEXITCODE)" -ForegroundColor Red
-        Write-Host "[INFO] Watching for changes..." -ForegroundColor Yellow
-        return $false
+        throw "Build failed with exit code $LASTEXITCODE."
     }
 
-    # Prepare artifacts
+    Write-Success "Build completed successfully."
+
+    # --------------------------------------------------------
+    # Clean artifacts
+    # --------------------------------------------------------
+
     if (Test-Path $artifactsDirectory) {
-        Write-Host "[CLEAN] Removing existing artifacts..." -ForegroundColor Cyan
-        Remove-Item $artifactsDirectory -Recurse -Force -ErrorAction SilentlyContinue
+
+        Write-Info "Cleaning artifacts..."
+
+        Remove-Item `
+            $artifactsDirectory `
+            -Recurse `
+            -Force
     }
 
-    New-Item $artifactsDirectory -ItemType Directory -Force | Out-Null
-    Write-Host "[PACK] Executing: $dotnetPath pack `"$solutionPath`" -c Release -o `"$artifactsDirectory`"" -ForegroundColor Cyan
+    New-Item `
+        -Path $artifactsDirectory `
+        -ItemType Directory `
+        -Force |
+        Out-Null
 
+    # --------------------------------------------------------
     # Pack
-    & $dotnetPath pack "$solutionPath" -c Release -o "$artifactsDirectory" --no-build
+    # --------------------------------------------------------
+
+    Write-Info "Running dotnet pack..."
+
+    & $dotnetPath pack `
+        "$buildTarget" `
+        "-c" `
+        "$Configuration" `
+        "-o" `
+        "$artifactsDirectory" `
+        "--no-build"
 
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "[ERROR] Pack failed (exit code: $LASTEXITCODE)" -ForegroundColor Red
-        Write-Host "[INFO] Watching for changes..." -ForegroundColor Yellow
-        return $false
+        throw "Pack failed with exit code $LASTEXITCODE."
     }
 
-    # List packages
-    Write-Host "`n[SUCCESS] Packages created:" -ForegroundColor Green
-    $packages = @(Get-ChildItem $artifactsDirectory -File -Include '*.nupkg', '*.snupkg' -ErrorAction SilentlyContinue)
+    Write-Success "Pack completed successfully."
+
+    # --------------------------------------------------------
+    # Packages
+    # --------------------------------------------------------
+
+    $packages = @(
+        Get-ChildItem `
+            -Path $artifactsDirectory `
+            -File `
+            -ErrorAction SilentlyContinue |
+        Where-Object {
+            $_.Extension -in @(".nupkg", ".snupkg")
+        }
+    )
 
     if ($packages.Count -eq 0) {
-        Write-Host "[WARNING] No packages found in artifacts directory" -ForegroundColor Yellow
-    } else {
-        foreach ($pkg in $packages) {
-            Write-Host "  ✓ $($pkg.Name) ($([Math]::Round($pkg.Length / 1KB, 2)) KB)" -ForegroundColor Green
+
+        Write-WarningMessage "No NuGet packages were created."
+
+    }
+    else {
+
+        Write-Host ""
+        Write-Host "Packages:" -ForegroundColor Green
+
+        foreach ($package in $packages) {
+
+            $size = [Math]::Round(
+                $package.Length / 1KB,
+                2
+            )
+
+            Write-Host "  ✓ $($package.Name) ($size KB)" `
+                -ForegroundColor Green
         }
     }
 
     $duration = (Get-Date) - $startTime
-    Write-Host "`n[SUCCESS] Build and pack completed in $($duration.TotalSeconds)s" -ForegroundColor Green
-    Write-Host "[INFO] Watching for changes..." -ForegroundColor Yellow
+
+    Write-Host ""
+    Write-Success "BUILD + PACK SUCCESS"
+    Write-Info "Duration: $([Math]::Round($duration.TotalSeconds, 2)) seconds"
+    Write-Info "Artifacts: $artifactsDirectory"
 
     return $true
 }
+catch {
 
-# Setup file watcher
+    Write-Host ""
+    Write-ErrorMessage $_.Exception.Message
+    Write-ErrorMessage "BUILD + PACK FAILED"
+
+    return $false
+}
+
+
+}
+
+============================================================
+Initial build
+============================================================
+
+$success = Invoke-BuildAndPack
+
+============================================================
+Stop immediately if Watch is not enabled
+============================================================
+
+if (-not $Watch) {
+
+Write-Host ""
+
+if ($success) {
+    Write-Success "Process completed successfully."
+    exit 0
+}
+else {
+    Write-ErrorMessage "Process stopped because of an error."
+    exit 1
+}
+
+
+}
+
+============================================================
+WATCH MODE
+============================================================
+
+Write-Host ""
+Write-Host "============================================================" -ForegroundColor DarkGray
+Write-Host " WATCH MODE" -ForegroundColor Green
+Write-Host "============================================================" -ForegroundColor DarkGray
+
+if (-not $success) {
+Write-WarningMessage "Initial build failed. Waiting for changes..."
+}
+
+Write-Info "Watching: $rootDirectory"
+Write-Info "Press Ctrl+C to stop."
+
 $watcher = [System.IO.FileSystemWatcher]::new($rootDirectory)
+
 $watcher.IncludeSubdirectories = $true
 $watcher.NotifyFilter = [System.IO.NotifyFilters]'FileName, LastWrite, DirectoryName'
 $watcher.EnableRaisingEvents = $true
 
+$changeMarker = Join-Path $env:TEMP "dotnet-generic-build-change"
+
 $sourceIdentifiers = @(
-    'PeasyPilot.VersionWatcher.Changed',
-    'PeasyPilot.VersionWatcher.Created',
-    'PeasyPilot.VersionWatcher.Deleted',
-    'PeasyPilot.VersionWatcher.Renamed'
+"GenericDotnetWatcher.Changed",
+"GenericDotnetWatcher.Created",
+"GenericDotnetWatcher.Deleted",
+"GenericDotnetWatcher.Renamed"
 )
-
-# Register file system events
-$subscriptions = @(
-    Register-ObjectEvent -InputObject $watcher -EventName Changed -SourceIdentifier $sourceIdentifiers[0] -Action {
-        if (Test-RelevantChange $EventArgs.FullPath) {
-            Set-Content -Path (Join-Path $env:TEMP 'peasypilot-change-detected') -Value (Get-Date)
-        }
-    }
-    Register-ObjectEvent -InputObject $watcher -EventName Created -SourceIdentifier $sourceIdentifiers[1] -Action {
-        if (Test-RelevantChange $EventArgs.FullPath) {
-            Set-Content -Path (Join-Path $env:TEMP 'peasypilot-change-detected') -Value (Get-Date)
-        }
-    }
-    Register-ObjectEvent -InputObject $watcher -EventName Deleted -SourceIdentifier $sourceIdentifiers[2] -Action {
-        if (Test-RelevantChange $EventArgs.FullPath) {
-            Set-Content -Path (Join-Path $env:TEMP 'peasypilot-change-detected') -Value (Get-Date)
-        }
-    }
-    Register-ObjectEvent -InputObject $watcher -EventName Renamed -SourceIdentifier $sourceIdentifiers[3] -Action {
-        if (Test-RelevantChange $EventArgs.FullPath) {
-            Set-Content -Path (Join-Path $env:TEMP 'peasypilot-change-detected') -Value (Get-Date)
-        }
-    }
-)
-
-$lastBuild = Get-Date
-$debounceMs = 1000  # Wait 1s for multiple changes
 
 try {
-    Write-Host "`n[WATCH] Monitoring $rootDirectory (press Ctrl+C to stop)`n" -ForegroundColor Green
 
-    # Initial build
-    Invoke-BuildAndPack
-
-    while ($true) {
-        # Check if change detected
-        $changeMarker = Join-Path $env:TEMP 'peasypilot-change-detected'
-
-        if (Test-Path $changeMarker) {
-            $changeTime = Get-Content $changeMarker
-            Remove-Item $changeMarker -Force
-
-            # Debounce: wait for changes to settle
-            Start-Sleep -Milliseconds $debounceMs
-
-            if ((Get-Date) -gt $lastBuild.AddSeconds(2)) {
-                Write-Host "`n[WATCH] Change detected, rebuilding..." -ForegroundColor Yellow
-
-                $success = Invoke-BuildAndPack
-
-                if ($success) {
-                    $lastBuild = Get-Date
-                }
-
-                # Clear any accumulated events
-                Get-Event -SourceIdentifier $sourceIdentifiers -ErrorAction SilentlyContinue | Remove-Event
+$subscriptions = @(
+    Register-ObjectEvent `
+        -InputObject $watcher `
+        -EventName Changed `
+        -SourceIdentifier $sourceIdentifiers[0] `
+        -Action {
+            if (Test-RelevantChange $EventArgs.FullPath) {
+                Set-Content `
+                    -Path $changeMarker `
+                    -Value (Get-Date)
             }
         }
 
-        Start-Sleep -Milliseconds 500
+    Register-ObjectEvent `
+        -InputObject $watcher `
+        -EventName Created `
+        -SourceIdentifier $sourceIdentifiers[1] `
+        -Action {
+            if (Test-RelevantChange $EventArgs.FullPath) {
+                Set-Content `
+                    -Path $changeMarker `
+                    -Value (Get-Date)
+            }
+        }
+
+    Register-ObjectEvent `
+        -InputObject $watcher `
+        -EventName Deleted `
+        -SourceIdentifier $sourceIdentifiers[2] `
+        -Action {
+            if (Test-RelevantChange $EventArgs.FullPath) {
+                Set-Content `
+                    -Path $changeMarker `
+                    -Value (Get-Date)
+            }
+        }
+
+    Register-ObjectEvent `
+        -InputObject $watcher `
+        -EventName Renamed `
+        -SourceIdentifier $sourceIdentifiers[3] `
+        -Action {
+            if (Test-RelevantChange $EventArgs.FullPath) {
+                Set-Content `
+                    -Path $changeMarker `
+                    -Value (Get-Date)
+            }
+        }
+)
+
+while ($true) {
+
+    if (Test-Path $changeMarker) {
+
+        Remove-Item `
+            $changeMarker `
+            -Force `
+            -ErrorAction SilentlyContinue
+
+        # Debounce
+        Start-Sleep -Milliseconds 1000
+
+        Write-Host ""
+        Write-Info "Change detected. Rebuilding..."
+
+        $success = Invoke-BuildAndPack
+
+        if ($success) {
+
+            Write-Host ""
+            Write-Success "READY - waiting for next change..."
+
+        }
+        else {
+
+            Write-Host ""
+            Write-ErrorMessage "BUILD FAILED - waiting for next change..."
+        }
+
+        Get-Event `
+            -SourceIdentifier $sourceIdentifiers `
+            -ErrorAction SilentlyContinue |
+            Remove-Event `
+            -ErrorAction SilentlyContinue
     }
+
+    Start-Sleep -Milliseconds 300
 }
-catch [System.OperationCanceledException] {
-    Write-Host "`n[WATCH] Stopped by user" -ForegroundColor Yellow
+
+
 }
 catch {
-    Write-Host "`n[ERROR] Unexpected error: $_" -ForegroundColor Red
-    throw
+
+Write-ErrorMessage "Watcher stopped: $($_.Exception.Message)"
+
+
 }
 finally {
-    Write-Host "[CLEANUP] Unregistering events..." -ForegroundColor Cyan
-    $subscriptions | Unregister-Event -ErrorAction SilentlyContinue
-    $watcher.Dispose()
-    Write-Host "[CLEANUP] Done." -ForegroundColor Cyan
+
+Write-Info "Cleaning watcher..."
+
+foreach ($subscription in $subscriptions) {
+    Unregister-Event `
+        -SourceIdentifier $subscription.Name `
+        -ErrorAction SilentlyContinue
+}
+
+$watcher.Dispose()
+
+Write-Info "Watcher stopped."
+
+
 }
