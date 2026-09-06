@@ -21,7 +21,11 @@ public class UserRepositoryIntegrationTests : XUnitIntegrationTestFixture
     protected override void ConfigureServices(IServiceCollection services)
     {
         // Register a fake/in-memory user repository for testing
-        services.AddSingleton<IUserRepository>(new InMemoryUserRepository());
+        var repository = new InMemoryUserRepository();
+        services.AddSingleton<IUserRepository>(repository);
+
+        // Register for reset during database resets
+        RegisterResettableService(repository);
     }
 
     [Fact]
@@ -88,7 +92,7 @@ public interface IUserRepository
     Task<IReadOnlyList<User>> GetAllAsync();
 }
 
-public class InMemoryUserRepository : IUserRepository
+public class InMemoryUserRepository : IUserRepository, PeasyPilot.Integration.Abstractions.IResettable
 {
     private readonly List<User> _users = new();
     private int _nextId = 1;
@@ -108,5 +112,12 @@ public class InMemoryUserRepository : IUserRepository
     public Task<IReadOnlyList<User>> GetAllAsync()
     {
         return Task.FromResult<IReadOnlyList<User>>(_users.AsReadOnly());
+    }
+
+    public async Task ResetAsync()
+    {
+        _users.Clear();
+        _nextId = 1;
+        await Task.CompletedTask;
     }
 }
