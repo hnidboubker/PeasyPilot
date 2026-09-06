@@ -6,6 +6,7 @@
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)' == ''">$(ArtifactsDirectory)/obj/</BaseIntermediateOutputPath>
   </PropertyGroup>
 
+
   <Target Name="EnsureArtifactsDirectory" BeforeTargets="Build;Pack;Restore;Publish">
     <MakeDir Directories="$(ArtifactsDirectory)" />
   </Target>

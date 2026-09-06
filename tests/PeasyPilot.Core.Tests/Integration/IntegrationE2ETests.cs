@@ -18,6 +18,16 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         services.AddSingleton<IUserService, E2EUserService>();
     }
 
+    private async Task ResetAllAsync()
+    {
+        await ResetDatabaseAsync();
+        var repo = GetService<IUserRepository>();
+        if (repo is IResettable resettable)
+        {
+            await resettable.ResetAsync();
+        }
+    }
+
     [Fact]
     public async Task E2E_User_Creation_And_Retrieval()
     {
@@ -49,7 +59,7 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         Assert.Equal("Bob", user1.Name);
 
         // Test 2: Reset database
-        await ResetDatabaseAsync();
+        await ResetAllAsync();
 
         // Assert: Database is empty after reset
         var usersAfterReset = await service.GetAllUsersAsync();
@@ -117,7 +127,7 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         Assert.Equal(1, countFirst);
 
         // Reset
-        await ResetDatabaseAsync();
+        await ResetAllAsync();
         var countAfterReset = (await service.GetAllUsersAsync()).Count;
         Assert.Empty(await service.GetAllUsersAsync());
 
@@ -138,6 +148,11 @@ public class E2EUser
     public string Email { get; set; } = string.Empty;
 }
 
+public interface IResettable
+{
+    Task ResetAsync();
+}
+
 public interface IUserRepository
 {
     Task AddAsync(E2EUser user);
@@ -152,7 +167,7 @@ public interface IUserService
     Task<IReadOnlyList<E2EUser>> GetAllUsersAsync();
 }
 
-public class E2EUserRepository : IUserRepository
+public class E2EUserRepository : IUserRepository, IResettable
 {
     private readonly List<E2EUser> _users = new();
     private int _nextId = 1;
@@ -172,6 +187,13 @@ public class E2EUserRepository : IUserRepository
     public Task<IReadOnlyList<E2EUser>> GetAllAsync()
     {
         return Task.FromResult<IReadOnlyList<E2EUser>>(_users.AsReadOnly());
+    }
+
+    public Task ResetAsync()
+    {
+        _users.Clear();
+        _nextId = 1;
+        return Task.CompletedTask;
     }
 }
 
