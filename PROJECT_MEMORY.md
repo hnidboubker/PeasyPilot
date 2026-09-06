@@ -185,6 +185,22 @@ for validation — it has not been independently reviewed line-by-line by the ow
   * Build: 0 errors, 852 warnings (XML comments, NuGet sources - non-critical)
   * All tests passing (372 total, 0 failed)
 
+**[2026-09-06] TUnit Diagnostic Session - Solution 3 Analysis Complete:**
+
+- **Problem Recap**: TUnit tests fail on .NET 10 SDK (10.0.400) due to `Microsoft.Testing.Platform 2.4.0` blocking VSTest runner at MSBuild level, even when project targets net8.0
+- **Root Cause**: The error originates from line 355 of `Microsoft.Testing.Platform.MSBuild.targets` — a deliberate breaking change to force migration from VSTest to the new Testing Platform on .NET 10 SDK+
+- **Error Condition**: Blocks if `IsTestingPlatformApplication==true` AND `TargetFramework!=null` AND SDK version >= 10
+- **Solution 1 (Workaround)** ✅ Already applied: Limit TUnit.Samples to net8.0 only; CI filters via test traits
+- **Solution 2 (Await Fix)** ⏳ Pending: TUnit/Microsoft.Testing.Platform 3.0+ compatibility; GitHub issue created to track
+- **Solution 3 (MSBuild Alternatives)** ❌ Not viable: Tested environment variables (`DOTNET_TEST_RUNNER_VSTEST=0`) and MSBuild properties — all ignored by .targets. No documented bypass exists because the blocking is intentional design, not configuration oversight
+- **Why Solution 3 Failed**:
+  * `UseNewTestingPlatform=true` (already set) does not bypass the MSBuild Error condition
+  * No environment variable can suppress MSBuild Error elements
+  * `TestingPlatformDisableCustomTestTarget=true` only disables the custom `-t:Test` target, not the VSTest blocker
+  * This is a **SDK-level enforcement**, not a project-level configuration issue
+- **Documentation Created**: `TUNIT_DIAGNOSTIC_SOLUTION3.md` with full technical analysis
+- **Recommendation**: Maintain current workaround (Solution 1 partial + CI filtering) until Solution 2 (upstream fix) completes
+
 ## Open Questions
 
 - Should test-base deduplication (Issue #5 Tier 1) be revisited with a different approach, or postponed indefinitely?
