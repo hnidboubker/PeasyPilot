@@ -37,6 +37,12 @@ PeasyPilot is composed of focused packages that work together to provide a light
 - Fake data generation with Bogus
 - Mock creation abstractions with Moq
 - xUnit, NUnit, and TUnit lifecycle integration
+- **BDD support with Gherkin feature files**
+- **Automatic step binding via reflection and pattern matching**
+- **Feature file loading and scenario execution**
+- **Parameter extraction from step text**
+- **Singleton lifecycle management with IResettable**
+- **Integration testing with database fixtures**
 - CLI execution with filter and impact-analysis flags
 - CI-friendly JSON and JUnit report output
 
@@ -157,28 +163,77 @@ public class SampleTests : PeasyPilotTUnitTestBase
 }
 ```
 
-### BDD example
+### BDD example with step binding
 
+**Feature file** (`features/user-registration.feature`):
+```gherkin
+Feature: User Registration
+  Scenario: Register a new user
+    Given a new user with email "john@example.com"
+    When I submit the registration form
+    Then the user should be registered successfully
+```
+
+**Step definitions** with automatic binding:
+```csharp
+using PeasyPilot.BDD.StepDefinitions;
+
+public class UserRegistrationSteps : BddStepDefinition
+{
+    private string _userEmail = null!;
+    private bool _registrationSucceeded;
+
+    [Given("a new user with email {email}")]
+    public async Task CreateUser(string email)
+    {
+        _userEmail = email;
+        await Task.CompletedTask;
+    }
+
+    [When("I submit the registration form")]
+    public async Task SubmitForm()
+    {
+        // Simulate form submission
+        _registrationSucceeded = !string.IsNullOrEmpty(_userEmail);
+        await Task.CompletedTask;
+    }
+
+    [Then("the user should be registered successfully")]
+    public async Task VerifyRegistration()
+    {
+        await Task.CompletedTask;
+        return _registrationSucceeded;
+    }
+}
+```
+
+**Test execution** with step binding resolver:
 ```csharp
 using Xunit;
 using PeasyPilot.BDD;
+using PeasyPilot.BDD.Execution;
+using PeasyPilot.BDD.FileLoading;
+using PeasyPilot.BDD.StepDefinitions;
 
 public class UserRegistrationBddTests
 {
     [Fact]
-    public async Task UserRegistration_ValidData_SuccessfullyRegisters()
+    public async Task UserRegistration_LoadFeatureAndExecuteSteps()
     {
-        var feature = new Feature("User Registration");
-        var scenario = feature.AddScenario("Register a new user");
+        // Load feature file
+        var loader = new GherkinFeatureFileLoader();
+        var feature = await loader.LoadFromFileAsync("features/user-registration.feature");
 
-        scenario
-            .Given("a new user with valid email", async () => await Task.CompletedTask)
-            .When("the user submits the registration form", async () => await Task.CompletedTask)
-            .Then("the registration should succeed", () => true);
+        // Setup step binding resolver
+        var resolver = new StepBindingResolver();
+        resolver.RegisterStepDefinition(typeof(UserRegistrationSteps));
 
-        await scenario.ExecuteAsync();
+        // Execute scenario with automatic step binding
+        var executor = new ScenarioExecutor(resolver);
+        var scenario = feature.Scenarios.First();
+        var result = await executor.ExecuteAsync(scenario, serviceProvider: new ServiceCollection().BuildServiceProvider());
 
-        Assert.True(scenario.Validate());
+        Assert.True(result.Status == ScenarioStatus.Passed);
     }
 }
 ```
@@ -229,6 +284,50 @@ var mockFactory = new MockFactory();
 var userRepository = mockFactory.Create(typeof(IUserRepository));
 ```
 
+### Integration testing with fixtures
+
+```csharp
+using PeasyPilot.Integration.Fixtures;
+using Xunit;
+
+public class UserRepositoryIntegrationTests : XUnitIntegrationTestFixture
+{
+    protected override void ConfigureServices(IServiceCollection services)
+    {
+        var repository = new InMemoryUserRepository();
+        services.AddSingleton<IUserRepository>(repository);
+        
+        // Register for automatic reset between tests
+        RegisterResettableService(repository);
+    }
+
+    [Fact]
+    public async Task AddUser_WithValidUser_Succeeds()
+    {
+        var repository = GetService<IUserRepository>();
+        var user = new User { Name = "John Doe", Email = "john@example.com" };
+
+        await repository.AddAsync(user);
+
+        var users = await repository.GetAllAsync();
+        Assert.Single(users);
+    }
+
+    [Fact]
+    public async Task Reset_ClearsAllData()
+    {
+        var repository = GetService<IUserRepository>();
+        await repository.AddAsync(new User { Name = "Jane" });
+
+        // Reset database and services
+        await ResetDatabaseAsync();
+
+        var users = await repository.GetAllAsync();
+        Assert.Empty(users);
+    }
+}
+```
+
 ### Fluent assertions
 
 ```csharp
@@ -246,6 +345,46 @@ When the current test framework also exposes an `Assert` type, use the alias bel
 ```csharp
 using Assert = PeasyPilot.Core.Assertions.Assert;
 ```
+
+## BDD (Behavior-Driven Development)
+
+PeasyPilot provides full Gherkin feature file support with automatic step binding resolution via reflection and pattern matching.
+
+### Key features
+
+- **Gherkin feature files**: Write scenarios in plain English
+- **Step binding attributes**: `[Given]`, `[When]`, `[Then]`, `[And]`, `[But]`
+- **Pattern matching**: Extract parameters from step text automatically
+- **Reflection-based discovery**: Step definitions discovered at runtime
+- **Parameter extraction**: Supports string, int, decimal, and custom types
+- **Integration ready**: Works seamlessly with `IntegrationTestFixture` for database-backed scenarios
+
+### Step binding patterns
+
+```csharp
+// Simple steps
+[Given("the database is empty")]
+public async Task DatabaseEmpty() { }
+
+// Steps with single parameter
+[Given("I have {count} items")]
+public async Task HaveItems(string count) { }
+
+// Steps with multiple parameters
+[When("I create a user with email {email} and name {name}")]
+public async Task CreateUser(string email, string name) { }
+
+// Type conversion
+[Given("I have {count} active users")]
+public async Task HaveActiveUsers(int count) { }
+```
+
+### Full E2E example
+
+See `samples/PeasyPilot.XUnit.Samples/` for complete working examples with:
+- Feature files in `features/`
+- Step definitions in `StepDefinitions/`
+- Integration tests demonstrating E2E scenarios
 
 ## Dependency injection
 
