@@ -59,13 +59,14 @@ xUnit package not resolving despite being declared in .csproj. Blocks Issue #3 r
 ║ NEXT STEPS                                                     ║
 ╚════════════════════════════════════════════════════════════════╝
 
-1. Install gh CLI: https://cli.github.com/
-2. Authenticate: gh auth login
-3. Create issue manually:
-   gh issue create \
-     --title "Build failed: Compilation error - CS0246: FactAttribute not found" \
-     --body "@./.issue-20260905-124641-compilation_error.txt" \
-     --label "bug,auto-detected" \
-     --assignee "hnidboubker"
+Use GitHub MCP to create this issue automatically:
 
-Or copy the issue body above to GitHub web interface.
+1. Configure GitHub MCP token in ~/.claude/claude_desktop_config.json
+   (See .agents/09_MCP_GITHUB_CONFIG.md for setup instructions)
+
+2. The issue will be created automatically when:
+   - A bug is detected during development
+   - auto-issue-on-bug-detection skill is triggered
+   - GitHub MCP is properly configured with valid token
+
+Or copy the issue body above to GitHub web interface for manual creation.
