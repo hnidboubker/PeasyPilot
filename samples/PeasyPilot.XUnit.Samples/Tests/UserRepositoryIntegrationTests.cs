@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using PeasyPilot.Integration.Fixtures;
+using PeasyPilot.XUnit.Samples.Models;
 using Xunit;
 
 namespace PeasyPilot.XUnit.Samples.Tests;
