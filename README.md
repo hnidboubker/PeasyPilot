@@ -481,13 +481,43 @@ Contributions are welcome. Areas of interest include:
 
 PeasyPilot is distributed under the MIT license.
 
+## Documentation
+
+Complete guides for using PeasyPilot:
+
+### BDD Testing
+- 📖 **[BDD Guide](./docs/BDD_GUIDE.md)** — Complete guide to behavior-driven testing
+  - Feature file creation (Gherkin syntax)
+  - Step definition patterns and bindings
+  - Step binding resolver mechanism
+  - Integration testing with fixtures
+  - Parameter extraction and type conversion
+  - Troubleshooting and best practices
+
+### Integration Testing
+- 📖 **[Integration Testing Guide](./docs/INTEGRATION_TESTING.md)** — Integration test patterns
+  - Database fixtures and lifecycle management
+  - Test factory abstractions
+  - Web application testing
+  - DI container integration
+
+### Samples
+Working examples in `samples/`:
+- `PeasyPilot.XUnit.Samples/` — xUnit with BDD and integration tests
+  - Feature files: `features/users.feature`, `features/orders.feature`
+  - Step definitions: `StepDefinitions/UserSteps.cs`, `StepDefinitions/OrderSteps.cs`
+  - Tests: `Tests/UserBddTests.cs`, `Tests/OrderBddTests.cs`
+
 ## Support
 
 For issues or questions:
 
-1. Review the project documentation and examples
-2. Check the existing samples under `samples/`
-3. Open an issue in the repository with a minimal repro
+1. Review the documentation:
+   - [BDD_GUIDE.md](./docs/BDD_GUIDE.md) for behavior-driven testing
+   - [INTEGRATION_TESTING.md](./docs/INTEGRATION_TESTING.md) for integration patterns
+2. Check the working examples under `samples/`
+3. Review unit tests in `tests/`
+4. Open an issue in the repository with a minimal repro
 
 ## Version
 
