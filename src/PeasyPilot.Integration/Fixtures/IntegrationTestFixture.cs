@@ -10,6 +10,7 @@ public abstract class IntegrationTestFixture : IAsyncDisposable
 {
     private IServiceProvider? _serviceProvider;
     private ITestDatabase? _database;
+    private ITestDatabaseFactory? _databaseFactory;
 
     /// <summary>
     /// Gets the service provider for dependency injection.
@@ -37,12 +38,12 @@ public abstract class IntegrationTestFixture : IAsyncDisposable
     }
 
     /// <summary>
-    /// Creates and configures the test database.
+    /// Creates the database factory for test database instances.
     /// Override this method to use a different database implementation.
     /// </summary>
-    protected virtual ITestDatabase CreateDatabase()
+    protected virtual ITestDatabaseFactory CreateDatabaseFactory()
     {
-        return new InMemoryTestDatabase();
+        return new InMemoryDatabaseFactory();
     }
 
     /// <summary>
@@ -54,7 +55,8 @@ public abstract class IntegrationTestFixture : IAsyncDisposable
         ConfigureServices(services);
         _serviceProvider = services.BuildServiceProvider();
 
-        _database = CreateDatabase();
+        _databaseFactory = CreateDatabaseFactory();
+        _database = _databaseFactory.CreateDatabase();
         await _database.InitializeAsync();
         await _database.SeedAsync();
     }
