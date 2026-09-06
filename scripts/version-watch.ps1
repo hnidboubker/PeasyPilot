@@ -100,35 +100,90 @@ function Invoke-BuildAndPack {
     return $true
 }
 
+# Setup file watcher
 $watcher = [System.IO.FileSystemWatcher]::new($rootDirectory)
 $watcher.IncludeSubdirectories = $true
 $watcher.NotifyFilter = [System.IO.NotifyFilters]'FileName, LastWrite, DirectoryName'
 $watcher.EnableRaisingEvents = $true
-$sourceIdentifiers = 'PeasyPilot.VersionWatcher.Changed', 'PeasyPilot.VersionWatcher.Created', 'PeasyPilot.VersionWatcher.Deleted', 'PeasyPilot.VersionWatcher.Renamed'
-$subscriptions = @(
-    Register-ObjectEvent -InputObject $watcher -EventName Changed -SourceIdentifier $sourceIdentifiers[0]
-    Register-ObjectEvent -InputObject $watcher -EventName Created -SourceIdentifier $sourceIdentifiers[1]
-    Register-ObjectEvent -InputObject $watcher -EventName Deleted -SourceIdentifier $sourceIdentifiers[2]
-    Register-ObjectEvent -InputObject $watcher -EventName Renamed -SourceIdentifier $sourceIdentifiers[3]
+
+$sourceIdentifiers = @(
+    'PeasyPilot.VersionWatcher.Changed',
+    'PeasyPilot.VersionWatcher.Created',
+    'PeasyPilot.VersionWatcher.Deleted',
+    'PeasyPilot.VersionWatcher.Renamed'
 )
 
+# Register file system events
+$subscriptions = @(
+    Register-ObjectEvent -InputObject $watcher -EventName Changed -SourceIdentifier $sourceIdentifiers[0] -Action {
+        if (Test-RelevantChange $EventArgs.FullPath) {
+            Set-Content -Path (Join-Path $env:TEMP 'peasypilot-change-detected') -Value (Get-Date)
+        }
+    }
+    Register-ObjectEvent -InputObject $watcher -EventName Created -SourceIdentifier $sourceIdentifiers[1] -Action {
+        if (Test-RelevantChange $EventArgs.FullPath) {
+            Set-Content -Path (Join-Path $env:TEMP 'peasypilot-change-detected') -Value (Get-Date)
+        }
+    }
+    Register-ObjectEvent -InputObject $watcher -EventName Deleted -SourceIdentifier $sourceIdentifiers[2] -Action {
+        if (Test-RelevantChange $EventArgs.FullPath) {
+            Set-Content -Path (Join-Path $env:TEMP 'peasypilot-change-detected') -Value (Get-Date)
+        }
+    }
+    Register-ObjectEvent -InputObject $watcher -EventName Renamed -SourceIdentifier $sourceIdentifiers[3] -Action {
+        if (Test-RelevantChange $EventArgs.FullPath) {
+            Set-Content -Path (Join-Path $env:TEMP 'peasypilot-change-detected') -Value (Get-Date)
+        }
+    }
+)
+
+$lastBuild = Get-Date
+$debounceMs = 1000  # Wait 1s for multiple changes
+
 try {
-Write-Host "Surveillance de $rootDirectory (Ctrl+C pour arrêter)"
-Invoke-BuildAndPack
+    Write-Host "`n[WATCH] Monitoring $rootDirectory (press Ctrl+C to stop)`n" -ForegroundColor Green
 
-while ($true) {
-    $changeEvent = Wait-Event -SubscriptionId $subscriptions.Id
-    $changedPath = $changeEvent.SourceEventArgs.FullPath
-    Remove-Event -EventIdentifier $changeEvent.EventIdentifier
+    # Initial build
+    Invoke-BuildAndPack
 
-    if (Test-RelevantChange $changedPath) {
-        Write-Host 'Modification détectée. Relance du build et du package...'
-        Invoke-BuildAndPack
-        Get-Event | Where-Object { $sourceIdentifiers -contains $_.SourceIdentifier } | Remove-Event
+    while ($true) {
+        # Check if change detected
+        $changeMarker = Join-Path $env:TEMP 'peasypilot-change-detected'
+
+        if (Test-Path $changeMarker) {
+            $changeTime = Get-Content $changeMarker
+            Remove-Item $changeMarker -Force
+
+            # Debounce: wait for changes to settle
+            Start-Sleep -Milliseconds $debounceMs
+
+            if ((Get-Date) -gt $lastBuild.AddSeconds(2)) {
+                Write-Host "`n[WATCH] Change detected, rebuilding..." -ForegroundColor Yellow
+
+                $success = Invoke-BuildAndPack
+
+                if ($success) {
+                    $lastBuild = Get-Date
+                }
+
+                # Clear any accumulated events
+                Get-Event -SourceIdentifier $sourceIdentifiers -ErrorAction SilentlyContinue | Remove-Event
+            }
+        }
+
+        Start-Sleep -Milliseconds 500
     }
 }
+catch [System.OperationCanceledException] {
+    Write-Host "`n[WATCH] Stopped by user" -ForegroundColor Yellow
+}
+catch {
+    Write-Host "`n[ERROR] Unexpected error: $_" -ForegroundColor Red
+    throw
 }
 finally {
-    $subscriptions | Unregister-Event
+    Write-Host "[CLEANUP] Unregistering events..." -ForegroundColor Cyan
+    $subscriptions | Unregister-Event -ErrorAction SilentlyContinue
     $watcher.Dispose()
+    Write-Host "[CLEANUP] Done." -ForegroundColor Cyan
 }
