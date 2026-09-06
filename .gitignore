@@ -398,6 +398,10 @@ MSBuild_Logs/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
+# Build warnings and diagnostics reports
+BUILD_WARNINGS.txt
+BUILD_WARNINGS_ANALYSIS.md
+
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
