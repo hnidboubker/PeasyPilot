@@ -1,4 +1,5 @@
 using PeasyPilot.Integration.Fixtures;
+using PeasyPilot.Integration.Helpers;
 using Xunit;
 
 namespace PeasyPilot.XUnit.Samples.Tests;
