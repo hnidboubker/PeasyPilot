@@ -39,6 +39,29 @@ for validation — it has not been independently reviewed line-by-line by the ow
   begins (`issue-resolution`).
 - No assuming, no modifying without validation, no deleting without explicit
   agreement — this applies repo-wide, not just to governance files.
+- **[2026-09-06 Session 3] Test Suite Creation Assistance feature (hybrid mechanical + AI)**
+  implemented on branch `feature-ia-test-generator`:
+  * **Phase 1 (Mechanical, COMPLETE)**: New project `PeasyPilot.TestAssistant` with
+    reflection-based test generation engine. 9 type-shape rules (Nullable, String, Numeric,
+    Boolean, Enum, DateTime, Guid, Collection, Fallback). CLI verb `peasypilot suggest-tests
+    --assembly <path> --type <FullName> [--framework xunit|nunit|tunit]`. Per-framework
+    renderers (xUnit, NUnit, TUnit). Outputs: `.testbattery.json` manifest + `.Tests.Proposed.cs`
+    scaffold. Works autonomously, no AI dependency, usable in CI/CD. Phase 1 committed
+    and pushed to `feature-ia-test-generator`.
+  * **Phase 2 (AI Enrichment, COMPILED — READY_FOR_COMMIT)**: New skill
+    `peasypilot-test-battery-advisor.md` for enriching mechanical suggestions with
+    business-meaningful cases (domain validation, exception paths, concurrency) +
+    user-approval gate before code generation + handoff to existing
+    `peasypilot-test-generator` skill. Phase 2 compiled, build Exit Code 0 (all TFM),
+    awaiting user git commit/push.
+  * **Architectural choice**: Hybrid approach allows mechanical-only (fast, offline) or
+    mechanical + AI enriched (better coverage, interactive). JSON manifest
+    (`TestBatteryProposal`) is the contract between layers — either can produce/consume it.
+  * **GitHub issues**: #16 (tracker/checklist for implementation), #17 (build error
+    System.Reflection.MetadataLoadContext — resolved by removing external PackageVersion,
+    using native import instead).
+  * **Next steps**: User commits/pushes Phase 2; create PR `feature-ia-test-generator` →
+    `main`; merge; Phase 3 (future) = end-to-end integration tests + full workflow validation.
 
 ## Open Questions
 
