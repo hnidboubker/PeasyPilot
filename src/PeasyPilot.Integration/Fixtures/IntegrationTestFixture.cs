@@ -11,6 +11,7 @@ public abstract class IntegrationTestFixture : IAsyncDisposable
     private IServiceProvider? _serviceProvider;
     private ITestDatabase? _database;
     private ITestDatabaseFactory? _databaseFactory;
+    private readonly List<IResettable> _resettableServices = new();
 
     /// <summary>
     /// Gets the service provider for dependency injection.
@@ -83,12 +84,18 @@ public abstract class IntegrationTestFixture : IAsyncDisposable
     }
 
     /// <summary>
-    /// Resets the database to its initial state.
+    /// Resets the database to its initial state and resets all registered resettable services.
     /// Useful for running multiple tests with a clean slate.
     /// </summary>
     protected async Task ResetDatabaseAsync()
     {
         await Database.ResetAsync();
+
+        // Reset all registered services
+        foreach (var service in _resettableServices)
+        {
+            await service.ResetAsync();
+        }
     }
 
     /// <summary>
@@ -97,5 +104,14 @@ public abstract class IntegrationTestFixture : IAsyncDisposable
     protected T GetService<T>() where T : notnull
     {
         return Services.GetRequiredService<T>();
+    }
+
+    /// <summary>
+    /// Registers a service for resetting during database resets.
+    /// Call this in ConfigureServices for services that implement IResettable.
+    /// </summary>
+    protected void RegisterResettableService(IResettable service)
+    {
+        _resettableServices.Add(service);
     }
 }
