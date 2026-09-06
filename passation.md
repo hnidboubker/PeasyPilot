@@ -1,7 +1,7 @@
 # Passation — Problème TUnit .NET 10/9
 
-**Date:** 2026-09-05
-**Statut:** En cours
+**Date:** 2026-09-06
+**Statut:** Diagnostic complet - Solution 3 explorée et non viable
 **Responsable suivant:** TBD
 
 ---
@@ -16,21 +16,30 @@ Résultat attendu : Les tests TUnit s'exécutent et passent sur net8.0, net9.0 e
 
 **Symptôme :**
 - TUnit n'exécute pas les tests sur net9.0 et net10.0.
-- Erreur de build : `Testing with VSTest target is no longer supported by Microsoft.Testing.Platform on .NET 10 SDK and later.`
-- Le workflow CI peut continuer car le filtre test exclut ces cibles, mais c'est un contournement temporaire.
+- Erreur MSBuild (lors de `dotnet test`) : `Testing with VSTest target is no longer supported by Microsoft.Testing.Platform on .NET 10 SDK and later.`
+- Erreur générée par `Microsoft.Testing.Platform.MSBuild.targets` (v2.4.0), ligne 355.
 
-**Cause (hypothèse) :**
-- TUnit repose sur l'ancienne cible VSTest, dépréciée sur .NET 10+.
-- Incompatibilité profonde entre TUnit et Microsoft.Testing.Platform 2.4.0.
+**Cause (confirmée - pas une hypothèse) :**
+- `Microsoft.Testing.Platform 2.4.0` bloque intentionnellement le VSTest runner sur le .NET 10 SDK+ (décision de conception, pas un bug).
+- La condition de blocage : `$(IsTestingPlatformApplication)==true` AND `$(TargetFramework)!=''` AND `.NET SDK version >= 10`
+- Cette condition s'évalue au **moment du parsing MSBuild** (pas au runtime), même si le projet cible net8.0.
+- Le check porte sur la **version du SDK utilisée pour compiler**, pas la version cible du framework.
+- Microsoft a intentionnellement ajouté ce blocage pour forcer la migration de VSTest vers la nouvelle Testing Platform.
 
 **Comportement attendu :**
 - Tests TUnit passent sur net8.0, net9.0, net10.0.
 
 **Comportement actuel :**
-- Tests ne s'exécutent pas du tout sur net9.0/net10.0 (102 tests, aucun message d'erreur clair).
+- Tests TUnit net8.0 : ✅ passent correctement
+- Tests TUnit net9.0 : ❌ blocage MSBuild (pas d'exécution)
+- Tests TUnit net10.0 : ❌ blocage MSBuild (pas d'exécution)
 
 **Contrainte importante :**
-- Ne pas casser les tests XUnit et NUnit qui fonctionnent correctement.
+- Ne pas casser les tests XUnit et NUnit qui fonctionnent correctement sur tous les frameworks.
+
+**Point clé :**
+- Le problème ne provient **pas** du projet TUnit.Samples lui-même, mais de `Microsoft.Testing.Platform 2.4.0` (inclus transitivement par TUnit 1.66.10).
+- Aucune configuration MSBuild ne peut contourner cette erreur car elle est par conception.
 
 ## 3. Fichiers importants
 
