@@ -464,3 +464,6 @@ Thumbs.db
 !.claude/.gitkeep
 
 passation.md
+
+.reflexion/*
+!.reflexion/.gitkeep
