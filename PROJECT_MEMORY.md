@@ -40,24 +40,31 @@ for validation — it has not been independently reviewed line-by-line by the ow
 - No assuming, no modifying without validation, no deleting without explicit
   agreement — this applies repo-wide, not just to governance files.
 
-## Recent Updates (2026-09-06)
+## Recent Updates (2026-09-08)
 
-**Governance Files Completed:**
-All nine governance files (`.agents/00_START_HERE.md` through `.agents/08_AUTO_ISSUE_SKILL.md`) have been created per Houssine's global CLAUDE.md requirements. These are identical across all projects and should not be modified without explicit approval.
-
-**Phase 4 Status Summary:**
-- T1-T4: ✅ COMPLETE (Feature loading, scenario execution, samples working)
-- T5: ⏳ IN PROGRESS (Step binding resolver and full E2E validation)
+**Phase 4 (BDD) Final Status:**
+- T1-T5: ✅ COMPLETE — All tiers finished
+- Step Binding Resolver: ✅ Implemented + 8 tests passing
+- Documentation: ✅ BDD_GUIDE.md (400+ lines)
 - Build: ✅ 0 errors (all frameworks)
-- Tests: ✅ 21+ passing
-- Branch: phase/04-bdd (not yet pushed to remote)
-- Issue #32 tracks T5 work remaining
+- Tests: ✅ 126+ passing | 0 failed | 3 skipped
+- Branch: phase/04-bdd (ready for merge to main)
+- Status: READY_FOR_COMMIT (awaiting manual git commit/push)
+
+**Phase 5 (AI Test Engineer) Planning Complete:**
+- Vision: Transform `PeasyPilot.TestAssistant` into a full AI Test Engineer
+- 4 Capabilities: Analyze → Plan → Generate → Challenge
+- 5 Tiers planned with deliverables, files, and tests per tier
+- Issue #35 created with full scope, checklist, and documentation list
+- Status: Ready to start after Phase 4 merged to main
 
 ## Open Questions
 
-- T5 step binding resolver: Should parameter extraction support only `{paramName}` syntax or also typed parameters like `{name:string}`?
-- E2E integration: How deep should scenario execution go? Full fixture lifecycle (IAsyncLifetime) or minimal database operations?
-- Should `PROJECT_MEMORY.md` eventually record CI/release specifics (build.yml, coverage.yml, release.yml under `.github/`) in more detail, or stay high-level?
+**Phase 5 Design Decisions:**
+- Test generation: Should generated tests be placed in same project or separate `*.Generated.cs` files?
+- Mutation simulation: How deep should mutation patterns go? Boundary values only, or logic inversions?
+- Challenge mode: Should it auto-fix weak tests or only report gaps?
+- CLI integration: Should test generation support interactive mode or only batch CLI?
 
 ## Important Constraints
 
