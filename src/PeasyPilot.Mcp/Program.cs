@@ -1,23 +1,20 @@
-﻿using PeasyPilot.Mcp.Services;
+﻿using PeasyPilot.Mcp.Protocol;
 
-var registry = new McpToolRegistry();
-registry.RegisterDefaults();
+// Create and run the MCP server
+var server = new McpServer();
 
-var service = new TestAssistantService(registry);
-
-Console.WriteLine("🚀 PeasyPilot MCP Server");
-Console.WriteLine("=======================");
-Console.WriteLine();
-Console.WriteLine("Available Tools:");
-foreach (var tool in registry.GetAllTools())
+try
 {
-    Console.WriteLine($"  • {tool.Name} - {tool.Description}");
+    // Write startup info to stderr (not interfering with protocol)
+    Console.Error.WriteLine("🚀 PeasyPilot MCP Server v1.0.0");
+    Console.Error.WriteLine("Starting MCP protocol on stdio...");
+    Console.Error.WriteLine();
+
+    // Run the server (blocks until shutdown)
+    await server.RunAsync();
 }
-Console.WriteLine();
-Console.WriteLine("Server ready to accept MCP requests...");
-
-// Placeholder for MCP server loop
-while (true)
+catch (Exception ex)
 {
-    await Task.Delay(1000);
+    Console.Error.WriteLine($"Fatal error: {ex.Message}");
+    Environment.Exit(1);
 }
