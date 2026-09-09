@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Dynamic;
 using System.Text.RegularExpressions;
 
 namespace PeasyPilot.Mcp.Tools;
@@ -13,7 +14,7 @@ public class RunTestsTool : IMcpTool
     public string Name => "run_tests";
     public string Description => "Execute tests and report results";
 
-    public async Task<object> ExecuteAsync(Dictionary<string, object> parameters)
+    public async Task<dynamic> ExecuteAsync(Dictionary<string, object> parameters)
     {
         try
         {
@@ -34,24 +35,22 @@ public class RunTestsTool : IMcpTool
 
             var result = await ExecuteTests(projectPath, testFilter, framework);
 
-            return new
-            {
-                success = true,
-                total = result.Total,
-                passed = result.Passed,
-                failed = result.Failed,
-                failures = result.Failures,
-                durationMs = result.DurationMs,
-                summary = $"{result.Passed}/{result.Total} tests passed"
-            };
+            dynamic response = new ExpandoObject();
+            response.success = true;
+            response.total = result.Total;
+            response.passed = result.Passed;
+            response.failed = result.Failed;
+            response.failures = result.Failures;
+            response.durationMs = result.DurationMs;
+            response.summary = $"{result.Passed}/{result.Total} tests passed";
+            return response;
         }
         catch (Exception ex)
         {
-            return new
-            {
-                success = false,
-                error = ex.Message
-            };
+            dynamic response = new ExpandoObject();
+            response.success = false;
+            response.error = ex.Message;
+            return response;
         }
     }
 

@@ -1,8 +1,10 @@
+using System.Dynamic;
+
 namespace PeasyPilot.Mcp.Tools;
 
 public interface IMcpTool
 {
     string Name { get; }
     string Description { get; }
-    Task<object> ExecuteAsync(Dictionary<string, object> parameters);
+    Task<dynamic> ExecuteAsync(Dictionary<string, object> parameters);
 }

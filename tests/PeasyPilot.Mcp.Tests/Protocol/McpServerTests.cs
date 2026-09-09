@@ -19,6 +19,7 @@ public class McpServerTests
         var server = new McpServer();
         var message = new JsonRpcMessage
         {
+            Jsonrpc = "2.0",
             Method = "initialize",
             Params = new { },
             Id = "1"
@@ -43,6 +44,7 @@ public class McpServerTests
         // First initialize
         var initMsg = new JsonRpcMessage
         {
+            Jsonrpc = "2.0",
             Method = "initialize",
             Params = new { },
             Id = "1"
@@ -56,6 +58,7 @@ public class McpServerTests
         // Then list tools
         var listMsg = new JsonRpcMessage
         {
+            Jsonrpc = "2.0",
             Method = "tools/list",
             Params = new { },
             Id = "2"
@@ -74,6 +77,7 @@ public class McpServerTests
         var server = new McpServer();
         var message = new JsonRpcMessage
         {
+            Jsonrpc = "2.0",
             Method = "tools/call",
             Params = new { tool = "analyze_code", arguments = new Dictionary<string, object>() },
             Id = "1"
@@ -95,6 +99,7 @@ public class McpServerTests
         var server = new McpServer();
         var message = new JsonRpcMessage
         {
+            Jsonrpc = "2.0",
             Method = "unknown",
             Params = new { },
             Id = "1"

@@ -60,6 +60,7 @@ public class StdioTransportTests
     {
         var message = new JsonRpcMessage
         {
+            Jsonrpc = "2.0",
             Method = "tools/call",
             Params = new ToolCallRequest
             {

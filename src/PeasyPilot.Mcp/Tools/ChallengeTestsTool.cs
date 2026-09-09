@@ -1,3 +1,4 @@
+using System.Dynamic;
 using PeasyPilot.Mcp.Services;
 
 namespace PeasyPilot.Mcp.Tools;
@@ -12,7 +13,7 @@ public class ChallengeTestsTool : IMcpTool
     public string Name => "challenge_tests";
     public string Description => "Find coverage gaps via mutation simulation";
 
-    public async Task<object> ExecuteAsync(Dictionary<string, object> parameters)
+    public async Task<dynamic> ExecuteAsync(Dictionary<string, object> parameters)
     {
         try
         {
@@ -36,25 +37,23 @@ public class ChallengeTestsTool : IMcpTool
             // Challenge the provided test code
             var challengeResult = engine.ChallengeTests(testCode!, analysis);
 
-            return new
-            {
-                success = true,
-                method = methodName,
-                qualityScore = challengeResult.QualityScore,
-                issues = challengeResult.Issues,
-                suggestions = challengeResult.Suggestions,
-                missingScenarios = challengeResult.MissingScenarios,
-                estimatedCoverage = challengeResult.EstimatedCoverage,
-                isHealthy = challengeResult.QualityScore >= 70
-            };
+            dynamic response = new ExpandoObject();
+            response.success = true;
+            response.method = methodName;
+            response.qualityScore = challengeResult.QualityScore;
+            response.issues = challengeResult.Issues;
+            response.suggestions = challengeResult.Suggestions;
+            response.missingScenarios = challengeResult.MissingScenarios;
+            response.estimatedCoverage = challengeResult.EstimatedCoverage;
+            response.isHealthy = challengeResult.QualityScore >= 70;
+            return response;
         }
         catch (Exception ex)
         {
-            return new
-            {
-                success = false,
-                error = ex.Message
-            };
+            dynamic response = new ExpandoObject();
+            response.success = false;
+            response.error = ex.Message;
+            return response;
         }
     }
 }
