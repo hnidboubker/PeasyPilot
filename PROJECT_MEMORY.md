@@ -42,16 +42,35 @@ for validation — it has not been independently reviewed line-by-line by the ow
 
 ## Recent Updates (2026-09-09)
 
-**Phase 5 Tier 2 — Test Plan Builder — IN PROGRESS ✅**
-- **ITestPlanBuilder interface:** Enhanced with documentation
-- **TestPlan model:** Added ComplexityScore + RecommendedPatterns
-- **TestQualityScorer class:** Scores risk, calculates coverage, identifies gaps, estimates test count
-- **TestPlanBuilder implementation:** 
-  - BuildPlan() → creates comprehensive TestPlan from MethodTestModel
-  - EnrichPlan() → enriches with dependency-based strategies
-- **Tier 2 Tests:** 10 tests, ALL PASSING on net8.0/net9.0/net10.0
-- **Build:** 0 errors, all frameworks validated
-- **Status:** READY_FOR_COMMIT after full build validation
+**Phase 5 Tier 2 — Test Plan Builder — COMPLETE ✅**
+- **Commit:** 47bd961
+- **Branch:** phase/05-tier-2-test-planning
+- **ITestPlanBuilder interface:** Enhanced with documentation + XML comments
+- **TestPlan model:** Added ComplexityScore + RecommendedPatterns (init properties)
+- **TestQualityScorer class (72 lines):**
+  - ScoreRisk() - Risk scoring 0-10 based on async/dependencies/exceptions
+  - CalculateCoverage() - Decimal coverage 0-1 from scenarios & dependencies
+  - IdentifyGaps() - Lists missing scenario types (HappyPath, Boundary, Error, etc)
+  - EstimateTestCount() - Estimates tests from params/scenarios/exceptions
+- **TestPlanBuilder implementation (114 lines):**
+  - BuildPlan(MethodTestModel) → creates comprehensive TestPlan
+  - EnrichPlan(TestPlan, dependencies) → enriches with mock/fixture patterns
+  - DetermineIntegrationNeed() → detects DbContext/Repository patterns
+  - DetermineMockingNeed() → detects ILogger/service patterns
+  - BuildRecommendedPatterns() → suggests AAA, DI, Async, Exception patterns
+- **Tier 2 Tests (230 lines, 10 tests):**
+  - BuildPlan_ReturnsValidTestPlan ✅
+  - BuildPlan_CorrectlyEstimatesTestCount ✅
+  - BuildPlan_CorrectlyScoresRisk ✅
+  - BuildPlan_IdentifiesCoverageGaps ✅
+  - BuildPlan_DetectsIntegrationNeeds ✅
+  - BuildPlan_DetectsMockingNeeds ✅
+  - EnrichPlan_AddsIntegrationPatterns ✅
+  - EnrichPlan_AddsMockingPatterns ✅
+  - TestQualityScorer_CalculatesCoverageCorrectly ✅
+  - TestQualityScorer_EstimatesTestCountAccurately ✅
+- **Quality:** 0 errors, 10/10 tests passing (net8.0/9.0/10.0)
+- **Status:** COMMITTED | Ready for PR to main
 
 **Documentation Refactor — COMPLETE ✅**
 - **24 documentation files created** (12 packages × EN+FR)
