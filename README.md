@@ -650,17 +650,6 @@ Working examples in `samples/`:
   - Step definitions: `StepDefinitions/UserSteps.cs`, `StepDefinitions/OrderSteps.cs`
   - Tests: `Tests/UserBddTests.cs`, `Tests/OrderBddTests.cs`
 
-## Support
-
-For issues or questions:
-
-1. Review the documentation:
-   - [BDD_GUIDE.md](./docs/BDD_GUIDE.md) for behavior-driven testing
-   - [INTEGRATION_TESTING.md](./docs/INTEGRATION_TESTING.md) for integration patterns
-2. Check the working examples under `samples/`
-3. Review unit tests in `tests/`
-4. Open an issue in the repository with a minimal repro
-
 ## Version
 
-Current package version: **0.1.3**
+Current package version: **0.1.4**
