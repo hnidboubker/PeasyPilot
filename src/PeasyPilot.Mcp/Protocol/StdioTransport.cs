@@ -84,6 +84,13 @@ public class StdioTransport
     /// </summary>
     public static ToolCallRequest ExtractToolCall(JsonRpcMessage message)
     {
+        // Handle direct ToolCallRequest (for tests)
+        if (message.Params is ToolCallRequest toolCall)
+        {
+            return toolCall;
+        }
+
+        // Handle JsonElement (from JSON deserialization)
         if (message.Params is JsonElement element)
         {
             var json = element.GetRawText();
@@ -93,6 +100,6 @@ public class StdioTransport
             return request;
         }
 
-        throw new InvalidOperationException("Params must be a JSON object");
+        throw new InvalidOperationException("Params must be a JSON object or ToolCallRequest");
     }
 }

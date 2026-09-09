@@ -1,3 +1,4 @@
+using System.Dynamic;
 using PeasyPilot.Mcp.Services;
 
 namespace PeasyPilot.Mcp.Tools;
@@ -12,7 +13,7 @@ public class GenerateTestsTool : IMcpTool
     public string Name => "generate_tests";
     public string Description => "Analyze code and generate comprehensive test suite";
 
-    public async Task<object> ExecuteAsync(Dictionary<string, object> parameters)
+    public async Task<dynamic> ExecuteAsync(Dictionary<string, object> parameters)
     {
         try
         {
@@ -46,35 +47,33 @@ public class GenerateTestsTool : IMcpTool
             // Challenge/validate the tests
             var challenge = engine.ChallengeTests(generatedCode, analysis);
 
-            return new
+            dynamic response = new ExpandoObject();
+            response.success = true;
+            response.framework = framework;
+            response.method = methodName;
+            response.generatedCode = generatedCode;
+            response.scenarios = plan.Scenarios.Select(s => (object)new
             {
-                success = true,
-                framework = framework,
-                method = methodName,
-                generatedCode,
-                scenarios = plan.Scenarios.Select(s => new
-                {
-                    description = s.Description,
-                    s.Type,
-                    s.RiskLevel
-                }).ToList(),
-                estimatedTestCount = plan.TotalEstimatedTests,
-                riskScore = plan.RiskScore,
-                quality = new
-                {
-                    qualityScore = challenge.QualityScore,
-                    issues = challenge.Issues,
-                    suggestions = challenge.Suggestions.Take(3).ToList()
-                }
+                description = s.Description,
+                s.Type,
+                s.RiskLevel
+            }).ToList();
+            response.estimatedTestCount = plan.TotalEstimatedTests;
+            response.riskScore = plan.RiskScore;
+            response.quality = new
+            {
+                qualityScore = challenge.QualityScore,
+                issues = challenge.Issues,
+                suggestions = challenge.Suggestions.Take(3).ToList()
             };
+            return response;
         }
         catch (Exception ex)
         {
-            return new
-            {
-                success = false,
-                error = ex.Message
-            };
+            dynamic response = new ExpandoObject();
+            response.success = false;
+            response.error = ex.Message;
+            return response;
         }
     }
 }

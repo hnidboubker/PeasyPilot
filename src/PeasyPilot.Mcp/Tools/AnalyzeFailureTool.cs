@@ -1,3 +1,5 @@
+using System.Dynamic;
+
 namespace PeasyPilot.Mcp.Tools;
 
 /// <summary>
@@ -10,7 +12,7 @@ public class AnalyzeFailureTool : IMcpTool
     public string Name => "analyze_failure";
     public string Description => "Diagnose test failures and suggest fixes";
 
-    public async Task<object> ExecuteAsync(Dictionary<string, object> parameters)
+    public async Task<dynamic> ExecuteAsync(Dictionary<string, object> parameters)
     {
         try
         {
@@ -28,23 +30,21 @@ public class AnalyzeFailureTool : IMcpTool
 
             var (failureType, reason, suggestions) = DiagnoseFailure(errorMessage ?? string.Empty, stackTrace);
 
-            return new
-            {
-                success = true,
-                testName,
-                failureType,
-                reason,
-                suggestions,
-                riskLevel = DetermineRiskLevel(failureType)
-            };
+            dynamic result = new ExpandoObject();
+            result.success = true;
+            result.testName = testName;
+            result.failureType = failureType;
+            result.reason = reason;
+            result.suggestions = suggestions;
+            result.riskLevel = DetermineRiskLevel(failureType);
+            return result;
         }
         catch (Exception ex)
         {
-            return new
-            {
-                success = false,
-                error = ex.Message
-            };
+            dynamic result = new ExpandoObject();
+            result.success = false;
+            result.error = ex.Message;
+            return result;
         }
     }
 
@@ -52,6 +52,7 @@ public class AnalyzeFailureTool : IMcpTool
     {
         var lowerError = errorMessage.ToLowerInvariant();
 
+        // Check specific patterns BEFORE general patterns
         if (lowerError.Contains("null") || lowerError.Contains("nullreferenceexception"))
         {
             return ("NULL_REFERENCE",
@@ -64,19 +65,8 @@ public class AnalyzeFailureTool : IMcpTool
                 });
         }
 
-        if (lowerError.Contains("assert") || lowerError.Contains("expected"))
-        {
-            return ("ASSERTION_FAILED",
-                "Test assertion did not match expected value.",
-                new List<string>
-                {
-                    "Verify the actual value matches the expected condition",
-                    "Check that the method under test produces the correct output",
-                    "Add logging to understand what value was actually produced"
-                });
-        }
-
-        if (lowerError.Contains("timeout") || lowerError.Contains("deadlock"))
+        // Timeout before general "expected"
+        if (lowerError.Contains("timeout") || lowerError.Contains("timed out") || lowerError.Contains("deadlock"))
         {
             return ("TIMEOUT",
                 "Test execution exceeded time limit or deadlock detected.",
@@ -88,7 +78,8 @@ public class AnalyzeFailureTool : IMcpTool
                 });
         }
 
-        if (lowerError.Contains("mock") || lowerError.Contains("not called"))
+        // Mock patterns before general "assert"/"expected"
+        if (lowerError.Contains("mock") || lowerError.Contains("not called") || lowerError.Contains("expectation"))
         {
             return ("MOCK_EXPECTATION",
                 "Mock was not called as expected or setup was incorrect.",
@@ -100,6 +91,7 @@ public class AnalyzeFailureTool : IMcpTool
                 });
         }
 
+        // Setup errors before general assertions
         if (lowerError.Contains("setup") || lowerError.Contains("initialize"))
         {
             return ("SETUP_ERROR",
@@ -109,6 +101,19 @@ public class AnalyzeFailureTool : IMcpTool
                     "Check SetUp/TearDown methods for errors",
                     "Verify test data is correctly initialized",
                     "Ensure dependencies are available before test execution"
+                });
+        }
+
+        // General assertion patterns last
+        if (lowerError.Contains("assert") || lowerError.Contains("expected"))
+        {
+            return ("ASSERTION_FAILED",
+                "Test assertion did not match expected value.",
+                new List<string>
+                {
+                    "Verify the actual value matches the expected condition",
+                    "Check that the method under test produces the correct output",
+                    "Add logging to understand what value was actually produced"
                 });
         }
 
