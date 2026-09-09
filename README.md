@@ -24,6 +24,7 @@ PeasyPilot is composed of focused packages that work together to provide a light
 - **PeasyPilot.Bogus** – fake data generation via Bogus
 - **PeasyPilot.Moq** – mock factory abstractions for Moq
 - **PeasyPilot.BDD** – BDD-style feature and scenario model
+- **PeasyPilot.TestAssistant** – intelligent test case generation and code scaffolding
 - **PeasyPilot.Coverage** – coverage reporting support
 - **PeasyPilot.XUnit** – xUnit base class integration
 - **PeasyPilot.NUnit** – NUnit base class integration
@@ -43,6 +44,8 @@ PeasyPilot is composed of focused packages that work together to provide a light
 - **Parameter extraction from step text**
 - **Singleton lifecycle management with IResettable**
 - **Integration testing with database fixtures**
+- **Intelligent test case generation (TestAssistant)**
+- **Automatic scaffolding for xUnit, NUnit, and TUnit**
 - CLI execution with filter and impact-analysis flags
 - CI-friendly JSON and JUnit report output
 
@@ -75,6 +78,9 @@ dotnet add package PeasyPilot.Bogus
 
 # BDD support
 dotnet add package PeasyPilot.BDD
+
+# Test case generation
+dotnet add package PeasyPilot.TestAssistant
 ```
 
 ## Packaging & Distribution
@@ -257,6 +263,93 @@ public class UserRegistrationBddTests
     }
 }
 ```
+
+### Test case generation with TestAssistant
+
+**Intelligent scaffolding** for test cases. TestAssistant analyzes your types and generates test cases:
+
+```csharp
+using PeasyPilot.TestAssistant.Analysis;
+using PeasyPilot.TestAssistant.Rendering;
+using PeasyPilot.TestAssistant.Models;
+
+// Your class to test
+public class Calculator
+{
+    public Calculator(ILogger logger) { }
+    public int Add(int a, int b) => a + b;
+}
+
+// Step 1: Analyze your type
+var analyzer = new ReflectionTestScenarioAnalyzer();
+var options = new TestBatteryAnalysisOptions
+{
+    TargetFramework = "xunit",
+    MaxEnumCases = 10,
+    IncludeBoundaryTests = true
+};
+
+var proposal = analyzer.Analyze(typeof(Calculator), options);
+
+// Step 2: Render to framework-specific code
+var registry = new TestBatteryRendererRegistry();
+var renderer = registry.GetRenderer("xunit");
+var renderOptions = new RenderOptions
+{
+    OutputNamespace = "MyApp.Tests"
+};
+
+string generatedCode = renderer.Render(proposal, renderOptions);
+
+// Step 3: Write to file
+File.WriteAllText("CalculatorTests.cs", generatedCode);
+```
+
+**Generated output:**
+```csharp
+using Xunit;
+using PeasyPilot.XUnit;
+using PeasyPilot.Moq;
+
+namespace MyApp.Tests;
+
+public class CalculatorTests : PeasyPilotTestBase
+{
+    private Calculator _subject = null!;
+
+    public override void Setup()
+    {
+        base.Setup();
+        var logger = new MockFactory().Create(typeof(ILogger));
+        _subject = new Calculator(logger);
+    }
+
+    [Fact]
+    public void Calculator_CanInstantiate()
+    {
+        // Nominal case: can instantiate the target type
+        // TODO: Implement test
+        Assert.NotNull(_subject);
+    }
+
+    [Fact]
+    public void Add_HappyPath()
+    {
+        // Happy path for Add
+        // TODO: Implement test
+        Assert.NotNull(_subject);
+    }
+}
+```
+
+**Features:**
+- Analyzes constructors, methods, and parameters via reflection
+- Generates nominal (happy path) and boundary test cases
+- Supports xUnit, NUnit, and TUnit renderers
+- Smart parameter resolution (primitives, interfaces, concrete types)
+- Extensible value generation rules
+
+**For complete details**, see **[TEST_ASSISTANT_GUIDE.md](./docs/TEST_ASSISTANT_GUIDE.md)**.
 
 ### Test data generation
 
@@ -503,36 +596,51 @@ PeasyPilot is distributed under the MIT license.
 
 ## Documentation
 
-Complete guides for using PeasyPilot:
+Complete guides for each PeasyPilot package. Each guide is available in **English** and **French**.
 
-### Testing Guides
+### Foundation
 
-#### BDD Testing
-- 📖 **[BDD Guide](./docs/BDD_GUIDE.md)** — Complete guide to behavior-driven testing
-  - Feature file creation (Gherkin syntax)
-  - Step definition patterns and bindings
-  - Step binding resolver mechanism
-  - Integration testing with fixtures
-  - Parameter extraction and type conversion
-  - Troubleshooting and best practices
+- **[PeasyPilot-Core](./docs/PeasyPilot-Core.md)** ([🇫🇷 FR](./docs/PeasyPilot-Core-FR.md))
+  Core abstractions, test discovery, orchestration, reporting, DI integration
 
-#### Integration Testing
-- 📖 **[Integration Testing Guide](./docs/INTEGRATION_TESTING.md)** — Integration test patterns
-  - Database fixtures and lifecycle management
-  - Test factory abstractions
-  - Web application testing
-  - DI container integration
+### Framework Adapters
+
+- **[PeasyPilot-XUnit](./docs/PeasyPilot-XUnit.md)** ([🇫🇷 FR](./docs/PeasyPilot-XUnit-FR.md))
+  xUnit integration with base classes
+- **[PeasyPilot-NUnit](./docs/PeasyPilot-NUnit.md)** ([🇫🇷 FR](./docs/PeasyPilot-NUnit-FR.md))
+  NUnit integration with base classes
+- **[PeasyPilot-TUnit](./docs/PeasyPilot-TUnit.md)** ([🇫🇷 FR](./docs/PeasyPilot-TUnit-FR.md))
+  TUnit integration with async support
+
+### Testing Patterns
+
+- **[PeasyPilot-Unit](./docs/PeasyPilot-Unit.md)** ([🇫🇷 FR](./docs/PeasyPilot-Unit-FR.md))
+  Builder patterns and test utilities
+- **[PeasyPilot-Integration](./docs/PeasyPilot-Integration.md)** ([🇫🇷 FR](./docs/PeasyPilot-Integration-FR.md))
+  Integration testing with fixtures and database management
+- **[PeasyPilot-BDD](./docs/PeasyPilot-BDD.md)** ([🇫🇷 FR](./docs/PeasyPilot-BDD-FR.md))
+  Behavior-driven testing with Gherkin and step binding
+
+### Test Generation & Tools
+
+- **[PeasyPilot-TestAssistant](./docs/PeasyPilot-TestAssistant.md)** ([🇫🇷 FR](./docs/PeasyPilot-TestAssistant-FR.md))
+  Intelligent test case generation and code scaffolding
+- **[PeasyPilot-Bogus](./docs/PeasyPilot-Bogus.md)** ([🇫🇷 FR](./docs/PeasyPilot-Bogus-FR.md))
+  Fake data generation
+- **[PeasyPilot-Moq](./docs/PeasyPilot-Moq.md)** ([🇫🇷 FR](./docs/PeasyPilot-Moq-FR.md))
+  Mock factory abstractions
+
+### CLI & Reporting
+
+- **[PeasyPilot-CLI](./docs/PeasyPilot-CLI.md)** ([🇫🇷 FR](./docs/PeasyPilot-CLI-FR.md))
+  Command-line runner with filtering and scheduling
+- **[PeasyPilot-Coverage](./docs/PeasyPilot-Coverage.md)** ([🇫🇷 FR](./docs/PeasyPilot-Coverage-FR.md))
+  Coverage reporting and analysis
 
 ### Build & Deployment
 
-#### Packaging
-- 📖 **[Packaging Guide](./docs/PACKAGING.md)** — Building and distributing NuGet packages
-  - Build and pack workflows
-  - Automated watch mode
-  - Multi-framework support (net8.0, net9.0, net10.0)
-  - Publishing to NuGet.org
-  - CI/CD integration
-  - Versioning strategy
+- **[Packaging Guide](./docs/PACKAGING.md)**
+  Build, pack, and publish NuGet packages
 
 ### Samples
 

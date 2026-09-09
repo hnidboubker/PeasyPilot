@@ -191,7 +191,7 @@ Feature: Brief description
 ### Step Keywords
 
 | Keyword | Use Case |
-|---------|----------|
+| --- |----------|
 | `Given` | Setup/precondition |
 | `When` | Action/trigger |
 | `Then` | Assertion/verification |
