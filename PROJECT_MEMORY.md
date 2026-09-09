@@ -40,6 +40,21 @@ for validation — it has not been independently reviewed line-by-line by the ow
 - No assuming, no modifying without validation, no deleting without explicit
   agreement — this applies repo-wide, not just to governance files.
 
+## Recent Updates (2026-09-09)
+
+**Documentation Refactor — COMPLETE ✅**
+- **24 documentation files created** (12 packages × EN+FR)
+- **Structure:** Each package has dedicated doc with "How it works" + "How To" sections
+- **Packages covered:**
+  - Foundation: Core
+  - Adapters: XUnit, NUnit, TUnit
+  - Patterns: Unit, Integration, BDD
+  - Generation: TestAssistant, Bogus, Moq
+  - Tools: CLI, Coverage
+- **README restructured:** 5 categories with EN/FR links for each package
+- **Quality:** Markdown linting applied (24 files corrected)
+- **Status:** READY_FOR_COMMIT
+
 ## Recent Updates (2026-09-08)
 
 **Phase 4 (BDD) Final Status:**
