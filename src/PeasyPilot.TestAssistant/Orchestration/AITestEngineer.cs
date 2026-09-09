@@ -31,11 +31,7 @@ public class AITestEngineer : IAITestEngineer
 
     public MethodTestModel AnalyzeMethod(string typeName, string methodName)
     {
-        // Try to resolve the type, but allow null for mock/dummy analyzers
-        var type = Type.GetType(typeName);
-        if (type == null && !typeName.Contains("."))
-            throw new ArgumentException($"Type '{typeName}' not found");
-
+        var type = ResolveType(typeName);
         var result = _analyzer.AnalyzeMethodAsync(type, methodName).Result;
         return result ?? throw new InvalidOperationException($"Method '{methodName}' not found on type '{typeName}'");
     }
@@ -115,5 +111,21 @@ public class AITestEngineer : IAITestEngineer
             steps.Add("Tests are ready for production - add to test suite!");
 
         return steps;
+    }
+
+    private Type? ResolveType(string typeName)
+    {
+        var type = Type.GetType(typeName);
+        if (type != null)
+            return type;
+
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            type = assembly.GetType(typeName, throwOnError: false);
+            if (type != null)
+                return type;
+        }
+
+        return null;
     }
 }

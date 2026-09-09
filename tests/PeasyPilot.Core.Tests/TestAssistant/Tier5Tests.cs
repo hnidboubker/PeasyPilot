@@ -18,11 +18,11 @@ public class Tier5Tests
     [Fact]
     public void AITestEngineer_AnalyzesMethod()
     {
-        var engine = AITestEngineerBuilder.CreateDefault()
+        var engine = new AITestEngineerBuilder()
             .WithAnalyzer(new DummyAnalyzer())
             .Build();
 
-        var analysis = engine.AnalyzeMethod("PeasyPilot.Core.Tests.TestAssistant.Calculator", "Add");
+        var analysis = engine.AnalyzeMethod("Calculator", "Add");
 
         Assert.NotNull(analysis);
         Assert.Equal("Calculator", analysis.TypeName);
@@ -79,11 +79,11 @@ public class Tier5Tests
     [Fact]
     public void AITestEngineer_ExecutesCompleteWorkflow()
     {
-        var engine = AITestEngineerBuilder.CreateDefault()
+        var engine = new AITestEngineerBuilder()
             .WithAnalyzer(new DummyAnalyzer())
             .Build();
 
-        var result = engine.ExecuteCompleteWorkflow("PeasyPilot.Core.Tests.TestAssistant.Calculator", "Add", "CalcTests", "xunit");
+        var result = engine.ExecuteCompleteWorkflow("Calculator", "Add", "CalcTests", "xunit");
 
         Assert.NotNull(result);
         Assert.Equal("Add", result.MethodName);
@@ -97,11 +97,11 @@ public class Tier5Tests
     [Fact]
     public void AITestEngineer_WorkflowProducesQualityScore()
     {
-        var engine = AITestEngineerBuilder.CreateDefault()
+        var engine = new AITestEngineerBuilder()
             .WithAnalyzer(new DummyAnalyzer())
             .Build();
 
-        var result = engine.ExecuteCompleteWorkflow("PeasyPilot.Core.Tests.TestAssistant.Calculator", "Add", "CalcTests", "xunit");
+        var result = engine.ExecuteCompleteWorkflow("Calculator", "Add", "CalcTests", "xunit");
 
         Assert.True(result.TotalQualityScore >= 0);
         Assert.True(result.TotalQualityScore <= 100);
@@ -110,11 +110,11 @@ public class Tier5Tests
     [Fact]
     public void AITestEngineer_WorkflowDeterminesProduction()
     {
-        var engine = AITestEngineerBuilder.CreateDefault()
+        var engine = new AITestEngineerBuilder()
             .WithAnalyzer(new DummyAnalyzer())
             .Build();
 
-        var result = engine.ExecuteCompleteWorkflow("PeasyPilot.Core.Tests.TestAssistant.Calculator", "Add", "CalcTests", "xunit");
+        var result = engine.ExecuteCompleteWorkflow("Calculator", "Add", "CalcTests", "xunit");
 
         Assert.NotNull(result);
         // Production recommendation depends on quality
@@ -158,11 +158,11 @@ public class Tier5Tests
     [Fact]
     public void AITestEngineer_GeneratesAppropriateNextSteps()
     {
-        var engine = AITestEngineerBuilder.CreateDefault()
+        var engine = new AITestEngineerBuilder()
             .WithAnalyzer(new DummyAnalyzer())
             .Build();
 
-        var result = engine.ExecuteCompleteWorkflow("PeasyPilot.Core.Tests.TestAssistant.Calculator", "Add", "CalcTests", "xunit");
+        var result = engine.ExecuteCompleteWorkflow("Calculator", "Add", "CalcTests", "xunit");
 
         Assert.NotEmpty(result.NextSteps);
         // Should contain actionable guidance
@@ -179,7 +179,7 @@ public class Tier5Tests
         public Task<IReadOnlyList<MethodTestModel>> AnalyzeTypeAsync(Type type)
             => Task.FromResult<IReadOnlyList<MethodTestModel>>(new[] { CreateTestModel() });
 
-        public Task<MethodTestModel?> AnalyzeMethodAsync(Type type, string methodName)
+        public Task<MethodTestModel?> AnalyzeMethodAsync(Type? type, string methodName)
             => Task.FromResult<MethodTestModel?>(CreateTestModel());
     }
 
