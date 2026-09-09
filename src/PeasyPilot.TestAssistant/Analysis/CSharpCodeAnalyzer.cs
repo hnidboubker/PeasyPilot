@@ -19,8 +19,9 @@ public class CSharpCodeAnalyzer : ICodeAnalyzer
             methods.Add(Extract(type, m));
         return await Task.FromResult(methods.AsReadOnly());
     }
-    public async Task<MethodTestModel?> AnalyzeMethodAsync(Type type, string methodName)
+    public async Task<MethodTestModel?> AnalyzeMethodAsync(Type? type, string methodName)
     {
+        if (type == null) return null;
         var m = type.GetMethod(methodName, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static);
         return await Task.FromResult(m != null ? Extract(type, m) : null);
     }
