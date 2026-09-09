@@ -42,18 +42,39 @@ for validation — it has not been independently reviewed line-by-line by the ow
 
 ## Recent Updates (2026-09-09)
 
+**Phase 5 Tier 2 — Test Plan Builder — COMPLETE ✅**
+- **Commit:** 47bd961
+- **Branch:** phase/05-tier-2-test-planning
+- **ITestPlanBuilder interface:** Enhanced with documentation + XML comments
+- **TestPlan model:** Added ComplexityScore + RecommendedPatterns (init properties)
+- **TestQualityScorer class (72 lines):**
+  - ScoreRisk() - Risk scoring 0-10 based on async/dependencies/exceptions
+  - CalculateCoverage() - Decimal coverage 0-1 from scenarios & dependencies
+  - IdentifyGaps() - Lists missing scenario types (HappyPath, Boundary, Error, etc)
+  - EstimateTestCount() - Estimates tests from params/scenarios/exceptions
+- **TestPlanBuilder implementation (114 lines):**
+  - BuildPlan(MethodTestModel) → creates comprehensive TestPlan
+  - EnrichPlan(TestPlan, dependencies) → enriches with mock/fixture patterns
+  - DetermineIntegrationNeed() → detects DbContext/Repository patterns
+  - DetermineMockingNeed() → detects ILogger/service patterns
+  - BuildRecommendedPatterns() → suggests AAA, DI, Async, Exception patterns
+- **Tier 2 Tests (230 lines, 10 tests):**
+  - BuildPlan_ReturnsValidTestPlan ✅
+  - BuildPlan_CorrectlyEstimatesTestCount ✅
+  - BuildPlan_CorrectlyScoresRisk ✅
+  - BuildPlan_IdentifiesCoverageGaps ✅
+  - BuildPlan_DetectsIntegrationNeeds ✅
+  - BuildPlan_DetectsMockingNeeds ✅
+  - EnrichPlan_AddsIntegrationPatterns ✅
+  - EnrichPlan_AddsMockingPatterns ✅
+  - TestQualityScorer_CalculatesCoverageCorrectly ✅
+  - TestQualityScorer_EstimatesTestCountAccurately ✅
+- **Quality:** 0 errors, 10/10 tests passing (net8.0/9.0/10.0)
+- **Status:** COMMITTED | Ready for PR to main
+
 **Documentation Refactor — COMPLETE ✅**
 - **24 documentation files created** (12 packages × EN+FR)
-- **Structure:** Each package has dedicated doc with "How it works" + "How To" sections
-- **Packages covered:**
-  - Foundation: Core
-  - Adapters: XUnit, NUnit, TUnit
-  - Patterns: Unit, Integration, BDD
-  - Generation: TestAssistant, Bogus, Moq
-  - Tools: CLI, Coverage
-- **README restructured:** 5 categories with EN/FR links for each package
-- **Quality:** Markdown linting applied (24 files corrected)
-- **Status:** READY_FOR_COMMIT
+- **Status:** Already merged to main
 
 ## Recent Updates (2026-09-08)
 
