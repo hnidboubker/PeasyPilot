@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>PeasyPilot.Mcp</AssemblyName>
+    <RootNamespace>PeasyPilot.Mcp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../PeasyPilot.TestAssistant/PeasyPilot.TestAssistant.csproj" />
+    <ProjectReference Include="../PeasyPilot.Core/PeasyPilot.Core.csproj" />
+  </ItemGroup>
+
+</Project>
