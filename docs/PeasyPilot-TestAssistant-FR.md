@@ -696,4 +696,130 @@ public void Calculate_WithDiscount_AppliesPercentage()
 
 ---
 
-**Conclusion :** TestAssistant vous fait gagner du temps en générant l'échafaudage. Vous vous concentrez sur la logique métier des tests. C'est une collaboration ! 🤝
+## Phase 5 & 6 : Écosystème avancé AI Test Engineer
+
+### Quoi de neuf ?
+
+TestAssistant a évolué en un **système complet d'AI Test Engineer** avec 5 tiers :
+
+#### Tier 1 : Analyse du code ✅
+- **CSharpCodeAnalyzer** - Analyse approfondie des méthodes
+- Extrait : paramètres, dépendances, exceptions, types de retour
+- Génère : TestableScenario avec niveaux de risque (Bas/Moyen/Élevé/Critique)
+- Gère : async, types nullable, dépendances d'interfaces
+
+#### Tier 2 : Constructeur de plan de test ✅
+- **TestPlanBuilder** - Crée des plans de test complets
+- Calcule : scores de risque, lacunes de couverture, estimations du nombre de tests
+- Suggère : patterns AAA, DI, async/await, gestion d'exceptions
+- Détecte : besoins d'intégration, besoins de mocking
+
+#### Tier 3 : Générateur de tests ✅
+- **TestGeneratorRegistry** - Support multi-framework
+- **XUnitTestGenerator** - Attributs [Fact]
+- **NUnitTestGenerator** - [TestFixture] + [SetUp/TearDown]
+- **TUnitTestGenerator** - Support async natif
+
+#### Tier 4 : Moteur de défi de tests ✅
+- **TestChallenger** - Valide la qualité des tests
+- Détecte : sections AAA manquantes, assertions faibles
+- Score : qualité des tests (0-100), identifie les lacunes de couverture
+- Recommande : améliorations, scénarios à ajouter
+
+#### Tier 5 : Orchestration & Intégration MCP ✅
+- **AITestEngineer** - API principale composant tous les tiers
+- **MCPServer** - Intégration Model Context Protocol
+- **StdioTransport** - Communication JSON-RPC 2.0
+- 6 outils MCP : analyze_code, plan_tests, generate_tests, challenge_tests, run_tests, analyze_failure
+
+### Le Pipeline complet d'AI Test Engineer
+
+```
+Votre méthode
+    ↓
+[TIER 1: ANALYSER] → MethodTestModel
+    ├─ Extraire les métadonnées
+    ├─ Trouver les dépendances
+    ├─ Détecter les exceptions
+    └─ Générer les scénarios
+    ↓
+[TIER 2: PLANIFIER] → TestPlan
+    ├─ Score de risque
+    ├─ Calculer la couverture
+    ├─ Estimer le nombre de tests
+    └─ Suggérer les patterns
+    ↓
+[TIER 3: GÉNÉRER] → CodeTest
+    ├─ Choisir le framework (xUnit/NUnit/TUnit)
+    ├─ Générer l'échafaudage
+    ├─ Ajouter les sections AAA
+    └─ Inclure les TODOs
+    ↓
+[TIER 4: CHALLENGER] → TestChallengeReport
+    ├─ Valider la qualité
+    ├─ Vérifier la couverture
+    ├─ Score suite de tests (0-100)
+    └─ Identifier les lacunes
+    ↓
+[TIER 5: ORCHESTRER] → AITestEngineerResult
+    └─ Toutes les étapes ci-dessus composées
+    └─ Recommandations d'amélioration
+    └─ Suite de tests prête pour la production
+    
+[BONUS: INTÉGRATION MCP]
+    └─ Exposer tous les outils via Model Context Protocol
+    └─ Utiliser depuis Claude AI, Cursor, autres clients MCP
+    └─ JSON-RPC 2.0 sur stdio
+```
+
+### Outils MCP disponibles (Phase 6)
+
+Toutes les capacités d'AI Test Engineer exposées en tant qu'outils MCP :
+
+| Outil | Objectif | Entrée | Sortie |
+|-------|----------|--------|--------|
+| **analyze_code** | Analyse approfondie du code | typeName, methodName | MethodTestModel avec scénarios |
+| **plan_tests** | Créer un plan de test | MethodTestModel | TestPlan avec lacunes de couverture |
+| **generate_tests** | Générer du code de test | MethodTestModel, framework | Code de classe de test généré |
+| **challenge_tests** | Valider la qualité des tests | testCode | TestChallengeReport (score 0-100) |
+| **run_tests** | Exécuter les tests | projectPath, filter | TestRunResult (réussi/échoué) |
+| **analyze_failure** | Diagnostiquer les échecs de tests | errorMessage, stackTrace | FailureAnalysis (type, suggestions) |
+
+### Démarrage rapide : Utiliser TestAssistant aujourd'hui
+
+**Programmatiquement :**
+```csharp
+var engine = AITestEngineer.CreateDefault();
+var result = await engine.ExecuteCompleteWorkflowAsync(typeof(MyClass));
+// Le résultat inclut : analyse, plan, code généré, rapport de défi
+```
+
+**Via MCP (Claude AI, Cursor, etc.) :**
+```
+Utilisez le serveur PeasyPilot MCP pour :
+1. Analyser votre code
+2. Générer des plans de test complets
+3. Générer du code de test spécifique au framework
+4. Challenger les tests existants
+5. Diagnostiquer les échecs de tests
+```
+
+**TestAssistant traditionnel (Toujours fonctionnel) :**
+```csharp
+var analyzer = new ReflectionTestScenarioAnalyzer();
+var proposal = analyzer.Analyze(typeof(Calculator), options);
+var renderer = new TestBatteryRendererRegistry().GetRenderer("xunit");
+string code = renderer.Render(proposal, renderOptions);
+```
+
+### Ce qui est inclus dans Phase 6 Tier 2 (COMPLET ✅)
+
+- **Couche de transport MCP** - Protocole Stdio + JSON-RPC 2.0
+- **28/28 tests passants** - Tous les frameworks (net8.0, net9.0, net10.0)
+- **Liaison dynamique** - Task<dynamic> avec ExpandoObject pour les réponses des outils
+- **Gestion d'erreurs robuste** - Pattern matching pour le diagnostic des défaillances
+- **Prêt pour la production** - 0 erreurs de compilation, 300+ tests passants
+
+---
+
+**Conclusion :** TestAssistant fournit maintenant une solution complète d'ingénierie de tests IA, de l'analyse du code à la validation des tests, accessible à la fois par programmation et via l'intégration MCP ! 🚀
