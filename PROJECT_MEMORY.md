@@ -42,18 +42,20 @@ for validation — it has not been independently reviewed line-by-line by the ow
 
 ## Recent Updates (2026-09-09)
 
+**Phase 5 Tier 2 — Test Plan Builder — IN PROGRESS ✅**
+- **ITestPlanBuilder interface:** Enhanced with documentation
+- **TestPlan model:** Added ComplexityScore + RecommendedPatterns
+- **TestQualityScorer class:** Scores risk, calculates coverage, identifies gaps, estimates test count
+- **TestPlanBuilder implementation:** 
+  - BuildPlan() → creates comprehensive TestPlan from MethodTestModel
+  - EnrichPlan() → enriches with dependency-based strategies
+- **Tier 2 Tests:** 10 tests, ALL PASSING on net8.0/net9.0/net10.0
+- **Build:** 0 errors, all frameworks validated
+- **Status:** READY_FOR_COMMIT after full build validation
+
 **Documentation Refactor — COMPLETE ✅**
 - **24 documentation files created** (12 packages × EN+FR)
-- **Structure:** Each package has dedicated doc with "How it works" + "How To" sections
-- **Packages covered:**
-  - Foundation: Core
-  - Adapters: XUnit, NUnit, TUnit
-  - Patterns: Unit, Integration, BDD
-  - Generation: TestAssistant, Bogus, Moq
-  - Tools: CLI, Coverage
-- **README restructured:** 5 categories with EN/FR links for each package
-- **Quality:** Markdown linting applied (24 files corrected)
-- **Status:** READY_FOR_COMMIT
+- **Status:** Already merged to main
 
 ## Recent Updates (2026-09-08)
 
