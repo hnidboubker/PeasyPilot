@@ -31,12 +31,18 @@ public class AITestEngineer : IAITestEngineer
 
     public MethodTestModel AnalyzeMethod(string typeName, string methodName)
     {
-        return _analyzer.AnalyzeMethodAsync(null, methodName).Result;
+        // Try to resolve the type, but allow null for mock/dummy analyzers
+        var type = Type.GetType(typeName);
+        if (type == null && !typeName.Contains("."))
+            throw new ArgumentException($"Type '{typeName}' not found");
+
+        var result = _analyzer.AnalyzeMethodAsync(type, methodName).Result;
+        return result ?? throw new InvalidOperationException($"Method '{methodName}' not found on type '{typeName}'");
     }
 
     public List<MethodTestModel> AnalyzeType(Type type)
     {
-        return _analyzer.AnalyzeTypeAsync(type).Result;
+        return _analyzer.AnalyzeTypeAsync(type).Result.ToList();
     }
 
     public TestPlan PlanTests(MethodTestModel analysis)
