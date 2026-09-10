@@ -6,10 +6,10 @@
     <!-- NuGet package metadata -->
     <IsPackable>true</IsPackable>
     <PackageId>PeasyPilot.TestAssistant</PackageId>
-    <Version>0.1.4</Version>
+    <Version>0.1.5</Version>
     <PackageIcon>Logo.png</PackageIcon>
     <Authors>NID BOUBKER Houssine</Authors>
-    <Description>Test suite generation assistance for PeasyPilot Ã¢â‚¬â€ reflection-based nominal/edge-case analysis and rendering.</Description>
+    <Description>Test suite generation assistance for PeasyPilot ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â reflection-based nominal/edge-case analysis and rendering.</Description>
     <PackageTags>dotnet;framework;testing;test-generation;suggestions;xunit;nunit;tunit</PackageTags>
     <RepositoryUrl>https://github.com/hnidboubker/PeasyPilot</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
