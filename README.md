@@ -40,35 +40,19 @@ PeasyPilot is composed of focused packages that work together to provide a light
 
 ## Documentation
 
-### Getting Started
-- [Getting Started Guide](./docs/GETTING-STARTED.md) – 25 minutes to your first test
+**👉 [Complete Documentation Hub](./docs/README.md)** – All guides, references, and resources in one place
 
-### Learning Guides
-- [Unit Testing Guide](./docs/GUIDES/unit-testing-guide.md)
-- [Integration Testing Guide](./docs/GUIDES/integration-testing-guide.md)
-- [BDD Testing Guide](./docs/GUIDES/bdd-testing-guide.md)
-- [Test Generation Guide](./docs/GUIDES/test-generation-guide.md)
-- [Framework Adapters](./docs/GUIDES/framework-adapters-guide.md)
+### Quick Navigation
 
-### MCP Integration
-- [MCP Overview](./docs/MCP/mcp-overview.md) – What is MCP and why it matters
-- [MCP Integration Guide](./docs/MCP/mcp-integration-guide.md) – Step-by-step setup
-- [MCP Examples](./docs/MCP/mcp-examples.md) – Real working examples
-- [MCP Best Practices](./docs/MCP/mcp-best-practices.md)
-- [MCP API Reference](./docs/MCP/mcp-api-reference.md)
+- **[Getting Started Guide](./docs/GETTING-STARTED.md)** – 25 minutes to your first test
+- **[Learning Guides](./docs/GUIDES/README.md)** – Unit, Integration, BDD, Test Generation, Framework Adapters
+- **[MCP Integration](./docs/MCP/README.md)** – Model Context Protocol for AI-assisted testing
+- **[API References](./docs/REFERENCE/README.md)** – Complete API documentation for all packages
+- **[Advanced Topics](./docs/ADVANCED/README.md)** – Patterns, optimization, troubleshooting, extensibility
 
-### API Reference
-- [Core Package Reference](./docs/REFERENCE/core-package-reference.md)
-- [Unit Package Reference](./docs/REFERENCE/unit-package-reference.md)
-- [Integration Package Reference](./docs/REFERENCE/integration-package-reference.md)
-- [BDD Package Reference](./docs/REFERENCE/bdd-package-reference.md)
-- [CLI Reference](./docs/REFERENCE/cli-reference.md)
-- [TestAssistant Reference](./docs/REFERENCE/test-assistant-reference.md)
+### All Documentation Available in English & French
 
-### Advanced Topics
-- [Custom Extensions](./docs/ADVANCED/custom-extensions.md)
-- [Performance Tuning](./docs/ADVANCED/performance-tuning.md)
-- [CI/CD Integration](./docs/ADVANCED/ci-cd-integration.md)
+Each guide and reference is available in both English and French (🇫🇷 [FR]). See [docs/README.md](./docs/README.md) for complete navigation.
 
 ## Features
 

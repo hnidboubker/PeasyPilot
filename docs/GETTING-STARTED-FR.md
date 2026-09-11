@@ -289,3 +289,9 @@ Vous savez maintenant:
 | Choisir un framework | [Adaptateurs de framework](./GUIDES/framework-adapters-guide-FR.md) |
 
 Bon test! 🚀
+
+---
+
+**[← Retour au Hub Documentation](./README.md)** | **[← Retour au README principal](../README.md)**
+
+**Version:** Français | **[English](./GETTING-STARTED.md)**
