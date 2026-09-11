@@ -26,7 +26,7 @@ public abstract class PeasyPilotTUnitTestBase
     /// </summary>
     public virtual ValueTask BeforeEachAsync()
     {
-        TestContext = new TestContext();
+        TestContext = new PeasyPilot.Core.Context.TestContext();
         return ValueTask.CompletedTask;
     }
 
