@@ -4,8 +4,6 @@ using global::NUnit.Framework;
 using PeasyPilot.NUnit;
 using PeasyPilot.NUnit.Samples.Models;
 using PeasyPilot.NUnit.Samples.Services;
-using NUnitAssert = global::NUnit.Framework.Assert;
-using NUnitIs = global::NUnit.Framework.Is;
 
 /// <summary>
 /// Sample NUnit tests demonstrating PeasyPilot usage.
@@ -32,10 +30,10 @@ public class InventoryServiceNUnitTests : PeasyPilotNUnitTestBase
         var result = _service.AddProduct(product);
 
         // Assert
-        NUnitAssert.That(result, NUnitIs.Not.Null);
-        NUnitAssert.That(result.Id, NUnitIs.EqualTo(1));
-        NUnitAssert.That(result.Name, NUnitIs.EqualTo("Laptop"));
-        NUnitAssert.That(result.Price, NUnitIs.EqualTo(1200m));
+        NAssert.That(result, Is.Not.Null);
+        NAssert.That(result.Id, Is.EqualTo(1));
+        NAssert.That(result.Name, Is.EqualTo("Laptop"));
+        NAssert.That(result.Price, Is.EqualTo(1200m));
     }
 
     [Test]
@@ -49,9 +47,9 @@ public class InventoryServiceNUnitTests : PeasyPilotNUnitTestBase
         var result = _service.GetProduct(1);
 
         // Assert
-        NUnitAssert.That(result, NUnitIs.Not.Null);
-        NUnitAssert.That(result!.Name, NUnitIs.EqualTo("Mouse"));
-        NUnitAssert.That(result.Price, NUnitIs.EqualTo(25m));
+        NAssert.That(result, Is.Not.Null);
+        NAssert.That(result!.Name, Is.EqualTo("Mouse"));
+        NAssert.That(result.Price, Is.EqualTo(25m));
     }
 
     [Test]
@@ -61,7 +59,7 @@ public class InventoryServiceNUnitTests : PeasyPilotNUnitTestBase
         var result = _service.GetProduct(999);
 
         // Assert
-        NUnitAssert.That(result, NUnitIs.Null);
+        NAssert.That(result, Is.Null);
     }
 
     [Test]
@@ -75,9 +73,9 @@ public class InventoryServiceNUnitTests : PeasyPilotNUnitTestBase
         var updated = _service.UpdateQuantity(1, 20);
 
         // Assert
-        NUnitAssert.That(updated, NUnitIs.True);
+        NAssert.That(updated, Is.True);
         var result = _service.GetProduct(1);
-        NUnitAssert.That(result!.Quantity, NUnitIs.EqualTo(20));
+        NAssert.That(result!.Quantity, Is.EqualTo(20));
     }
 
     [Test]
@@ -92,7 +90,7 @@ public class InventoryServiceNUnitTests : PeasyPilotNUnitTestBase
         var value = _service.CalculateInventoryValue();
 
         // Assert - (100*2) + (50*4) + (25*8) = 200 + 200 + 200 = 600
-        NUnitAssert.That(value, NUnitIs.EqualTo(600m));
+        NAssert.That(value, Is.EqualTo(600m));
     }
 
     [Test]
@@ -109,9 +107,9 @@ public class InventoryServiceNUnitTests : PeasyPilotNUnitTestBase
         var updated = _service.UpdateQuantity(1, newQty);
 
         // Assert
-        NUnitAssert.That(updated, NUnitIs.True);
+        NAssert.That(updated, Is.True);
         var result = _service.GetProduct(1);
-        NUnitAssert.That(result!.Quantity, NUnitIs.EqualTo(newQty));
+        NAssert.That(result!.Quantity, Is.EqualTo(newQty));
     }
 
     [Test]
@@ -125,7 +123,7 @@ public class InventoryServiceNUnitTests : PeasyPilotNUnitTestBase
         var removed = _service.RemoveProduct(1);
 
         // Assert
-        NUnitAssert.That(removed, NUnitIs.True);
-        NUnitAssert.That(_service.GetProduct(1), NUnitIs.Null);
+        NAssert.That(removed, Is.True);
+        NAssert.That(_service.GetProduct(1), Is.Null);
     }
 }
