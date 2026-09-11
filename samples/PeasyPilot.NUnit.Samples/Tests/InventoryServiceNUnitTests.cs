@@ -2,6 +2,7 @@ namespace PeasyPilot.NUnit.Samples;
 
 using global::NUnit.Framework;
 using PeasyPilot.NUnit;
+using PeasyPilot.NUnit.Extensions;
 using PeasyPilot.NUnit.Samples.Models;
 using PeasyPilot.NUnit.Samples.Services;
 
