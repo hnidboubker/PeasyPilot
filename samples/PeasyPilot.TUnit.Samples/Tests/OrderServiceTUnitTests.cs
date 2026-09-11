@@ -29,9 +29,9 @@ public class OrderServiceTUnitTests : PeasyPilotTUnitTestBase
         var order = _service.CreateOrder("CUST001");
 
         // Assert
-         Assert.That(order).IsNotNull();
-         Assert.That(order.CustomerId).IsEqualTo("CUST001");
-         Assert.That(order.Status).IsEqualTo(OrderStatus.Pending);
+         TAssert.That(order).IsNotNull();
+         TAssert.That(order.CustomerId).IsEqualTo("CUST001");
+         TAssert.That(order.Status).IsEqualTo(OrderStatus.Pending);
         await Task.CompletedTask;
     }
 
@@ -47,7 +47,7 @@ public class OrderServiceTUnitTests : PeasyPilotTUnitTestBase
 
         // Assert
         var updated = _service.GetOrder(order.Id);
-        Assert.That(updated!.Items.Count).IsEqualTo(2);
+        TAssert.That(updated!.Items.Count).IsEqualTo(2);
         await Task.CompletedTask;
     }
 
@@ -64,7 +64,7 @@ public class OrderServiceTUnitTests : PeasyPilotTUnitTestBase
         var total = _service.GetOrderTotal(order.Id);
 
         // Assert
-        Assert.That(total).IsEqualTo(350m);
+        TAssert.That(total).IsEqualTo(350m);
         await Task.CompletedTask;
     }
 
@@ -78,9 +78,9 @@ public class OrderServiceTUnitTests : PeasyPilotTUnitTestBase
         var updated = _service.UpdateStatus(order.Id, OrderStatus.Confirmed);
 
         // Assert
-        Assert.That(updated).IsEqualTo(true);
+        TAssert.That(updated).IsEqualTo(true);
         var result = _service.GetOrder(order.Id);
-        Assert.That(result!.Status).IsEqualTo(OrderStatus.Confirmed);
+        TAssert.That(result!.Status).IsEqualTo(OrderStatus.Confirmed);
         await Task.CompletedTask;
     }
 
@@ -94,7 +94,7 @@ public class OrderServiceTUnitTests : PeasyPilotTUnitTestBase
         var order = _service.CreateOrder(customerId);
 
         // Assert
-        Assert.That(order.CustomerId).IsEqualTo(customerId);
+        TAssert.That(order.CustomerId).IsEqualTo(customerId);
         await Task.CompletedTask;
     }
 
@@ -105,7 +105,7 @@ public class OrderServiceTUnitTests : PeasyPilotTUnitTestBase
         var order = _service.GetOrder(999);
 
         // Assert
-        Assert.That(order).IsNull();
+        TAssert.That(order).IsNull();
         await Task.CompletedTask;
     }
 
@@ -114,21 +114,21 @@ public class OrderServiceTUnitTests : PeasyPilotTUnitTestBase
     {
         // Arrange & Act
         var order = _service.CreateOrder("CUST_WORKFLOW");
-        Assert.That(order.Status).IsEqualTo(OrderStatus.Pending);
+        TAssert.That(order.Status).IsEqualTo(OrderStatus.Pending);
 
         _service.UpdateStatus(order.Id, OrderStatus.Confirmed);
         var confirmed = _service.GetOrder(order.Id);
-        Assert.That(confirmed!.Status).IsEqualTo(OrderStatus.Confirmed);
+        TAssert.That(confirmed!.Status).IsEqualTo(OrderStatus.Confirmed);
 
         _service.UpdateStatus(order.Id, OrderStatus.Shipped);
         var shipped = _service.GetOrder(order.Id);
-        Assert.That(shipped!.Status).IsEqualTo(OrderStatus.Shipped);
+        TAssert.That(shipped!.Status).IsEqualTo(OrderStatus.Shipped);
 
         _service.UpdateStatus(order.Id, OrderStatus.Delivered);
         var delivered = _service.GetOrder(order.Id);
 
         // Assert
-        Assert.That(delivered!.Status).IsEqualTo(OrderStatus.Delivered);
+        TAssert.That(delivered!.Status).IsEqualTo(OrderStatus.Delivered);
         await Task.CompletedTask;
     }
 }

@@ -31,10 +31,10 @@ public class UserServiceXUnitTests : PeasyPilotTestBase
         var result = _service.Create(user);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(1, result.Id);
-        Assert.Equal("John Doe", result.Name);
-        Assert.Equal("john@example.com", result.Email);
+        XAssert.NotNull(result);
+        XAssert.Equal(1, result.Id);
+        XAssert.Equal("John Doe", result.Name);
+        XAssert.Equal("john@example.com", result.Email);
     }
 
     [Fact]
@@ -48,8 +48,8 @@ public class UserServiceXUnitTests : PeasyPilotTestBase
         var result = _service.GetById(1);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal("Jane Smith", result.Name);
+        XAssert.NotNull(result);
+        XAssert.Equal("Jane Smith", result.Name);
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class UserServiceXUnitTests : PeasyPilotTestBase
         var result = _service.GetById(999);
 
         // Assert
-        Assert.Null(result);
+        XAssert.Null(result);
     }
 
     [Fact]
@@ -74,8 +74,8 @@ public class UserServiceXUnitTests : PeasyPilotTestBase
         var result = _service.GetAll();
 
         // Assert
-        Assert.NotEmpty(result);
-        Assert.Equal(3, result.Count);
+        XAssert.NotEmpty(result);
+        XAssert.Equal(3, result.Count);
     }
 
     [Fact]
@@ -89,8 +89,8 @@ public class UserServiceXUnitTests : PeasyPilotTestBase
         var deleted = _service.Delete(1);
 
         // Assert
-        Assert.True(deleted);
-        Assert.Null(_service.GetById(1));
+        XAssert.True(deleted);
+        XAssert.Null(_service.GetById(1));
     }
 
     [Theory]
@@ -106,7 +106,7 @@ public class UserServiceXUnitTests : PeasyPilotTestBase
         var result = _service.Create(user);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(email, result.Email);
+        XAssert.NotNull(result);
+        XAssert.Equal(email, result.Email);
     }
 }
