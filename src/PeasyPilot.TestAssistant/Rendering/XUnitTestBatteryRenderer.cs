@@ -22,9 +22,9 @@ public class XUnitTestBatteryRenderer : ITestBatteryRenderer
         sb.AppendLine("{");
         sb.AppendLine($"{options.Indent}private {proposal.TargetType} _subject = null!;");
         sb.AppendLine();
-        sb.AppendLine($"{options.Indent}public override void Setup()");
+        sb.AppendLine($"{options.Indent}public override async Task InitializeAsync()");
         sb.AppendLine($"{options.Indent}{{");
-        sb.AppendLine($"{options.Indent}{options.Indent}base.Setup();");
+        sb.AppendLine($"{options.Indent}{options.Indent}await base.InitializeAsync();");
         sb.AppendLine($"{options.Indent}{options.Indent}_subject = new {proposal.TargetType}();");
         sb.AppendLine($"{options.Indent}}}");
         sb.AppendLine();

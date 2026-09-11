@@ -43,4 +43,33 @@ public class XUnitTestBatteryRendererTests
         var renderer = new XUnitTestBatteryRenderer();
         Assert.Equal("xunit", renderer.RenderKey);
     }
+
+    [Fact]
+    public void Render_GeneratesAsyncInitializeAsyncMethod()
+    {
+        var renderer = new XUnitTestBatteryRenderer();
+        var proposal = new TestBatteryProposal
+        {
+            TargetType = "StringUtils",
+            TargetNamespace = "MyApp",
+            Framework = "xunit",
+            TestCases = new()
+            {
+                new TestCaseProposal
+                {
+                    MethodName = "Concat",
+                    TestName = "Concat_WithTwoStrings_ReturnsCombined",
+                    Description = "Test string concatenation",
+                    Category = "nominal"
+                }
+            }
+        };
+
+        var code = renderer.Render(proposal, new RenderOptions { OutputNamespace = "MyApp.Tests" });
+
+        Assert.Contains("public override async Task InitializeAsync()", code);
+        Assert.Contains("await base.InitializeAsync();", code);
+        Assert.Contains("_subject = new StringUtils();", code);
+        Assert.DoesNotContain("public override void Setup()", code);
+    }
 }
