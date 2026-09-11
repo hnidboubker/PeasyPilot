@@ -241,5 +241,13 @@ public class UserRepositoryResetTests : XUnitIntegrationTestFixture
 
 📖 **[Guide BDD](./bdd-testing-guide-FR.md)** – Tester le comportement métier  
 📖 **[Guide des Tests Unitaires](./unit-testing-guide-FR.md)** – Revoir les patterns unitaires  
+📖 **[Guide de Génération de Tests](./test-generation-guide-FR.md)** – Générer les tests automatiquement  
+📖 **[Guide des Adaptateurs de Framework](./framework-adapters-guide-FR.md)** – Choisir entre xUnit/NUnit/TUnit  
 
 Tests intégrés + tests unitaires = couverture complète! 🎯
+
+---
+
+**[← Retour aux Guides d'Apprentissage](./README.md)** | **[← Retour au Hub Documentation](../README.md)**
+
+**Version:** Français | **[English](./integration-testing-guide.md)**

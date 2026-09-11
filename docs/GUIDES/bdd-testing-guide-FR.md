@@ -241,5 +241,13 @@ public class OrderBddTests : XUnitIntegrationTestFixture
 
 📖 **[Guide des Tests d'Intégration](./integration-testing-guide-FR.md)** – Ajouter les tests BD  
 📖 **[Guide de Génération de Tests](./test-generation-guide-FR.md)** – Générer automatiquement  
+📖 **[Guide des Tests Unitaires](./unit-testing-guide-FR.md)** – Patterns de tests unitaires  
+📖 **[Guide des Adaptateurs de Framework](./framework-adapters-guide-FR.md)** – Choisir entre xUnit/NUnit/TUnit  
 
 BDD rend les tests lisibles et maintenables! 🎭
+
+---
+
+**[← Retour aux Guides d'Apprentissage](./README.md)** | **[← Retour au Hub Documentation](../README.md)**
+
+**Version:** Français | **[English](./bdd-testing-guide.md)**

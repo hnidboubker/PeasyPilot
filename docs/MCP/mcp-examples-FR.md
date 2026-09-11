@@ -110,3 +110,9 @@ Tests supplémentaires recommandés pour les cas limites."
 ---
 
 Une fois les outils définis, Claude a accès à toute votre infrastructure de test! 🚀
+
+---
+
+**[← Retour à la Documentation MCP](./README.md)** | **[← Retour au Hub Documentation](../README.md)**
+
+**Version:** Français | **[English](./mcp-examples.md)**

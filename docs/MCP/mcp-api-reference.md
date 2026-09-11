@@ -243,3 +243,9 @@ Console.WriteLine(JsonConvert.SerializeObject(result));
 **Full MCP Documentation:** [MCP Official Docs](https://modelcontextprotocol.io)
 
 MCP = Your test infrastructure's public API! 🚀
+
+---
+
+**[← Back to MCP Documentation](./README.md)** | **[← Back to Documentation Hub](../README.md)**
+
+**Version:** English | **[Français](./mcp-api-reference-FR.md)**

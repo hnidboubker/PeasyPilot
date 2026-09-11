@@ -406,3 +406,9 @@ You've mastered unit testing! Here's what to explore next:
 📖 **[Framework Adapters](./framework-adapters-guide.md)** – Choose between xUnit/NUnit/TUnit  
 
 **Key Takeaway:** Good unit tests are fast, focused, and document the expected behavior of your code. Write them first, refactor confidently later. 🚀
+
+---
+
+**[← Back to Learning Guides](./README.md)** | **[← Back to Documentation Hub](../README.md)**
+
+**Version:** English | **[Français](./unit-testing-guide-FR.md)**

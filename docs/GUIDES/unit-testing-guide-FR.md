@@ -268,5 +268,13 @@ public class OrderServiceTests : PeasyPilotTestBase
 
 📖 **[Guide des Tests d'Intégration](./integration-testing-guide-FR.md)** – Tester avec les vraies BD  
 📖 **[Guide BDD](./bdd-testing-guide-FR.md)** – Écrire des tests en langage métier  
+📖 **[Guide de Génération de Tests](./test-generation-guide-FR.md)** – Générer les tests automatiquement  
+📖 **[Guide des Adaptateurs de Framework](./framework-adapters-guide-FR.md)** – Choisir entre xUnit/NUnit/TUnit  
 
 Les bons tests unitaires = confiance dans le code! 🚀
+
+---
+
+**[← Retour aux Guides d'Apprentissage](./README.md)** | **[← Retour au Hub Documentation](../README.md)**
+
+**Version:** Français | **[English](./unit-testing-guide.md)**

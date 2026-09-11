@@ -280,5 +280,13 @@ Pour passer de xUnit à NUnit :
 
 📖 **[Guide des Tests Unitaires](./unit-testing-guide-FR.md)** – Écrire les tests  
 📖 **[Guide des Tests d'Intégration](./integration-testing-guide-FR.md)** – Patterns d'intégration  
+📖 **[Guide BDD](./bdd-testing-guide-FR.md)** – Tests comportementaux  
+📖 **[Guide de Génération de Tests](./test-generation-guide-FR.md)** – Générer les cas de tests  
 
 Tous les trois frameworks fonctionnent magnifiquement avec PeasyPilot! Choisissez votre préféré. 🚀
+
+---
+
+**[← Retour aux Guides d'Apprentissage](./README.md)** | **[← Retour au Hub Documentation](../README.md)**
+
+**Version:** Français | **[English](./framework-adapters-guide.md)**

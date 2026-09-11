@@ -208,3 +208,9 @@ Good MCP tools are:
 - **Secure** – Validate inputs, don't expose secrets
 
 Build tools that Claude can trust! 🤖
+
+---
+
+**[← Back to MCP Documentation](./README.md)** | **[← Back to Documentation Hub](../README.md)**
+
+**Version:** English | **[Français](./mcp-best-practices-FR.md)**

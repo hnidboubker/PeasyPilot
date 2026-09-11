@@ -34,8 +34,8 @@ Complete API and configuration references for PeasyPilot packages.
 
 ## Cross-Cutting References
 
-- [CLI Reference](cli-reference.md) | [FR](cli-reference-FR.md)
-- [Configuration Reference](configuration-reference.md) | [FR](configuration-reference-FR.md)
+- **[CLI Reference](cli-reference.md)** | **[FR](cli-reference-FR.md)** — Complete command reference for all peasypilot commands, options, and examples
+- **[Configuration Reference](configuration-reference.md)** | **[FR](configuration-reference-FR.md)** — Configuration sources, precedence, and all settings documented
 - [Error Codes](error-codes.md) | [FR](error-codes-FR.md)
 - [Troubleshooting Quick Reference](troubleshooting-quick-ref.md) | [FR](troubleshooting-quick-ref-FR.md)
 

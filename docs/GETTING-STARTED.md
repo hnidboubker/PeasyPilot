@@ -280,3 +280,9 @@ You now know:
 | Choose a framework | [Framework Adapters](./GUIDES/framework-adapters-guide.md) |
 
 Happy testing! 🚀
+
+---
+
+**[← Back to Documentation Hub](./README.md)** | **[← Back to Main README](../README.md)**
+
+**Version:** English | **[Français](./GETTING-STARTED-FR.md)**

@@ -127,3 +127,9 @@ catch (Exception ex)
 ---
 
 Bons outils = outils qu'on peut faire confiance à Claude! 🤖
+
+---
+
+**[← Retour à la Documentation MCP](./README.md)** | **[← Retour au Hub Documentation](../README.md)**
+
+**Version:** Français | **[English](./mcp-best-practices.md)**

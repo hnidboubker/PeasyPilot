@@ -161,3 +161,9 @@ public class AnalyzeCoverageTool : IMcpTool
 ---
 
 MCP = L'API publique de votre infra de test! 🚀
+
+---
+
+**[← Retour à la Documentation MCP](./README.md)** | **[← Retour au Hub Documentation](../README.md)**
+
+**Version:** Français | **[English](./mcp-api-reference.md)**

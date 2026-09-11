@@ -173,3 +173,9 @@ Claude: "La couverture est 85%. Cas limites manquants: gestion des timeouts"
 👉 [Guide d'Intégration](./mcp-integration-guide-FR.md)
 
 MCP = L'API publique de votre infrastructure de test! 🤖
+
+---
+
+**[← Retour à la Documentation MCP](./README.md)** | **[← Retour au Hub Documentation](../README.md)**
+
+**Version:** Français | **[English](./mcp-overview.md)**

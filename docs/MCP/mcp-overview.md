@@ -210,3 +210,9 @@ Claude: "3 tests failing due to database connection timeout"
 ## Key Takeaway
 
 MCP bridges AI models and test infrastructure. It's the glue that lets Claude run tests, analyze code, and generate test cases as part of its reasoning process. 🤖
+
+---
+
+**[← Back to MCP Documentation](./README.md)** | **[← Back to Documentation Hub](../README.md)**
+
+**Version:** English | **[Français](./mcp-overview-FR.md)**

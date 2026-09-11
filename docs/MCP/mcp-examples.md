@@ -201,3 +201,9 @@ Recommended additional tests for edge cases:
 - **Dashboard:** Display MCP resources as real-time metrics
 
 The key: Once you define tools and resources, Claude can access your entire test infrastructure! 🚀
+
+---
+
+**[← Back to MCP Documentation](./README.md)** | **[← Back to Documentation Hub](../README.md)**
+
+**Version:** English | **[Français](./mcp-examples-FR.md)**

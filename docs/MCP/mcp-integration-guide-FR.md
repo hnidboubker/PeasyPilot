@@ -122,3 +122,9 @@ Claude peut maintenant appeler vos outils! 🎯
 ---
 
 👉 [Exemples](./mcp-examples-FR.md)
+
+---
+
+**[← Retour à la Documentation MCP](./README.md)** | **[← Retour au Hub Documentation](../README.md)**
+
+**Version:** Français | **[English](./mcp-integration-guide.md)**

@@ -253,5 +253,13 @@ public class OrderBddTests : XUnitIntegrationTestFixture
 
 📖 **[Integration Testing Guide](./integration-testing-guide.md)** – Add database tests  
 📖 **[Test Generation Guide](./test-generation-guide.md)** – Auto-generate tests  
+📖 **[Unit Testing Guide](./unit-testing-guide.md)** – Unit testing patterns  
+📖 **[Framework Adapters](./framework-adapters-guide.md)** – xUnit vs NUnit vs TUnit  
 
 BDD makes tests readable and maintainable! 🎭
+
+---
+
+**[← Back to Learning Guides](./README.md)** | **[← Back to Documentation Hub](../README.md)**
+
+**Version:** English | **[Français](./bdd-testing-guide-FR.md)**

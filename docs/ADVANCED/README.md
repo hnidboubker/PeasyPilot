@@ -5,8 +5,8 @@ Advanced patterns, optimization, and extensibility for PeasyPilot.
 ## Guides
 
 ### Performance & Operations
-- [Performance & Optimization Guide](performance-optimization.md) | [FR](performance-optimization-FR.md)
 - [Troubleshooting & Debugging Guide](troubleshooting-debugging.md) | [FR](troubleshooting-debugging-FR.md)
+- [Performance & Optimization Guide](performance-optimization.md) | [FR](performance-optimization-FR.md)
 
 ### Development Patterns
 - [Advanced Testing Patterns](testing-patterns.md) | [FR](testing-patterns-FR.md)

@@ -188,4 +188,10 @@ Claude: "42 tests passing. Coverage is 92%."
 
 📖 [MCP Examples](./mcp-examples.md) – Real working examples  
 📖 [MCP Best Practices](./mcp-best-practices.md) – Patterns and optimization  
-📖 [MCP API Reference](./mcp-api-reference.md) – Complete API  
+📖 [MCP API Reference](./mcp-api-reference.md) – Complete API
+
+---
+
+**[← Back to MCP Documentation](./README.md)** | **[← Back to Documentation Hub](../README.md)**
+
+**Version:** English | **[Français](./mcp-integration-guide-FR.md)**  

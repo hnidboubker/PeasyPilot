@@ -184,5 +184,13 @@ dotnet run --project TestAssistant.Generator -- --input "src/MyClass.cs" --outpu
 
 📖 **[Framework Adapters](./framework-adapters-guide.md)** – Choose your test framework  
 📖 **[Unit Testing Guide](./unit-testing-guide.md)** – Manual test writing  
+📖 **[Integration Testing Guide](./integration-testing-guide.md)** – Integration testing patterns  
+📖 **[BDD Testing Guide](./bdd-testing-guide.md)** – Behavior-driven testing  
 
 Generated tests speed up development while maintaining quality! ⚡
+
+---
+
+**[← Back to Learning Guides](./README.md)** | **[← Back to Documentation Hub](../README.md)**
+
+**Version:** English | **[Français](./test-generation-guide-FR.md)**
