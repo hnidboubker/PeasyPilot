@@ -40,6 +40,38 @@ for validation — it has not been independently reviewed line-by-line by the ow
 - No assuming, no modifying without validation, no deleting without explicit
   agreement — this applies repo-wide, not just to governance files.
 
+## Recent Updates (2026-09-11 Session 4 - Bug Fix)
+
+**Auto-Detected Bug Fix: XUnitTestBatteryRenderer Template ✅**
+
+### Issue
+- XUnitTestBatteryRenderer generated incorrect `public override void Setup()` method
+- Generated code failed to compile: CS0115 (no method to override in base class)
+- Root cause: Template used NUnit pattern instead of xUnit pattern
+
+### Root Cause Analysis
+- `PeasyPilotTestBase` implements `IAsyncLifetime` with `InitializeAsync()` and `DisposeAsync()`
+- No `Setup()` method exists in base class
+- NUnit renderer correctly uses `[SetUp] public override void Setup()` pattern
+- xUnit renderer template was incorrectly copied from NUnit without adaptation
+
+### Solution Implemented
+- Changed `public override void Setup()` → `public override async Task InitializeAsync()`
+- Changed `base.Setup();` → `await base.InitializeAsync();`
+- Added regression test: `Render_GeneratesAsyncInitializeAsyncMethod()`
+
+### Testing & Validation
+- Build: ✅ 0 errors
+- Tests: ✅ 3/3 passing (2 existing + 1 new regression test)
+- Frameworks: ✅ net8.0, net9.0, net10.0
+- Commit: ✅ 3695a54 - `fix: XUnitTestBatteryRenderer generates incorrect Setup() template`
+
+### Files Modified
+1. `src/PeasyPilot.TestAssistant/Rendering/XUnitTestBatteryRenderer.cs` (-2/+4 lines)
+2. `tests/PeasyPilot.TestAssistant.Tests/RenderingTests/XUnitTestBatteryRendererTests.cs` (+29 lines)
+
+---
+
 ## Recent Updates (2026-09-09 Session 3 - COMPLETE)
 
 **Phase 6 Tier 2 — MCP Transport Layer — ALL ISSUES RESOLVED ✅✅✅**
@@ -180,9 +212,22 @@ for validation — it has not been independently reviewed line-by-line by the ow
 - Issue #35 created with full scope, checklist, and documentation list
 - Status: Ready to start after Phase 4 merged to main
 
-## Open Questions
+## Open Questions & Future Epics
 
-**Phase 5 Design Decisions:**
+### Post-Documentation Epic: Framework-Specific Assert Aliases
+**Status:** PENDING (after documentation refactor complete)
+
+**Proposal:** Introduce NAssert, XAssert, TAssert to eliminate Assert ambiguity:
+- **Problem:** Three frameworks use generic Assert, unclear which to use
+- **Solution:** Framework-specific aliases (NAssert for NUnit, XAssert for xUnit, TAssert for TUnit)
+- **Benefits:** Explicit clarity, better IDE intellisense, clear code generation
+- **Decisions needed:**
+  1. Simple aliases vs. enriched wrappers?
+  2. Package structure (distributed vs. centralized)?
+  3. Breaking change or coexistence?
+- **Timeline:** After documentation refactor (Phase 1 of next cycle)
+
+### Phase 5 Design Decisions:
 - Test generation: Should generated tests be placed in same project or separate `*.Generated.cs` files?
 - Mutation simulation: How deep should mutation patterns go? Boundary values only, or logic inversions?
 - Challenge mode: Should it auto-fix weak tests or only report gaps?
