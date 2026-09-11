@@ -15,7 +15,15 @@ A modular .NET testing framework for building, orchestrating, and running unit, 
 
 PeasyPilot is composed of focused packages that work together to provide a lightweight, extensible testing foundation for .NET projects.
 
-### Included packages
+**New to PeasyPilot?** Start with [Getting Started](./docs/GETTING-STARTED.md) (25 minutes to your first test).
+
+### Three Paths Forward
+
+- **Unit Testing?** → [Unit Testing Guide](./docs/GUIDES/unit-testing-guide.md)
+- **Integration Testing?** → [Integration Testing Guide](./docs/GUIDES/integration-testing-guide.md)
+- **BDD Testing?** → [BDD Testing Guide](./docs/GUIDES/bdd-testing-guide.md)
+
+### Included Packages
 
 - **PeasyPilot.Core** – core abstractions, test context, discovery, orchestration, reporting, and DI integration
 - **PeasyPilot.CLI** – command-line runner for filtering and scheduling tests
@@ -29,6 +37,38 @@ PeasyPilot is composed of focused packages that work together to provide a light
 - **PeasyPilot.XUnit** – xUnit base class integration
 - **PeasyPilot.NUnit** – NUnit base class integration
 - **PeasyPilot.TUnit** – TUnit base class integration
+
+## Documentation
+
+### Getting Started
+- [Getting Started Guide](./docs/GETTING-STARTED.md) – 25 minutes to your first test
+
+### Learning Guides
+- [Unit Testing Guide](./docs/GUIDES/unit-testing-guide.md)
+- [Integration Testing Guide](./docs/GUIDES/integration-testing-guide.md)
+- [BDD Testing Guide](./docs/GUIDES/bdd-testing-guide.md)
+- [Test Generation Guide](./docs/GUIDES/test-generation-guide.md)
+- [Framework Adapters](./docs/GUIDES/framework-adapters-guide.md)
+
+### MCP Integration
+- [MCP Overview](./docs/MCP/mcp-overview.md) – What is MCP and why it matters
+- [MCP Integration Guide](./docs/MCP/mcp-integration-guide.md) – Step-by-step setup
+- [MCP Examples](./docs/MCP/mcp-examples.md) – Real working examples
+- [MCP Best Practices](./docs/MCP/mcp-best-practices.md)
+- [MCP API Reference](./docs/MCP/mcp-api-reference.md)
+
+### API Reference
+- [Core Package Reference](./docs/REFERENCE/core-package-reference.md)
+- [Unit Package Reference](./docs/REFERENCE/unit-package-reference.md)
+- [Integration Package Reference](./docs/REFERENCE/integration-package-reference.md)
+- [BDD Package Reference](./docs/REFERENCE/bdd-package-reference.md)
+- [CLI Reference](./docs/REFERENCE/cli-reference.md)
+- [TestAssistant Reference](./docs/REFERENCE/test-assistant-reference.md)
+
+### Advanced Topics
+- [Custom Extensions](./docs/ADVANCED/custom-extensions.md)
+- [Performance Tuning](./docs/ADVANCED/performance-tuning.md)
+- [CI/CD Integration](./docs/ADVANCED/ci-cd-integration.md)
 
 ## Features
 
