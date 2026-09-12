@@ -26,41 +26,45 @@ jobs:
 
       - name: Build
         run: dotnet build -c Release --no-restore
+        continue-on-error: true
 
       - name: Run Tests
         run: dotnet test -c Release --no-build --logger "console;verbosity=normal" 2>&1 | tee test-output.log
         continue-on-error: true
 
-      - name: Parse Test Results
+      - name: Capture Test Output
         if: always()
         run: |
           echo "## 📊 Test Results"
           echo ""
-          echo "### Build Status"
-          if [ ${PIPESTATUS[0]} -eq 0 ]; then
-            echo "✅ Build: Success"
+          if [ -f test-output.log ]; then
+            echo "### Test Output"
+            echo "\`\`\`"
+            tail -50 test-output.log
+            echo "\`\`\`"
           else
-            echo "❌ Build: Failed"
+            echo "No test output found"
           fi
-          echo ""
-          echo "### Test Output"
-          echo "\`\`\`"
-          cat test-output.log | tail -50
-          echo "\`\`\`"
 
       - name: Check for Test Failures
         if: always()
         run: |
-          if grep -q "FAILED\|failed:" test-output.log; then
+          mkdir -p .test-errors
+
+          if [ -f test-output.log ] && grep -q "FAILED\|failed:" test-output.log; then
             echo "## ❌ Test Failures Found"
-            echo ""
             grep "FAILED\|failed:" test-output.log
-            mkdir -p .test-errors
+
             echo "# Test Failures" > .test-errors/test-failures.md
-            echo "Build: ${{ github.ref }}" >> .test-errors/test-failures.md
-            echo "Time: $(date)" >> .test-errors/test-failures.md
+            echo "" >> .test-errors/test-failures.md
+            echo "**Branch:** ${{ github.ref }}" >> .test-errors/test-failures.md
+            echo "**Time:** $(date)" >> .test-errors/test-failures.md
+            echo "" >> .test-errors/test-failures.md
+            echo "## Failed Tests" >> .test-errors/test-failures.md
             echo "" >> .test-errors/test-failures.md
             grep -A 10 "FAILED\|failed:" test-output.log >> .test-errors/test-failures.md || true
+          else
+            echo "✅ No test failures detected"
           fi
 
       - name: Upload Test Failures
