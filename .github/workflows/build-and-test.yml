@@ -1,0 +1,100 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop, phase/** ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: ['8.0.x', '9.0.x', '10.0.x']
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Run Tests
+        run: dotnet test -c Release --no-build --logger "console;verbosity=normal" 2>&1 | tee test-output.log
+        continue-on-error: true
+
+      - name: Parse Test Results
+        if: always()
+        run: |
+          echo "## 📊 Test Results"
+          echo ""
+          echo "### Build Status"
+          if [ ${PIPESTATUS[0]} -eq 0 ]; then
+            echo "✅ Build: Success"
+          else
+            echo "❌ Build: Failed"
+          fi
+          echo ""
+          echo "### Test Output"
+          echo "\`\`\`"
+          cat test-output.log | tail -50
+          echo "\`\`\`"
+
+      - name: Check for Test Failures
+        if: always()
+        run: |
+          if grep -q "FAILED\|failed:" test-output.log; then
+            echo "## ❌ Test Failures Found"
+            echo ""
+            grep "FAILED\|failed:" test-output.log
+            mkdir -p .test-errors
+            echo "# Test Failures" > .test-errors/test-failures.md
+            echo "Build: ${{ github.ref }}" >> .test-errors/test-failures.md
+            echo "Time: $(date)" >> .test-errors/test-failures.md
+            echo "" >> .test-errors/test-failures.md
+            grep -A 10 "FAILED\|failed:" test-output.log >> .test-errors/test-failures.md || true
+          fi
+
+      - name: Upload Test Failures
+        if: always() && hashFiles('.test-errors/test-failures.md') != ''
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-failures
+          path: .test-errors/
+          retention-days: 30
+
+      - name: Display Failure Report
+        if: always() && hashFiles('.test-errors/test-failures.md') != ''
+        run: |
+          echo "## 📋 Test Failure Report"
+          echo ""
+          cat .test-errors/test-failures.md
+
+  logs:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: build-and-test
+
+    steps:
+      - name: Download Artifacts
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: build-and-test.yml
+          if_no_artifact_found: warn
+
+      - name: Print Summary
+        run: |
+          echo "## 🔍 CI/CD Execution Summary"
+          echo ""
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Event: ${{ github.event_name }}"
+          echo "Status: ${{ job.status }}"

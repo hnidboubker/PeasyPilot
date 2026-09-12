@@ -114,6 +114,14 @@ public abstract class TestLoggerBase
                 Logger.LogError($"   Time: {error.Timestamp:HH:mm:ss.fff}");
                 Logger.LogError("");
             }
+
+            // Register failure with central reporter for CI/CD
+            TestErrorReporter.RegisterFailure(
+                GetTestMethodName(),
+                GetType().Name,
+                _errors,
+                _testStopwatch.ElapsedMilliseconds
+            );
         }
         else
         {
