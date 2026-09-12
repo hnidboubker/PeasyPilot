@@ -46,32 +46,6 @@ jobs:
         run: dotnet test ${{ env.SOLUTION }} --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal
 
 
-      ## this to see where is the bugs
-      - name: Run tests
-        run: dotnet test${{ env.SOLUTION }} --configuration Release
+    
 
-      - name: Afficher les logs TUnit
-        if: failure()
-        run: |
-          find . -path '*TestResults/*.log' -type f -print -exec sh -c '
-            echo "===== $1 ====="
-            cat "$1"
-          ' _ {} \;
-
-          - name: Dump TUnit logs
-            if: always()
-            shell: bash
-            run: |
-              echo "=== TUnit logs ==="
-          
-              find src/PeasyPilot.TUnit/bin \
-                -type f \
-                -path '*/TestResults/*.log' \
-                -print \
-                -exec sh -c '
-                  echo ""
-                  echo "========================================"
-                  echo "FILE: $1"
-                  echo "========================================"
-                  cat "$1"
-                ' _ {} \;
+     
