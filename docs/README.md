@@ -142,6 +142,7 @@ Found an issue in the documentation? Have suggestions for improvement?
 | Find API for a package | [API References](./REFERENCE/README.md) |
 | Optimize test performance | [Performance Guide](./ADVANCED/performance-optimization.md) |
 | Troubleshoot issues | [Troubleshooting Guide](./ADVANCED/troubleshooting-debugging.md) |
+| VS Test Explorer not showing tests | [Test Discovery Troubleshooting](./TROUBLESHOOTING-TEST-DISCOVERY.md) |
 | Setup CI/CD pipeline | [CI/CD Workflows](./CI-CD-WORKFLOWS.md) |
 | Contribute to PeasyPilot | [Contributing Guide](./ADVANCED/extensibility-contributing.md) |
 
