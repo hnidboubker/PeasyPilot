@@ -61,7 +61,7 @@ public abstract class TestLoggerBase
         {
             builder
                 .SetMinimumLevel(LogLevel.Debug)
-                .AddConsole(options =>
+                .AddSimpleConsole(options =>
                 {
                     // Format: [HH:mm:ss.fff] [LEVEL] [Category] Message
                     options.IncludeScopes = true;

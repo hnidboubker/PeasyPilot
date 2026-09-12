@@ -80,14 +80,16 @@ public class Tier5Tests
         XAssert.NotNull(result);
         XAssert.True(result.PassesBasicValidation);
     }
+
+    [Fact]
     public void TestAdd()
     {
         // Arrange
         var a = 5;
         var b = 3;
         // Act
-        var calcalute = new Calculator();
-        var result = calcalute.Add(a, b);
+        var calculator = new Calculator();
+        var result = calculator.Add(a, b);
         // Assert
         XAssert.Equal(8, result);
     }
