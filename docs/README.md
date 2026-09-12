@@ -75,6 +75,7 @@ Deep dives into individual packages:
 
 ### 🔧 Build & Deployment
 - **[Packaging Guide](./PACKAGING.md)** — Build, pack, and publish NuGet packages
+- **[CI/CD Workflows](./CI-CD-WORKFLOWS.md)** | **[FR](./CI-CD-WORKFLOWS-FR.md)** — GitHub Actions workflows for automation
 
 ---
 
@@ -141,6 +142,7 @@ Found an issue in the documentation? Have suggestions for improvement?
 | Find API for a package | [API References](./REFERENCE/README.md) |
 | Optimize test performance | [Performance Guide](./ADVANCED/performance-optimization.md) |
 | Troubleshoot issues | [Troubleshooting Guide](./ADVANCED/troubleshooting-debugging.md) |
+| Setup CI/CD pipeline | [CI/CD Workflows](./CI-CD-WORKFLOWS.md) |
 | Contribute to PeasyPilot | [Contributing Guide](./ADVANCED/extensibility-contributing.md) |
 
 ### By Framework

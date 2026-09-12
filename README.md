@@ -665,6 +665,8 @@ Complete guides for each PeasyPilot package. Each guide is available in **Englis
 
 - **[Packaging Guide](./docs/PACKAGING.md)**
   Build, pack, and publish NuGet packages
+- **[CI/CD Workflows](./docs/CI-CD-WORKFLOWS.md)**
+  GitHub Actions workflows for build, test, coverage, and release automation
 
 ### Samples
 
