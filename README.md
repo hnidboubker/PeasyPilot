@@ -4,7 +4,7 @@
 
 A modular .NET testing framework for building, orchestrating, and running unit, integration, and BDD-style testing workflows with a consistent API.
 
-![Build](https://github.com/hnidboubker/PeasyPilot/actions/workflows/build.yml/badge.svg?branch=main)
+![Build](https://github.com/hnidboubker/PeasyPilot/actions/workflows/build-and-test.yml/badge.svg?branch=main)
 ![coverage](https://github.com/hnidboubker/PeasyPilot/actions/workflows/coverage.yml/badge.svg?branch=main)
 ![release](https://github.com/hnidboubker/PeasyPilot/actions/workflows/release.yml/badge.svg?branch=main)
 [![NuGet](https://img.shields.io/nuget/v/PeasyPilot.Unit)](https://www.nuget.org/packages/PeasyPilot.Unit)
