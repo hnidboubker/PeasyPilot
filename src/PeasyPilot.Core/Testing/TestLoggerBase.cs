@@ -107,9 +107,7 @@ public abstract class TestLoggerBase
         foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<System.Diagnostics.StackFrame>())
         {
             var method = frame.GetMethod();
-            if (method?.DeclaringType?.Name.EndsWith("Tests") == true ||
-                method?.GetCustomAttributes(typeof(Xunit.FactAttribute), false).Length > 0 ||
-                method?.GetCustomAttributes(typeof(Xunit.TheoryAttribute), false).Length > 0)
+            if (method?.DeclaringType?.Name.EndsWith("Tests") == true)
             {
                 return method.Name;
             }
