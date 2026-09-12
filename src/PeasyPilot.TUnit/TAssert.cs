@@ -169,8 +169,27 @@ public static class TAssert
     /// <summary>
     /// Asserts that a value is not null.
     /// </summary>
-    public static async Task NotNull(object? obj) =>
-        await Assert.That(obj).IsNotNull();
+    public static async Task NotNull(object? obj)
+    {
+        if (obj is null)
+            throw new InvalidOperationException("Value is null");
+
+        await Assert.That(obj).IsNotDefault();
+        //await Assert.That(obj).IsNotNull();
+    }
+       
+
+    public static async Task<T> NotNull<T>(this T? obj) where T : class
+    {
+        
+        if (obj is null)
+            throw new InvalidOperationException("Value is null");
+        
+        await Assert.That(obj).IsNotDefault();
+
+       
+        return obj!;  // ✅ null-forgiving operator
+    }
 
     /// <summary>
     /// Asserts that a collection contains an item.
@@ -208,11 +227,38 @@ public static class TAssert
     public static async Task IsNotEmpty<T>(IEnumerable<T> collection) =>
         await Assert.That(collection).IsNotEmpty();
 
+#pragma warning disable TUnitAssertions0002 // TUnit analyzer: Assert statements must be awaited
+    public static T IsNotNull<T>(this T? value) where T : class
+    {
+        if (value is null)
+            throw new InvalidOperationException("Value is null");
+        return value;  // ✅ Compilateur sait que c'est non-null
+    }
+
+    public static async Task<T> IsNotNull<T>(this Task<T?> task) where T : class
+    {
+        var value = await task;
+        if (value is null)
+            throw new InvalidOperationException("Value is null");
+        return value;  // ✅ Compilateur sait que c'est non-null
+    }
+
+
+    //public static async Task IsNotEmpty<T>(this IEnumerable<T> collection)
+    //{
+    //    await Assert.That(collection).IsNotNull();
+    //    await Assert.That(collection).IsNotEmpty();
+    //}
+#pragma warning restore TUnitAssertions0002
+
+
     /// <summary>
     /// Asserts that a string starts with a value.
     /// </summary>
     public static async Task StartsWith(string text, string value) =>
         await Assert.That(text).StartsWith(value);
+
+
 
     /// <summary>
     /// Asserts that a string ends with a value.
