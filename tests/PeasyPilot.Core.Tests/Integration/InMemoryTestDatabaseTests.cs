@@ -1,6 +1,7 @@
 using PeasyPilot.Integration.Abstractions;
 using PeasyPilot.Integration.Fixtures;
 using Xunit;
+using PeasyPilot.XUnit;
 
 namespace PeasyPilot.Core.Tests.Integration;
 
@@ -16,8 +17,8 @@ public class InMemoryTestDatabaseTests
         var factory = new InMemoryDatabaseFactory();
         var db = factory.CreateDatabase();
 
-        Assert.NotNull(db);
-        Assert.IsAssignableFrom<ITestDatabase>(db);
+        XAssert.NotNull(db);
+        XAssert.IsAssignableFrom<ITestDatabase>(db);
     }
 
     [Fact]
@@ -28,7 +29,7 @@ public class InMemoryTestDatabaseTests
         await db.InitializeAsync();
 
         // No exception thrown
-        Assert.True(true);
+        XAssert.True(true);
     }
 
     [Fact]
@@ -40,7 +41,7 @@ public class InMemoryTestDatabaseTests
         await db.SeedAsync();
 
         // No exception thrown
-        Assert.True(true);
+        XAssert.True(true);
     }
 
     [Fact]
@@ -52,7 +53,7 @@ public class InMemoryTestDatabaseTests
         await db.ResetAsync();
 
         // No exception thrown
-        Assert.True(true);
+        XAssert.True(true);
     }
 
     [Fact]
@@ -64,7 +65,7 @@ public class InMemoryTestDatabaseTests
         await db.CleanupAsync();
 
         // No exception thrown
-        Assert.True(true);
+        XAssert.True(true);
     }
 
     [Fact]
@@ -78,6 +79,6 @@ public class InMemoryTestDatabaseTests
         await db.CleanupAsync();
 
         // All operations completed without error
-        Assert.True(true);
+        XAssert.True(true);
     }
 }

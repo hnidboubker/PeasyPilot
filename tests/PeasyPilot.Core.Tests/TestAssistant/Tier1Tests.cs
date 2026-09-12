@@ -1,4 +1,6 @@
 using PeasyPilot.TestAssistant.Analysis;
+using PeasyPilot.XUnit;
+
 using Xunit;
 namespace PeasyPilot.Core.Tests.TestAssistant;
 public class Tier1Tests
@@ -8,16 +10,22 @@ public class Tier1Tests
     public async Task AnalyzeTypeAsync_WithSimpleClass_ReturnsMetadata()
     {
         var result = await _analyzer.AnalyzeTypeAsync(typeof(SimpleClass));
-        Assert.NotEmpty(result);
-        Assert.All(result, m => Assert.NotNull(m.MethodName));
+        XAssert.NotEmpty(result);
+        // Todo Add this methode All it'doesn't exists
+        XAssert.All(result, m => XAssert.NotNull(m.MethodName));
     }
     [Fact]
     public async Task AnalyzeMethodAsync_WithValidMethod_ReturnModel()
     {
         var result = await _analyzer.AnalyzeMethodAsync(typeof(SimpleClass), "Add");
-        Assert.NotNull(result);
-        Assert.Equal("Add", result.MethodName);
-        Assert.NotEmpty(result.TestableScenarios);
+        XAssert.NotNull(result);
+        // Todo fix this  result
+        if (result != null)
+        {
+            XAssert.Equal(expected: "Add", actual: result.MethodName);
+            XAssert.NotEmpty(result.TestableScenarios);
+        }
+       
     }
     public class SimpleClass { public int Add(int a, int b) => a + b; public void Print(string s) { } }
 }

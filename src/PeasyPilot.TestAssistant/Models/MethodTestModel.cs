@@ -3,7 +3,7 @@ public class MethodTestModel
 {
     public required string TypeName { get; init; }
     public Type? ResolvedType { get; init; }
-    public required string MethodName { get; init; }
+    public required string MethodName { get; set; }
     public bool IsAsync { get; init; }
     public bool IsStatic { get; init; }
     public bool IsPublic { get; init; }

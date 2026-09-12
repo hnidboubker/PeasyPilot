@@ -49,7 +49,7 @@ public class UserServiceXUnitTests : PeasyPilotTestBase
 
         // Assert
         XAssert.NotNull(result);
-        XAssert.Equal("Jane Smith", result.Name);
+        XAssert.Equal("Jane Smith", result!.Name);
     }
 
     [Fact]

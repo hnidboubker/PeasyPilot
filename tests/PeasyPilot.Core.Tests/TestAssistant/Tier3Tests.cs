@@ -1,5 +1,7 @@
 using PeasyPilot.TestAssistant.Generation;
 using PeasyPilot.TestAssistant.Models;
+using PeasyPilot.XUnit;
+
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.TestAssistant;
@@ -14,9 +16,9 @@ public class Tier3Tests
 
         var code = generator.GenerateTestClass(plan, "MyNamespace");
 
-        Assert.NotNull(code);
-        Assert.Contains("public class TestMethodTests", code);
-        Assert.DoesNotContain("using NUnit.Framework;", code);
+        XAssert.NotNull(code);
+        XAssert.Contains("public class TestMethodTests", code);
+        XAssert.DoesNotContain("using NUnit.Framework;", code);
     }
 
     [Fact]
@@ -27,7 +29,7 @@ public class Tier3Tests
 
         var code = generator.GenerateTestClass(plan, "MyNamespace");
 
-        Assert.Contains("[Fact]", code);
+        XAssert.Contains("[Fact]", code);
     }
 
     [Fact]
@@ -39,9 +41,9 @@ public class Tier3Tests
 
         var code = generator.GenerateTestMethod(scenario, model);
 
-        Assert.Contains("// Arrange", code);
-        Assert.Contains("// Act", code);
-        Assert.Contains("// Assert", code);
+        XAssert.Contains("// Arrange", code);
+        XAssert.Contains("// Act", code);
+        XAssert.Contains("// Assert", code);
     }
 
     [Fact]
@@ -52,8 +54,8 @@ public class Tier3Tests
 
         var code = generator.GenerateTestClass(plan, "MyNamespace");
 
-        Assert.Contains("[TestFixture]", code);
-        Assert.Contains("[Test]", code);
+        XAssert.Contains("[TestFixture]", code);
+        XAssert.Contains("[Test]", code);
     }
 
     [Fact]
@@ -64,8 +66,8 @@ public class Tier3Tests
 
         var fixture = generator.GenerateTestFixture(plan);
 
-        Assert.Contains("[SetUp]", fixture);
-        Assert.Contains("[TearDown]", fixture);
+        XAssert.Contains("[SetUp]", fixture);
+        XAssert.Contains("[TearDown]", fixture);
     }
 
     [Fact]
@@ -76,7 +78,7 @@ public class Tier3Tests
 
         var code = generator.GenerateTestClass(plan, "MyNamespace");
 
-        Assert.Contains("public async Task", code);
+        XAssert.Contains("public async Task", code);
     }
 
     [Fact]
@@ -84,9 +86,9 @@ public class Tier3Tests
     {
         var registry = new TestGeneratorRegistry();
 
-        Assert.True(registry.IsSupported("xunit"));
-        Assert.True(registry.IsSupported("nunit"));
-        Assert.True(registry.IsSupported("tunit"));
+        XAssert.True(registry.IsSupported("xunit"));
+        XAssert.True(registry.IsSupported("nunit"));
+        XAssert.True(registry.IsSupported("tunit"));
     }
 
     [Fact]
@@ -98,12 +100,12 @@ public class Tier3Tests
         var nunitGen = registry.GetGenerator("nunit");
         var tunitGen = registry.GetGenerator("tunit");
 
-        Assert.NotNull(xunitGen);
-        Assert.NotNull(nunitGen);
-        Assert.NotNull(tunitGen);
-        Assert.Equal("xunit", xunitGen.Framework);
-        Assert.Equal("nunit", nunitGen.Framework);
-        Assert.Equal("tunit", tunitGen.Framework);
+        XAssert.NotNull(xunitGen);
+        XAssert.NotNull(nunitGen);
+        XAssert.NotNull(tunitGen);
+        XAssert.Equal("xunit", xunitGen.Framework);
+        XAssert.Equal("nunit", nunitGen.Framework);
+        XAssert.Equal("tunit", tunitGen.Framework);
     }
 
     [Fact]
@@ -111,7 +113,7 @@ public class Tier3Tests
     {
         var registry = new TestGeneratorRegistry();
 
-        Assert.Throws<InvalidOperationException>(() => registry.GetGenerator("unknown"));
+        XAssert.Throws<InvalidOperationException>(() => registry.GetGenerator("unknown"));
     }
 
     [Fact]
@@ -125,8 +127,8 @@ public class Tier3Tests
 
         var mockCode = generator.GenerateMockSetup(dependencies);
 
-        Assert.Contains("Mock", mockCode);
-        Assert.Contains("ILogger", mockCode);
+        XAssert.Contains("Mock", mockCode);
+        XAssert.Contains("ILogger", mockCode);
     }
 
     [Fact]
@@ -137,7 +139,7 @@ public class Tier3Tests
         var pascalCase = generator.GetType().GetMethod("ToPascalCase", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?
             .Invoke(generator, new object[] { "test_method" });
 
-        Assert.NotNull(pascalCase);
+        XAssert.NotNull(pascalCase);
     }
 
     private TestPlan CreateTestPlan() =>

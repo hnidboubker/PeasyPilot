@@ -1,5 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
+
+using PeasyPilot.Core.Tests.Abstractions;
 using PeasyPilot.Integration.Fixtures;
+using PeasyPilot.XUnit;
+
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Integration;
@@ -16,16 +20,6 @@ public class TestFixture : XUnitIntegrationTestFixture
     }
 }
 
-public interface ITestService
-{
-    string GetValue();
-}
-
-public class TestService : ITestService
-{
-    public string GetValue() => "test-value";
-}
-
 /// <summary>
 /// Tests for IntegrationTestFixture base class.
 /// Validates DI container, database lifecycle, and helper methods.
@@ -40,13 +34,13 @@ public class IntegrationTestFixtureTests : XUnitIntegrationTestFixture
     [Fact]
     public void Services_IsAvailable()
     {
-        Assert.NotNull(Services);
+        XAssert.NotNull(Services);
     }
 
     [Fact]
     public void Database_IsAvailable()
     {
-        Assert.NotNull(Database);
+        XAssert.NotNull(Database);
     }
 
     [Fact]
@@ -54,19 +48,19 @@ public class IntegrationTestFixtureTests : XUnitIntegrationTestFixture
     {
         var service = GetService<ITestService>();
 
-        Assert.NotNull(service);
-        Assert.Equal("test-value", service.GetValue());
+        XAssert.NotNull(service);
+        XAssert.Equal("test-value", service.GetValue());
     }
 
     [Fact]
     public void GetService_WithUnregisteredType_Throws()
     {
-        var exception = Assert.Throws<InvalidOperationException>(() =>
+        var exception = XAssert.Throws<InvalidOperationException>(() =>
         {
             GetService<IUnregisteredService>();
         });
 
-        Assert.Contains("No service for type", exception.Message);
+        XAssert.Contains("No service for type", exception.Message);
     }
 
     [Fact]
@@ -75,7 +69,7 @@ public class IntegrationTestFixtureTests : XUnitIntegrationTestFixture
         await ResetDatabaseAsync();
 
         // No exception thrown
-        Assert.True(true);
+        XAssert.True(true);
     }
 
     [Fact]
@@ -84,8 +78,6 @@ public class IntegrationTestFixtureTests : XUnitIntegrationTestFixture
         var service1 = GetService<ITestService>();
         var value1 = service1.GetValue();
 
-        Assert.Equal("test-value", value1);
+        XAssert.Equal("test-value", value1);
     }
 }
-
-public interface IUnregisteredService { }

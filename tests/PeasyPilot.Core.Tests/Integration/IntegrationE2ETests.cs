@@ -1,5 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
+
+using PeasyPilot.Core.Tests.Abstractions;
+using PeasyPilot.Core.Tests.Models;
 using PeasyPilot.Integration.Fixtures;
+using PeasyPilot.XUnit;
+
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Integration;
@@ -37,15 +42,15 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         var userId = await service.CreateUserAsync("Alice", "alice@example.com");
 
         // Assert: User created with valid ID
-        Assert.True(userId > 0);
+        XAssert.True(userId > 0);
 
         // Act: Retrieve user
         var user = await service.GetUserAsync(userId);
 
         // Assert: User retrieved with correct data
-        Assert.NotNull(user);
-        Assert.Equal("Alice", user.Name);
-        Assert.Equal("alice@example.com", user.Email);
+        XAssert.NotNull(user);
+        XAssert.Equal("Alice", user.Name);
+        XAssert.Equal("alice@example.com", user.Email);
     }
 
     [Fact]
@@ -56,23 +61,23 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         // Test 1: Create first user
         var user1Id = await service.CreateUserAsync("Bob", "bob@example.com");
         var user1 = await service.GetUserAsync(user1Id);
-        Assert.Equal("Bob", user1.Name);
+        XAssert.Equal("Bob", user1.Name);
 
         // Test 2: Reset database
         await ResetAllAsync();
 
         // Assert: Database is empty after reset
         var usersAfterReset = await service.GetAllUsersAsync();
-        Assert.Empty(usersAfterReset);
+        XAssert.IsEmpty(usersAfterReset);
 
         // Test 3: Create second user (fresh state)
         var user2Id = await service.CreateUserAsync("Carol", "carol@example.com");
         var user2 = await service.GetUserAsync(user2Id);
-        Assert.Equal("Carol", user2.Name);
+        XAssert.Equal("Carol", user2.Name);
 
         // Assert: Only one user exists (no bleed from test 1)
         var allUsers = await service.GetAllUsersAsync();
-        Assert.Single(allUsers);
+        XAssert.Single(allUsers);
     }
 
     [Fact]
@@ -89,13 +94,13 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         var allUsers = await service.GetAllUsersAsync();
 
         // Assert: All users retrieved
-        Assert.Equal(3, allUsers.Count);
+        XAssert.Equal(3, allUsers.Count);
 
         // Act: Get specific user
         var user2 = await service.GetUserAsync(2);
 
         // Assert: Correct user retrieved
-        Assert.Equal("User2", user2.Name);
+        XAssert.Equal("User2", user2.Name);
     }
 
     [Fact]
@@ -104,16 +109,16 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         var repo = GetService<IUserRepository>();
         var service = GetService<IUserService>();
 
-        Assert.NotNull(repo);
-        Assert.NotNull(service);
+        XAssert.NotNull(repo);
+        XAssert.NotNull(service);
 
         // Act: Add via repository directly
         await repo.AddAsync(new E2EUser { Name = "Direct", Email = "direct@example.com" });
 
         // Assert: Service sees the data
         var allUsers = await service.GetAllUsersAsync();
-        Assert.NotEmpty(allUsers);
-        Assert.Contains(allUsers, u => u.Name == "Direct");
+        XAssert.NotEmpty(allUsers);
+        XAssert.True(allUsers.Any(u => u.Name == "Direct"));
     }
 
     [Fact]
@@ -124,103 +129,18 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         // Cycle 1
         await service.CreateUserAsync("First", "first@example.com");
         var countFirst = (await service.GetAllUsersAsync()).Count;
-        Assert.Equal(1, countFirst);
+        XAssert.Equal(1, countFirst);
 
         // Reset
         await ResetAllAsync();
         var countAfterReset = (await service.GetAllUsersAsync()).Count;
-        Assert.Empty(await service.GetAllUsersAsync());
+        XAssert.IsEmpty(await service.GetAllUsersAsync());
 
         // Cycle 2
         await service.CreateUserAsync("Second", "second@example.com");
         var countSecond = (await service.GetAllUsersAsync()).Count;
-        Assert.Equal(1, countSecond);
+        XAssert.Equal(1, countSecond);
 
         // Isolation verified: no bleed between cycles
-    }
-}
-
-// Test models and services
-public class E2EUser
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-}
-
-public interface IResettable
-{
-    Task ResetAsync();
-}
-
-public interface IUserRepository
-{
-    Task AddAsync(E2EUser user);
-    Task<E2EUser?> GetByIdAsync(int id);
-    Task<IReadOnlyList<E2EUser>> GetAllAsync();
-}
-
-public interface IUserService
-{
-    Task<int> CreateUserAsync(string name, string email);
-    Task<E2EUser> GetUserAsync(int id);
-    Task<IReadOnlyList<E2EUser>> GetAllUsersAsync();
-}
-
-public class E2EUserRepository : IUserRepository, IResettable
-{
-    private readonly List<E2EUser> _users = new();
-    private int _nextId = 1;
-
-    public Task AddAsync(E2EUser user)
-    {
-        user.Id = _nextId++;
-        _users.Add(user);
-        return Task.CompletedTask;
-    }
-
-    public Task<E2EUser?> GetByIdAsync(int id)
-    {
-        return Task.FromResult(_users.FirstOrDefault(u => u.Id == id));
-    }
-
-    public Task<IReadOnlyList<E2EUser>> GetAllAsync()
-    {
-        return Task.FromResult<IReadOnlyList<E2EUser>>(_users.AsReadOnly());
-    }
-
-    public Task ResetAsync()
-    {
-        _users.Clear();
-        _nextId = 1;
-        return Task.CompletedTask;
-    }
-}
-
-public class E2EUserService : IUserService
-{
-    private readonly IUserRepository _repository;
-
-    public E2EUserService(IUserRepository repository)
-    {
-        _repository = repository;
-    }
-
-    public async Task<int> CreateUserAsync(string name, string email)
-    {
-        var user = new E2EUser { Name = name, Email = email };
-        await _repository.AddAsync(user);
-        return user.Id;
-    }
-
-    public async Task<E2EUser> GetUserAsync(int id)
-    {
-        var user = await _repository.GetByIdAsync(id);
-        return user ?? throw new InvalidOperationException($"User {id} not found");
-    }
-
-    public Task<IReadOnlyList<E2EUser>> GetAllUsersAsync()
-    {
-        return _repository.GetAllAsync();
     }
 }
