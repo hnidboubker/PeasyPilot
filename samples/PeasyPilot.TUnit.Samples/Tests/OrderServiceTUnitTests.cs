@@ -1,8 +1,5 @@
 namespace PeasyPilot.TUnit.Samples.Tests;
 
-using global::TUnit;
-using PeasyPilot.Core;
-using PeasyPilot.Core.Extensions;
 using PeasyPilot.TUnit;
 using PeasyPilot.TUnit.Samples.Enums;
 using PeasyPilot.TUnit.Samples.Services;
@@ -29,9 +26,9 @@ public class OrderServiceTUnitTests : PeasyPilotTUnitTestBase
         var order = _service.CreateOrder("CUST001");
 
         // Assert
-         TAssert.That(order).IsNotNull();
-         TAssert.That(order.CustomerId).IsEqualTo("CUST001");
-         TAssert.That(order.Status).IsEqualTo(OrderStatus.Pending);
+        TAssert.That(order).IsNotNull();
+        TAssert.That(order.CustomerId).IsEqualTo("CUST001");
+        TAssert.That(order.Status).IsEqualTo(OrderStatus.Pending);
         await Task.CompletedTask;
     }
 

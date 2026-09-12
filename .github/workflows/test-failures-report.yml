@@ -1,0 +1,49 @@
+name: Test Failure Report
+
+on:
+  workflow_run:
+    workflows: ["Build and Test"]
+    types: [completed]
+
+jobs:
+  report-failures:
+    runs-on: ubuntu-latest
+    if: failure()
+
+    steps:
+      - name: Download test failures
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          name: test-failures
+          path: .test-errors
+          if_no_artifact_found: warn
+
+      - name: Parse and Display Failures
+        if: hashFiles('.test-errors/test-failures.md') != ''
+        run: |
+          echo "## ❌ Test Failures Detected"
+          echo ""
+          cat .test-errors/test-failures.md >> $GITHUB_STEP_SUMMARY
+          echo ""
+          echo "---"
+          echo ""
+          echo "## 📊 Failure Summary"
+          if [ -f .test-errors/failures-summary.json ]; then
+            cat .test-errors/failures-summary.json >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Create Issue (Optional)
+        if: hashFiles('.test-errors/test-failures.md') != ''
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('.test-errors/test-failures.md', 'utf8');
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Test Failures in ${context.ref}`,
+              body: report,
+              labels: ['test-failure', 'automated']
+            });
