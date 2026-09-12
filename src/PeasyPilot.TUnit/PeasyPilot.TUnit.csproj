@@ -4,6 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsTestProject>True</IsTestProject>
+      <IsTestingPlatformApplication>true</IsTestingPlatformApplication>
     <!-- NuGet package metadata -->
     <IsPackable>true</IsPackable>
     <PackageId>PeasyPilot.TUnit</PackageId>
