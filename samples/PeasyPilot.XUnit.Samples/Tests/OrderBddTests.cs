@@ -35,9 +35,9 @@ public class OrderBddTests
         var feature = await _loader.LoadFromFileAsync(featurePath);
 
         // Assert
-        Assert.NotNull(feature);
-        Assert.Equal("Order Processing", feature.Name);
-        Assert.Equal(5, feature.Scenarios.Count);
+        XAssert.NotNull(feature);
+        XAssert.Equal("Order Processing", feature.Name);
+        XAssert.Equal(5, feature.Scenarios.Count);
     }
 
     [Fact]
@@ -49,11 +49,11 @@ public class OrderBddTests
 
         // Assert
         var scenarioNames = feature.Scenarios.Select(s => s.Name).ToList();
-        Assert.Contains("Create an order", scenarioNames);
-        Assert.Contains("Add items to order", scenarioNames);
-        Assert.Contains("Multiple items in order", scenarioNames);
-        Assert.Contains("Update order status", scenarioNames);
-        Assert.Contains("Cancel order", scenarioNames);
+        XAssert.Contains("Create an order", scenarioNames);
+        XAssert.Contains("Add items to order", scenarioNames);
+        XAssert.Contains("Multiple items in order", scenarioNames);
+        XAssert.Contains("Update order status", scenarioNames);
+        XAssert.Contains("Cancel order", scenarioNames);
     }
 
     [Fact]
@@ -65,11 +65,11 @@ public class OrderBddTests
         var scenario = feature.Scenarios.First(s => s.Name == "Create an order");
 
         // Assert
-        Assert.True(scenario.Steps.Count >= 3, "Scenario should have at least 3 steps");
+        XAssert.True(scenario.Steps.Count >= 3, "Scenario should have at least 3 steps");
 
         var stepTypes = scenario.Steps.Select(s => s.Type).ToList();
-        Assert.Contains(StepType.Given, stepTypes);
-        Assert.Contains(StepType.When, stepTypes);
-        Assert.Contains(StepType.Then, stepTypes);
+        XAssert.Contains(StepType.Given, stepTypes);
+        XAssert.Contains(StepType.When, stepTypes);
+        XAssert.Contains(StepType.Then, stepTypes);
     }
 }

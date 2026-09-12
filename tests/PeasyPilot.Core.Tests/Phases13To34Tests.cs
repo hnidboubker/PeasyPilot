@@ -15,8 +15,10 @@ using PeasyPilot.Core.Reporting;
 using PeasyPilot.Core.Scheduling;
 using PeasyPilot.Integration.Fixtures;
 using PeasyPilot.Integration.Helpers;
+using PeasyPilot.XUnit;
+
 using Xunit;
-using Assert = Xunit.Assert;
+
 
 public class Phases13To34Tests
 {
@@ -27,8 +29,8 @@ public class Phases13To34Tests
         var result = new TestRunResult { Passed = 10, Failed = 1, Status = TestRunStatus.Failed };
         var output = await reporter.ReportAsync(result);
 
-        Assert.Contains("PEASYPILOT SUMMARY", output);
-        Assert.Contains("Passed:", output);
+        XAssert.Contains("PEASYPILOT SUMMARY", output);
+        XAssert.Contains("Passed:", output);
     }
 
     [Fact]
@@ -42,8 +44,8 @@ public class Phases13To34Tests
         };
 
         var results = await scheduler.ExecuteAsync(tests);
-        Assert.Equal(2, results.Count);
-        Assert.All(results, r => Assert.Equal(TestRunStatus.Passed, r.Status));
+        XAssert.Equal(2, results.Count);
+        XAssert.All(results, r => Assert.Equal(TestRunStatus.Passed, r.Status));
     }
 
     [Fact]
@@ -54,7 +56,7 @@ public class Phases13To34Tests
         var tests = new[] { new TestCase { Name = "Flaky", Category = "unit" } };
 
         var results = await retryScheduler.ExecuteAsync(tests);
-        Assert.Single(results);
+        XAssert.Single(results);
     }
 
     [Fact]
@@ -64,8 +66,8 @@ public class Phases13To34Tests
         var result = new TestRunResult { Passed = 8, Failed = 2, Status = TestRunStatus.Failed };
         var html = await reporter.ReportAsync(result);
 
-        Assert.Contains("<!DOCTYPE html>", html);
-        Assert.Contains("PeasyPilot Test Execution Dashboard", html);
+        XAssert.Contains("<!DOCTYPE html>", html);
+        XAssert.Contains("PeasyPilot Test Execution Dashboard", html);
     }
 
     [Fact]
@@ -75,7 +77,7 @@ public class Phases13To34Tests
         var result = new TestRunResult { Passed = 5, Status = TestRunStatus.Passed };
         var output = await reporter.ReportAsync(result);
 
-        Assert.Empty(output);
+        XAssert.IsEmpty(output);
     }
 
     [Fact]
@@ -87,8 +89,8 @@ public class Phases13To34Tests
         var filterMeta = new MetadataTestFilter("Env", "Staging");
         var filterKind = new MetadataTestFilter(TestKind.Bdd);
 
-        Assert.True(filterMeta.Matches(tc));
-        Assert.True(filterKind.Matches(tc));
+        XAssert.True(filterMeta.Matches(tc));
+        XAssert.True(filterKind.Matches(tc));
     }
 
     [Fact]
@@ -110,8 +112,8 @@ public class Phases13To34Tests
         var client = server.CreateClient();
         var response = await client.GetAsync("/api/hello");
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Single(server.RecordedRequests);
+        XAssert.Equal(HttpStatusCode.OK, response.StatusCode);
+        XAssert.Single(server.RecordedRequests);
     }
 
     [Fact]
@@ -122,7 +124,7 @@ public class Phases13To34Tests
 
         TestCorrelationContext.InjectHeader(client, correlationId);
 
-        Assert.True(client.DefaultRequestHeaders.Contains(TestCorrelationContext.CorrelationHeaderName));
+        XAssert.True(client.DefaultRequestHeaders.Contains(TestCorrelationContext.CorrelationHeaderName));
     }
 
     [Fact]
@@ -133,7 +135,7 @@ public class Phases13To34Tests
         capture.WriteLog("Setup finished");
 
         var logs = capture.GetLogs();
-        Assert.Equal(2, logs.Count);
+        XAssert.Equal(2, logs.Count);
     }
 
     [Fact]
@@ -142,7 +144,7 @@ public class Phases13To34Tests
         var actual = new { name = "John", age = 30 };
         var expected = "{\n  \"name\": \"John\",\n  \"age\": 30\n}";
 
-        Assert.True(SnapshotAssert.MatchSnapshot(actual, expected));
+        XAssert.True(SnapshotAssert.MatchSnapshot(actual, expected));
     }
 
     [Fact]
@@ -156,9 +158,9 @@ Feature: User Login
     Then user is logged in
 ";
         var feature = GherkinFeatureParser.Parse(gherkin);
-        Assert.Equal("User Login", feature.Name);
-        Assert.Single(feature.Scenarios);
-        Assert.Equal("Valid Login", feature.Scenarios[0].Name);
+        XAssert.Equal("User Login", feature.Name);
+        XAssert.Single(feature.Scenarios);
+        XAssert.Equal("Valid Login", feature.Scenarios[0].Name);
     }
 
     [Fact]
@@ -174,7 +176,7 @@ Feature: User Login
         });
 
         var match = registry.FindMatch("Given a valid user");
-        Assert.NotNull(match);
+        XAssert.NotNull(match);
     }
 
     [Fact]
@@ -186,8 +188,9 @@ Feature: User Login
             .AddExample(new Dictionary<string, string> { ["user"] = "Bob" });
 
         var scenarios = outline.Expand();
-        Assert.Equal(2, scenarios.Count);
-        Assert.Contains(scenarios, s => s.Name.Contains("Alice"));
+        XAssert.Equal(2, scenarios.Count);
+        // Todo cleui a beoin un Expression
+        XAssert.Contains(scenarios, s => s.Name.Contains("Alice"));
     }
 
     [Fact]
@@ -197,8 +200,8 @@ Feature: User Login
         feature.AddScenario("Invoice Generation").Given("order paid").Then("invoice sent");
 
         var md = LivingDocExporter.ExportToMarkdown([feature]);
-        Assert.Contains("Living Documentation", md);
-        Assert.Contains("Billing", md);
+        XAssert.Contains("Living Documentation", md);
+        XAssert.Contains("Billing", md);
     }
 
     [Fact]
@@ -212,8 +215,8 @@ Feature: User Login
         };
 
         var impacted = await analyzer.GetImpactedTestsAsync(["CustomerService.cs"], tests);
-        Assert.Single(impacted);
-        Assert.Equal("CustomerServiceTests", impacted.First().Name);
+        XAssert.Single(impacted);
+        XAssert.Equal("CustomerServiceTests", impacted.First().Name);
     }
 
     [Fact]
@@ -222,7 +225,7 @@ Feature: User Login
         var failure = new TestFailure { Message = "Assert failed", Expected = "1", Actual = "2" };
         var cause = RootCauseAnalyzer.AnalyzeRootCause(failure);
 
-        Assert.Contains("Assertion Mismatch", cause);
+        XAssert.Contains("Assertion Mismatch", cause);
     }
 
     [Fact]
@@ -234,8 +237,8 @@ Feature: User Login
         var normalResult = new TestResult { Name = "FastTest", Duration = TimeSpan.FromMilliseconds(60) };
         var slowResult = new TestResult { Name = "FastTest", Duration = TimeSpan.FromMilliseconds(200) };
 
-        Assert.False(tracker.IsPerformanceRegressed(normalResult));
-        Assert.True(tracker.IsPerformanceRegressed(slowResult));
+        XAssert.False(tracker.IsPerformanceRegressed(normalResult));
+        XAssert.True(tracker.IsPerformanceRegressed(slowResult));
     }
 
     [Fact]
@@ -244,29 +247,29 @@ Feature: User Login
         var tests = new[] { new TestCase { Name = "UnitTest1", Category = "core" } };
         var discoveryJson = IdeProtocolAdapter.SerializeDiscovery(tests);
 
-        Assert.Contains("UnitTest1", discoveryJson);
+        XAssert.Contains("UnitTest1", discoveryJson);
     }
 
     [Fact]
     public void Phase33_MutationScoreEvaluator_CalculatesPercentage()
     {
         var score = MutationScoreEvaluator.CalculateMutationScore(totalMutants: 10, killedMutants: 8);
-        Assert.Equal(80.0, score);
+        XAssert.Equal(80.0, score);
     }
 
     [Fact]
     public async Task Phase34_PeasyPilotPlatform_ExecutesFullEnterprisePipeline()
     {
         var platform = PeasyPilotPlatform.Instance;
-        Assert.Equal("1.0.0-enterprise", platform.Version);
+        XAssert.Equal("1.0.0-enterprise", platform.Version);
 
         var options = new TestPipelineOptions();
         var result = await platform.ExecuteAsync(options);
 
-        Assert.NotNull(result);
-        Assert.Equal(TestRunStatus.Passed, result.Status);
+        XAssert.NotNull(result);
+        XAssert.Equal(TestRunStatus.Passed, result.Status);
 
         var history = await platform.RunStore.GetRunHistoryAsync();
-        Assert.NotEmpty(history);
+        XAssert.NotEmpty(history);
     }
 }
