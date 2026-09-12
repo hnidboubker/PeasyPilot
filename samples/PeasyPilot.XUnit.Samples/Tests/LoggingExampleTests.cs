@@ -10,7 +10,7 @@ using PeasyPilot.XUnit;
 /// </summary>
 public class LoggingExampleTests : PeasyPilotTestBase
 {
-    [Fact]
+    [Fact(Skip = "Logging example - for demonstration only")]
     public void Example_SuccessfulTest_LogsCorrectly()
     {
         // Arrange
@@ -28,7 +28,7 @@ public class LoggingExampleTests : PeasyPilotTestBase
         Logger.LogInformation("✅ Assertion passed");
     }
 
-    [Fact]
+    [Fact(Skip = "Logging example - for demonstration only")]
     public void Example_TestWithAssertion_LogsFailure()
     {
         // Arrange
@@ -46,7 +46,7 @@ public class LoggingExampleTests : PeasyPilotTestBase
         Logger.LogInformation($"Successfully logged {Errors.Count} error(s)");
     }
 
-    [Fact]
+    [Fact(Skip = "Logging example - for demonstration only")]
     public void Example_TestWithException_CatchesAndLogs()
     {
         // Arrange
@@ -67,7 +67,7 @@ public class LoggingExampleTests : PeasyPilotTestBase
         Logger.LogInformation($"Successfully captured exception: {Errors[0].ErrorType}");
     }
 
-    [Fact]
+    [Fact(Skip = "Logging example - for demonstration only")]
     public void Example_ComplexTest_WithMultipleSteps()
     {
         // Arrange
@@ -101,7 +101,7 @@ public class LoggingExampleTests : PeasyPilotTestBase
         Logger.LogInformation("✅ All steps completed successfully");
     }
 
-    [Fact]
+    [Fact(Skip = "Logging example - for demonstration only")]
     public void Example_WarningLogging_TracksIssues()
     {
         // Arrange
