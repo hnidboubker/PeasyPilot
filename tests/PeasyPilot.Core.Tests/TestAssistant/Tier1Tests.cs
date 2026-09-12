@@ -1,6 +1,5 @@
 using PeasyPilot.TestAssistant.Analysis;
 using PeasyPilot.XUnit;
-
 using Xunit;
 namespace PeasyPilot.Core.Tests.TestAssistant;
 public class Tier1Tests

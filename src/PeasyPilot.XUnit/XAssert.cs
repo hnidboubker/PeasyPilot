@@ -37,6 +37,12 @@ public static class XAssert
     public static void Contains<T>(this IEnumerable<T> collection, T item) =>
     Assert.Contains(item, collection);
 
+    public static void Contains<T>(IEnumerable<T> collection, Expression<Func<T, bool>> predicate)
+    {
+        var func = predicate.Compile();
+        var message = $"No item in collection matches: {predicate}";
+        Assert.True(collection.Any(func), message);
+    }
 
     public static void Contains<T>(T item, IEnumerable<T> collection) =>
         Assert.Contains(item, collection);
