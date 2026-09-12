@@ -46,47 +46,33 @@ public class TAssertTests
         await TAssert.Contains(2, new[] { 1, 2, 3 });
 
     [Test]
-    public async Task IsGreaterThan_WithGreaterValue_Passes()
-    {
-        var value = TAssert.That(10);
-        await value.IsGreaterThan(5);
-    }
+    public async Task IsGreaterThan_WithGreaterValue_Passes() =>
+        await TAssert.That(10).IsGreaterThan(5);
 
     [Test]
-    public async Task IsLessThan_WithLesserValue_Passes()
-    {
-        var value = TAssert.That(3);
-        await value.IsLessThan(5);
-    }
+    public async Task IsLessThan_WithLesserValue_Passes() =>
+        await TAssert.That(3).IsLessThan(5);
 
     [Test]
-    public async Task IsGreaterThanOrEqualTo_WithEqualValue_Passes()
-    {
-        var value = TAssert.That(5);
-        await value.IsGreaterThanOrEqualTo(5);
-    }
+    public async Task IsGreaterThanOrEqualTo_WithEqualValue_Passes() =>
+        await TAssert.That(5).IsGreaterThanOrEqualTo(5);
 
     [Test]
-    public async Task IsLessThanOrEqualTo_WithEqualValue_Passes()
-    {
-        var value = TAssert.That(5);
-        await value.IsLessThanOrEqualTo(5);
-    }
+    public async Task IsLessThanOrEqualTo_WithEqualValue_Passes() =>
+        await TAssert.That(5).IsLessThanOrEqualTo(5);
 
     [Test]
     public async Task IsAssignableTo_WithCompatibleType_Passes()
     {
         object obj = "string";
-        var value = TAssert.That(obj);
-        await value.IsAssignableTo<object>();
+        await TAssert.That(obj).IsAssignableTo<object>();
     }
 
     [Test]
     public async Task IsOfType_WithCorrectType_Passes()
     {
         object obj = "string";
-        var value = TAssert.That(obj);
-        await value.IsOfType<string>();
+        await TAssert.That(obj).IsOfType<string>();
     }
 
     [Test]
@@ -98,16 +84,10 @@ public class TAssertTests
         await TAssert.EndsWith("hello world", "world");
 
     [Test]
-    public async Task Contains_WithMatchingString_Passes()
-    {
-        var value = TAssert.That("hello world");
-        await value.Contains("lo wo");
-    }
+    public async Task Contains_WithMatchingString_Passes() =>
+        await TAssert.That("hello world").Contains("lo wo");
 
     [Test]
-    public async Task HasLength_WithCorrectLength_Passes()
-    {
-        var value = TAssert.That("hello");
-        await value.HasLength(5);
-    }
+    public async Task HasLength_WithCorrectLength_Passes() =>
+        await TAssert.That("hello").HasLength(5);
 }

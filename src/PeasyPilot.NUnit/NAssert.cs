@@ -1,6 +1,57 @@
 namespace PeasyPilot.NUnit;
 
 using global::NUnit.Framework;
+using global::NUnit.Framework.Constraints;
+
+/// <summary>
+/// Strongly-typed assertion builder for NUnit.
+/// Provides chainable sync assertions with compile-time type safety.
+/// </summary>
+public class NAssertThat<T>
+{
+    private readonly T _value;
+
+    /// <summary>
+    /// Initializes a new instance of the NAssertThat builder.
+    /// </summary>
+    public NAssertThat(T value) => _value = value;
+
+    /// <summary>
+    /// Asserts that the value equals the expected value.
+    /// </summary>
+    public void IsEqualTo(T expected) =>
+        Assert.That(_value, Is.EqualTo(expected));
+
+    /// <summary>
+    /// Asserts that the value does not equal the expected value.
+    /// </summary>
+    public void IsNotEqualTo(T expected) =>
+        Assert.That(_value, Is.Not.EqualTo(expected));
+
+    /// <summary>
+    /// Asserts that the value is null.
+    /// </summary>
+    public void IsNull() =>
+        Assert.That(_value, Is.Null);
+
+    /// <summary>
+    /// Asserts that the value is not null.
+    /// </summary>
+    public void IsNotNull() =>
+        Assert.That(_value, Is.Not.Null);
+
+    /// <summary>
+    /// Asserts that the value is of the specified type.
+    /// </summary>
+    public void IsOfType<TTarget>() =>
+        Assert.That(_value, Is.TypeOf<TTarget>());
+
+    /// <summary>
+    /// Asserts that the value is assignable to the specified type.
+    /// </summary>
+    public void IsAssignableTo<TTarget>() =>
+        Assert.That(_value, Is.InstanceOf<TTarget>());
+}
 
 /// <summary>
 /// Framework-specific Assert alias for NUnit.
@@ -8,7 +59,16 @@ using global::NUnit.Framework;
 /// </summary>
 public static class NAssert
 {
-    public static void That<T>(T actual, global::NUnit.Framework.Constraints.IResolveConstraint expression) =>
+    /// <summary>
+    /// Creates a strongly-typed assertion builder for the specified value.
+    /// </summary>
+    public static NAssertThat<T> That<T>(T value) =>
+        new(value);
+
+    /// <summary>
+    /// Asserts that a value satisfies a constraint.
+    /// </summary>
+    public static void That<T>(T actual, IResolveConstraint expression) =>
         Assert.That(actual, expression);
 
     public static void Equal<T>(T expected, T actual) =>

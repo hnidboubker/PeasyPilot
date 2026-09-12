@@ -1,56 +1,29 @@
 using Xunit;
-using PeasyPilot.Core.Abstractions;
-using PeasyPilot.Core.Context;
+using PeasyPilot.Core.Testing;
 
 namespace PeasyPilot.XUnit;
+
 /// <summary>
 /// Base class for xUnit test classes integrating with PeasyPilot.
+/// Includes centralized logging that outputs to console, visible in CI/CD.
 /// </summary>
-public abstract class PeasyPilotTestBase : IAsyncLifetime
+public abstract class PeasyPilotTestBase : TestLoggerBase, IAsyncLifetime
 {
     /// <summary>
-    /// Gets the test context.
-    /// </summary>
-    protected ITestContext TestContext { get; private set; } = null!;
-
-    /// <summary>
-    /// Gets or sets the test data factory.
-    /// </summary>
-    protected ITestDataFactory? TestDataFactory { get; set; }
-
-    /// <summary>
-    /// Gets or sets the mock factory.
-    /// </summary>
-    protected IMockFactory? MockFactory { get; set; }
-
-    /// <summary>
-    /// Initializes the test fixture asynchronously.
+    /// Initializes the test fixture asynchronously with logging.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
     public virtual async Task InitializeAsync()
     {
-        TestContext = new TestContext();
-        await Task.CompletedTask;
+        await InitializeLoggerAsync();
     }
 
     /// <summary>
-    /// Disposes the test fixture asynchronously.
+    /// Disposes the test fixture asynchronously with logging.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
     public virtual async Task DisposeAsync()
     {
-        await Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Gets or creates test data from the context.
-    /// </summary>
-    /// <typeparam name="T">The type of test data.</typeparam>
-    /// <param name="key">The cache key.</param>
-    /// <param name="factory">The factory function.</param>
-    /// <returns>The test data.</returns>
-    protected T GetOrCreateTestData<T>(string key, Func<T> factory) where T : class
-    {
-        return TestContext.GetOrAdd(key, factory);
+        await DisposeLoggerAsync();
     }
 }
