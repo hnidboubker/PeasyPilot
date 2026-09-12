@@ -8,8 +8,10 @@ using global::TUnit.Assertions;
 /// </summary>
 public static class TAssert
 {
+#pragma warning disable TUnitAssertions0002 // TUnit analyzer: Assert statements must be awaited
     public static dynamic That<T>(T value) =>
         Assert.That(value);
+#pragma warning restore TUnitAssertions0002
 
     public static async Task Equal<T>(T expected, T actual) =>
         await Assert.That(actual).IsEqualTo(expected);

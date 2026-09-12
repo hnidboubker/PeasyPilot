@@ -2,6 +2,7 @@ using PeasyPilot.TestAssistant.Abstractions;
 using PeasyPilot.TestAssistant.Models;
 using PeasyPilot.TestAssistant.Orchestration;
 using Xunit;
+using PeasyPilot.XUnit;
 
 namespace PeasyPilot.Core.Tests.TestAssistant;
 
@@ -10,7 +11,10 @@ namespace PeasyPilot.Core.Tests.TestAssistant;
 /// </summary>
 public class Calculator
 {
-    public int Add(int a, int b) => a + b;
+    public int Add(int a, int b)
+    {
+        return a + b;
+    }
 }
 
 public class Tier5Tests
@@ -24,8 +28,8 @@ public class Tier5Tests
 
         var analysis = engine.AnalyzeMethod("Calculator", "Add");
 
-        Assert.NotNull(analysis);
-        Assert.Equal("Calculator", analysis.TypeName);
+        XAssert.NotNull(analysis);
+        XAssert.Equal("Calculator", analysis.TypeName);
     }
 
     [Fact]
@@ -36,8 +40,8 @@ public class Tier5Tests
 
         var plan = engine.PlanTests(analysis);
 
-        Assert.NotNull(plan);
-        Assert.True(plan.TotalEstimatedTests > 0);
+        XAssert.NotNull(plan);
+        XAssert.True(plan.TotalEstimatedTests > 0);
     }
 
     [Fact]
@@ -48,9 +52,10 @@ public class Tier5Tests
 
         var code = engine.GenerateTests(plan, "TestNamespace", "xunit");
 
-        Assert.NotNull(code);
-        Assert.NotEmpty(code);
-        Assert.Contains("public class", code);
+        XAssert.NotNull(code);
+        XAssert.NotEmpty(code);
+        // Todo Corrige cette partie 
+        XAssert.Contains("public class", code);
     }
 
     [Fact]
@@ -72,10 +77,20 @@ public class Tier5Tests
 
         var result = engine.ChallengeTests(testCode, model);
 
-        Assert.NotNull(result);
-        Assert.True(result.PassesBasicValidation);
+        XAssert.NotNull(result);
+        XAssert.True(result.PassesBasicValidation);
     }
-
+    public void TestAdd()
+    {
+        // Arrange
+        var a = 5;
+        var b = 3;
+        // Act
+        var calcalute = new Calculator();
+        var result = calcalute.Add(a, b);
+        // Assert
+        XAssert.Equal(8, result);
+    }
     [Fact]
     public void AITestEngineer_ExecutesCompleteWorkflow()
     {
@@ -85,13 +100,13 @@ public class Tier5Tests
 
         var result = engine.ExecuteCompleteWorkflow("Calculator", "Add", "CalcTests", "xunit");
 
-        Assert.NotNull(result);
-        Assert.Equal("Add", result.MethodName);
-        Assert.NotNull(result.Analysis);
-        Assert.NotNull(result.Plan);
-        Assert.NotNull(result.GeneratedCode);
-        Assert.NotNull(result.Challenge);
-        Assert.NotEmpty(result.NextSteps);
+        XAssert.NotNull(result);
+        XAssert.Equal("Add", result.MethodName);
+        XAssert.NotNull(result.Analysis);
+        XAssert.NotNull(result.Plan);
+        XAssert.NotNull(result.GeneratedCode);
+        XAssert.NotNull(result.Challenge);
+        XAssert.NotEmpty(result.NextSteps);
     }
 
     [Fact]
@@ -103,8 +118,8 @@ public class Tier5Tests
 
         var result = engine.ExecuteCompleteWorkflow("Calculator", "Add", "CalcTests", "xunit");
 
-        Assert.True(result.TotalQualityScore >= 0);
-        Assert.True(result.TotalQualityScore <= 100);
+        XAssert.True(result.TotalQualityScore >= 0);
+        XAssert.True(result.TotalQualityScore <= 100);
     }
 
     [Fact]
@@ -116,9 +131,9 @@ public class Tier5Tests
 
         var result = engine.ExecuteCompleteWorkflow("Calculator", "Add", "CalcTests", "xunit");
 
-        Assert.NotNull(result);
+        XAssert.NotNull(result);
         // Production recommendation depends on quality
-        Assert.IsType<bool>(result.IsRecommendedForProduction);
+        XAssert.IsType<bool>(result.IsRecommendedForProduction);
     }
 
     [Fact]
@@ -128,8 +143,8 @@ public class Tier5Tests
             .WithAnalyzer(new DummyAnalyzer())
             .Build();
 
-        Assert.NotNull(engine);
-        Assert.IsAssignableFrom<IAITestEngineer>(engine);
+        XAssert.NotNull(engine);
+        XAssert.IsAssignableFrom<IAITestEngineer>(engine);
     }
 
     [Fact]
@@ -137,7 +152,7 @@ public class Tier5Tests
     {
         var engine = new AITestEngineerBuilder().UseDefaults().Build();
 
-        Assert.NotNull(engine);
+        XAssert.NotNull(engine);
     }
 
     [Fact]
@@ -150,9 +165,9 @@ public class Tier5Tests
         var nunitCode = engine.GenerateTests(plan, "Tests", "nunit");
         var tunitCode = engine.GenerateTests(plan, "Tests", "tunit");
 
-        Assert.NotEmpty(xunitCode);
-        Assert.NotEmpty(nunitCode);
-        Assert.NotEmpty(tunitCode);
+        XAssert.NotEmpty(xunitCode);
+        XAssert.NotEmpty(nunitCode);
+        XAssert.NotEmpty(tunitCode);
     }
 
     [Fact]
@@ -164,11 +179,11 @@ public class Tier5Tests
 
         var result = engine.ExecuteCompleteWorkflow("Calculator", "Add", "CalcTests", "xunit");
 
-        Assert.NotEmpty(result.NextSteps);
+        XAssert.NotEmpty(result.NextSteps);
         // Should contain actionable guidance
         var hasGuidance = result.NextSteps.Any(s =>
             s.Contains("Fix") || s.Contains("Consider") || s.Contains("Add") || s.Contains("production"));
-        Assert.True(hasGuidance);
+        XAssert.True(hasGuidance);
     }
 
     private class DummyAnalyzer : ICodeAnalyzer

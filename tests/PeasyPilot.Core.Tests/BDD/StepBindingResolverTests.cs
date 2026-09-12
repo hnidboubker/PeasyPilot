@@ -2,6 +2,7 @@ using PeasyPilot.BDD;
 using PeasyPilot.BDD.Execution;
 using PeasyPilot.BDD.StepDefinitions;
 using Xunit;
+using PeasyPilot.XUnit;
 
 namespace PeasyPilot.Core.Tests.BDD;
 
@@ -20,7 +21,7 @@ public class StepBindingResolverTests
         resolver.RegisterStepDefinition(typeof(TestStepDefinition));
 
         // Assert - just ensure no exception thrown and resolver is ready
-        Assert.NotNull(resolver);
+        XAssert.NotNull(resolver);
     }
 
     [Fact]
@@ -35,7 +36,7 @@ public class StepBindingResolverTests
         var resolvedStep = resolver.ResolveStep(StepType.Given, "a user named Alice", serviceProvider);
 
         // Assert
-        Assert.NotNull(resolvedStep);
+        XAssert.NotNull(resolvedStep);
     }
 
     [Fact]
@@ -50,7 +51,7 @@ public class StepBindingResolverTests
         var resolvedStep = resolver.ResolveStep(StepType.Given, "some unrelated step", serviceProvider);
 
         // Assert
-        Assert.Null(resolvedStep);
+        XAssert.Null(resolvedStep);
     }
 
     [Fact]
@@ -66,7 +67,7 @@ public class StepBindingResolverTests
         await resolvedStep!.Invoke();
 
         // Assert
-        Assert.True(TestStepDefinition.LastUserNameCreated == "Bob");
+        XAssert.True(TestStepDefinition.LastUserNameCreated == "Bob");
     }
 
     [Fact]
@@ -82,7 +83,7 @@ public class StepBindingResolverTests
         await resolvedStep!.Invoke();
 
         // Assert
-        Assert.True(TestStepDefinition.UserDeleted);
+        XAssert.True(TestStepDefinition.UserDeleted);
     }
 
     [Fact]
@@ -97,7 +98,7 @@ public class StepBindingResolverTests
         var resolvedStep = resolver.ResolveStep(StepType.Then, "the user count is 0", serviceProvider);
 
         // Assert
-        Assert.NotNull(resolvedStep);
+        XAssert.NotNull(resolvedStep);
         // Note: Then steps in this basic resolver are also Func<Task>, not Func<bool>
     }
 
