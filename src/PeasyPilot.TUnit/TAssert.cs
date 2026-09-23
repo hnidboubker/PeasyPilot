@@ -206,14 +206,17 @@ public static class TAssert
     /// <summary>
     /// Asserts that an action throws an exception.
     /// </summary>
-    public static void Throws<TException>(Action code) where TException : Exception =>
+    public static Task Throws<TException>(Action code) where TException : Exception
+    {
         Assert.Throws<TException>(code);
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     /// Asserts that an async function throws an exception.
     /// </summary>
-    public static Task ThrowsAsync<TException>(Func<Task> code) where TException : Exception =>
-        Assert.ThrowsAsync<TException>(code);
+    public static async Task ThrowsAsync<TException>(Func<Task> code) where TException : Exception =>
+        await Assert.ThrowsAsync<TException>(code);
 
     /// <summary>
     /// Asserts that a collection is empty.
