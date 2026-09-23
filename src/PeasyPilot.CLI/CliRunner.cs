@@ -82,7 +82,7 @@ public static class CliRunner
 
         var orchestrator = new TestPipelineOrchestrator(discovery, scheduler, impactAnalyzer);
 
-        var reporters = new List<ITestReporter> { new ConsoleReporter() };
+        var reporters = new List<ITestReporter> { new RichConsoleReporter() };
 
         if (format == "json" || (!string.IsNullOrEmpty(outputPath) && outputPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase)))
         {

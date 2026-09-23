@@ -66,7 +66,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ITestStore, InMemoryTestStore>();
         services.AddSingleton<ITestDiagnostic, SmartDiagnosticProvider>();
         services.AddSingleton<ITestPipelineOrchestrator, TestPipelineOrchestrator>();
-        services.AddSingleton<ITestReporter, ConsoleReporter>();
+        services.AddSingleton<ITestReporter, RichConsoleReporter>();
 
         return services;
     }
