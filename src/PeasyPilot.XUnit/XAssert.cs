@@ -124,7 +124,7 @@ public static class XAssert
     public static void Contains<T>(T item, IEnumerable<T> collection) =>
         Assert.Contains(item, collection);
 
-    public static void Contains(this string text, string substring) =>
+    public static void Contains(string substring, string text) =>
        Assert.Contains(substring, text);
 
     public static void DoesNotContain<T>(T item, IEnumerable<T> collection) =>

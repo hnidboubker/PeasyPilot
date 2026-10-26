@@ -19,7 +19,7 @@ public class WebApiIntegrationTests : IAsyncLifetime
     private WebApplicationTestFactory<object>? _factory;
     private HttpTestClient? _client;
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         // Create factory with basic configuration
         _factory = new WebApplicationTestFactory<object>()
@@ -33,7 +33,7 @@ public class WebApiIntegrationTests : IAsyncLifetime
         await Task.CompletedTask;
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         if (_factory is IAsyncDisposable asyncDisposable)
         {

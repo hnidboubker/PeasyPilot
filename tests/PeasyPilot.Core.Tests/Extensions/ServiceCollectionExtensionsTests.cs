@@ -1,5 +1,8 @@
 namespace PeasyPilot.Core.Tests.Extensions;
 
+using TestContext = PeasyPilot.Core.Context.TestContext;
+using ITestContext = PeasyPilot.Core.Abstractions.ITestContext;
+using TestResult = PeasyPilot.Core.Models.TestResult;
 using Microsoft.Extensions.DependencyInjection;
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Extensions;

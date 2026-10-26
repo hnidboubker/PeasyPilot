@@ -13,7 +13,7 @@ public abstract class PeasyPilotTestBase : TestLoggerBase, IAsyncLifetime
     /// Initializes the test fixture asynchronously with logging.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public virtual async Task InitializeAsync()
+    public virtual async ValueTask InitializeAsync()
     {
         await InitializeLoggerAsync();
     }
@@ -22,7 +22,7 @@ public abstract class PeasyPilotTestBase : TestLoggerBase, IAsyncLifetime
     /// Disposes the test fixture asynchronously with logging.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public virtual async Task DisposeAsync()
+    public virtual async ValueTask DisposeAsync()
     {
         await DisposeLoggerAsync();
     }

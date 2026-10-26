@@ -1,5 +1,8 @@
 namespace PeasyPilot.Core.Tests.Context;
 
+using TestContext = PeasyPilot.Core.Context.TestContext;
+using ITestContext = PeasyPilot.Core.Abstractions.ITestContext;
+using TestResult = PeasyPilot.Core.Models.TestResult;
 using PeasyPilot.Core.Context;
 using System.Threading.Tasks;
 using Xunit;

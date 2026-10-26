@@ -1,5 +1,8 @@
 namespace PeasyPilot.Core.Tests;
 
+using TestContext = PeasyPilot.Core.Context.TestContext;
+using ITestContext = PeasyPilot.Core.Abstractions.ITestContext;
+using TestResult = PeasyPilot.Core.Models.TestResult;
 using System.Net;
 using PeasyPilot.BDD;
 using PeasyPilot.Core;

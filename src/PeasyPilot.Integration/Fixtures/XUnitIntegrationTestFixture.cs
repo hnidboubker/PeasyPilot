@@ -11,10 +11,6 @@ public abstract class XUnitIntegrationTestFixture : IntegrationTestFixture, IAsy
     /// <summary>
     /// xUnit calls this automatically before each test.
     /// </summary>
-    async Task IAsyncLifetime.InitializeAsync() => await InitializeAsync();
+    ValueTask IAsyncLifetime.InitializeAsync() => new ValueTask(InitializeAsync());
 
-    /// <summary>
-    /// xUnit calls this automatically after each test.
-    /// </summary>
-    async Task IAsyncLifetime.DisposeAsync() => await DisposeAsync();
 }

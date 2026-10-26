@@ -18,5 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\PeasyPilot.TUnit\PeasyPilot.TUnit.csproj" />
+    <ProjectReference Include="..\..\src\PeasyPilot.XUnit\PeasyPilot.XUnit.csproj" />
+    <ProjectReference Include="..\..\src\PeasyPilot.NUnit\PeasyPilot.NUnit.csproj" />
   </ItemGroup>
 </Project>
