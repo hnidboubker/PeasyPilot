@@ -35,6 +35,22 @@ public class TAssertTests
         await TAssert.Throws<InvalidOperationException>(() => throw new InvalidOperationException());
 
     [Test]
+    public async Task Throws_WithNonThrowingAction_Fails()
+    {
+        var failed = false;
+        try
+        {
+            await TAssert.Throws<InvalidOperationException>(() => { });
+        }
+        catch (Exception)
+        {
+            failed = true;
+        }
+
+        await TAssert.True(failed);
+    }
+
+    [Test]
     public async Task IsEmpty_WithEmptyCollection_Passes() =>
         await TAssert.IsEmpty(new int[] { });
 
