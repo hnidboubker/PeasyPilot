@@ -87,7 +87,7 @@ public class StepBindingResolverTests
     }
 
     [Fact]
-    public async Task ResolveStep_WithThenStep_ResolvesCorrectly()
+    public void ResolveStep_WithThenStep_ResolvesCorrectly()
     {
         // Arrange
         var resolver = new StepBindingResolver();

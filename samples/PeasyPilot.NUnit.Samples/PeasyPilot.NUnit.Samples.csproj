@@ -28,4 +28,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- CS1591: missing XML docs are not useful for test and sample code -->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
 </Project>

@@ -41,9 +41,9 @@ public class XAssertThat<T>
     public void IsNotNull() =>
         Assert.NotNull(_value);
 
-    /// <summary>
-    /// Asserts that the collection is empty.
-    /// </summary>
+    // <summary>
+    // Asserts that the collection is empty.
+    // </summary>
     //public void IsEmpty() =>
     //    Assert.Empty((IEnumerable)_value!);
 

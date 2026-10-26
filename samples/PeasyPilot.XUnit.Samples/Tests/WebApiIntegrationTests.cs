@@ -50,14 +50,14 @@ public class WebApiIntegrationTests : IAsyncLifetime
     /// Note: Actual endpoints depend on your application implementation.
     /// </summary>
     [Fact(Skip = "Placeholder - requires actual web application")]
-    public async Task GetHealthCheck_ReturnsOk()
+    public void GetHealthCheck_ReturnsOk()
     {
         // var response = await _client!.Client.GetAsync("/health");
         // HttpTestClient.AssertStatusCode(response, System.Net.HttpStatusCode.OK);
     }
 
     [Fact(Skip = "Placeholder - requires actual web application")]
-    public async Task CreateUser_WithValidData_ReturnsCreated()
+    public void CreateUser_WithValidData_ReturnsCreated()
     {
         // var payload = new { name = "Test User", email = "test@example.com" };
         // var user = await _client!.PostJsonAsync<object, dynamic>("/api/users", payload);
@@ -65,7 +65,7 @@ public class WebApiIntegrationTests : IAsyncLifetime
     }
 
     [Fact(Skip = "Placeholder - requires actual web application")]
-    public async Task GetUser_WithValidId_ReturnsOk()
+    public void GetUser_WithValidId_ReturnsOk()
     {
         // var user = await _client!.GetJsonAsync<dynamic>("/api/users/1");
         // Assert.NotNull(user);

@@ -167,11 +167,9 @@ Feature: User Login
     public void Phase26_BddStepRegistry_RegistersAndMatchesSteps()
     {
         var registry = new BddStepRegistry();
-        var executed = false;
 
         registry.RegisterStep("a valid user", () =>
         {
-            executed = true;
             return Task.CompletedTask;
         });
 

@@ -12,7 +12,7 @@ namespace PeasyPilot.Core.Tests.Integration;
 public class InMemoryTestDatabaseTests
 {
     [Fact]
-    public async Task CreateDatabase_Succeeds()
+    public void CreateDatabase_Succeeds()
     {
         var factory = new InMemoryDatabaseFactory();
         var db = factory.CreateDatabase();

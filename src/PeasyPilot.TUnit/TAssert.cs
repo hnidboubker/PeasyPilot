@@ -33,9 +33,9 @@ public class TAssertThat<T>
     public async Task IsNull() =>
         await Assert.That(_value).IsNull();
 
-    /// <summary>
-    /// Asserts that the value is not null.
-    /// </summary>
+    // <summary>
+    // Asserts that the value is not null.
+    // </summary>
     //public async Task IsNotNull() where T : class =>
     //    await Assert.That(_value).IsNotNull();
 
@@ -105,9 +105,9 @@ public class TAssertThat<T>
     public async Task IsAssignableTo<TTarget>() =>
         await Assert.That(_value).IsAssignableTo<TTarget>();
 
-    /// <summary>
-    /// Asserts that the value is of the specified type.
-    /// </summary>
+    // <summary>
+    // Asserts that the value is of the specified type.
+    // </summary>
     //public async Task IsOfType<TTarget>() =>
     //    await Assert.That(_value).IsOfType<TTarget>();
 

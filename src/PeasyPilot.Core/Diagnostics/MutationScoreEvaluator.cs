@@ -10,7 +10,6 @@ public static class MutationScoreEvaluator
     /// <summary>
     /// Computes an estimated Mutation Score percentage (0.0 to 100.0%) for a test suite execution.
     /// </summary>
-    /// <param name="result">The test run result.</param>
     /// <param name="totalMutants">Total simulated mutants count.</param>
     /// <param name="killedMutants">Mutants caught and killed by test failures.</param>
     /// <returns>Mutation Score percentage.</returns>
