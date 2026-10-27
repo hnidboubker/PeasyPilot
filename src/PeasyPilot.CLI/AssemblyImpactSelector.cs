@@ -64,9 +64,14 @@ public static class AssemblyImpactSelector
         return selected.Count > 0 ? selected : assemblies;
     }
 
-    private static string? FindProjectDirectory(string assemblyPath)
+    private static string? FindProjectDirectory(string path)
     {
-        for (var directory = Path.GetDirectoryName(Path.GetFullPath(assemblyPath));
+        if (path.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase))
+        {
+            return Path.GetDirectoryName(Path.GetFullPath(path));
+        }
+
+        for (var directory = Path.GetDirectoryName(Path.GetFullPath(path));
              directory is not null;
              directory = Path.GetDirectoryName(directory))
         {

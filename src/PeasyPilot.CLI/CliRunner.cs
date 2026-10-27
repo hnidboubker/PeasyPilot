@@ -55,6 +55,8 @@ public static class CliRunner
         var format = "console";
         string? outputPath = null;
         var assemblies = new List<string>();
+        var projects = new List<string>();
+        string? framework = null;
         string? changedSince = null;
 
         for (var i = 0; i < args.Length; i++)
@@ -63,6 +65,12 @@ public static class CliRunner
             {
                 case "--assembly" or "-a":
                     if (i + 1 < args.Length) assemblies.Add(args[++i]);
+                    break;
+                case "--project" or "-p":
+                    if (i + 1 < args.Length) projects.Add(args[++i]);
+                    break;
+                case "--framework":
+                    if (i + 1 < args.Length) framework = args[++i];
                     break;
                 case "--changed-since":
                     if (i + 1 < args.Length) changedSince = args[++i];
@@ -102,21 +110,23 @@ public static class CliRunner
             reporters.Add(new JUnitXmlReporter(outputPath));
         }
 
-        if (changedSince is not null && assemblies.Count == 0)
+        if (changedSince is not null && assemblies.Count == 0 && projects.Count == 0)
         {
-            Console.Error.WriteLine("[PeasyPilot CLI] --changed-since needs --assembly <path>. Nothing was executed.");
+            Console.Error.WriteLine("[PeasyPilot CLI] --changed-since needs --assembly or --project. Nothing was executed.");
             return 2;
         }
 
-        if (assemblies.Count > 0)
+        if (assemblies.Count > 0 || projects.Count > 0)
         {
             if (changedSince is not null)
             {
                 try
                 {
                     var changed = await GitChangedFiles.ListSinceAsync(Directory.GetCurrentDirectory(), changedSince);
-                    assemblies = (await AssemblyImpactSelector.SelectAsync(assemblies, changed)).ToList();
-                    Console.WriteLine($"[PeasyPilot CLI] {changed.Count} changed file(s) since {changedSince}; running {assemblies.Count} executable(s).");
+                    var selected = (await AssemblyImpactSelector.SelectAsync([.. assemblies, .. projects], changed)).ToList();
+                    assemblies = selected.Where(path => !path.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)).ToList();
+                    projects = selected.Where(path => path.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)).ToList();
+                    Console.WriteLine($"[PeasyPilot CLI] {changed.Count} changed file(s) since {changedSince}; running {selected.Count} target(s).");
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -125,7 +135,7 @@ public static class CliRunner
                 }
             }
 
-            return await RunAssembliesAsync(assemblies, reporters);
+            return await RunAssembliesAsync(assemblies, projects, framework, reporters);
         }
 
         // Without test executables there is nothing real to run: the built-in discovery and scheduler
@@ -164,9 +174,14 @@ public static class CliRunner
     /// Runs each test executable with its own report, merges the results and reports them.
     /// Returns 1 when a test failed or when no test ran, and 2 when an executable could not be run.
     /// </summary>
-    private static async Task<int> RunAssembliesAsync(IReadOnlyList<string> assemblies, IReadOnlyList<ITestReporter> reporters)
+    private static async Task<int> RunAssembliesAsync(
+        IReadOnlyList<string> assemblies,
+        IReadOnlyList<string> projects,
+        string? framework,
+        IReadOnlyList<ITestReporter> reporters)
     {
         var runner = new MtpProcessRunner();
+        var projectRunner = new DotnetTestRunner();
         var runs = new List<TestRunResult>();
 
         try
@@ -175,6 +190,12 @@ public static class CliRunner
             {
                 Console.WriteLine($"[PeasyPilot CLI] Running {assembly}");
                 runs.Add(await runner.RunAsync(assembly));
+            }
+
+            foreach (var project in projects)
+            {
+                Console.WriteLine($"[PeasyPilot CLI] Running project {project}");
+                runs.Add(await projectRunner.RunAsync(project, framework));
             }
         }
         catch (Exception ex) when (ex is FileNotFoundException or InvalidOperationException or TimeoutException)
