@@ -28,6 +28,16 @@ jobs:
         run: dotnet build -c Release --no-restore
         continue-on-error: true
 
+      - name: Run samples through the PeasyPilot host
+        # Not continue-on-error: this step's exit code is the result (#108).
+        run: |
+          dotnet build src/PeasyPilot.CLI/PeasyPilot.CLI.csproj -c Release --no-restore
+          dotnet build samples/PeasyPilot.TUnit.Samples/PeasyPilot.TUnit.Samples.csproj -c Release --no-restore
+          dotnet build samples/PeasyPilot.XUnit.Samples/PeasyPilot.XUnit.Samples.csproj -c Release --no-restore
+          dotnet src/PeasyPilot.CLI/bin/Release/net9.0/PeasyPilot.CLI.dll \
+            --assembly samples/PeasyPilot.TUnit.Samples/bin/Release/net9.0/PeasyPilot.TUnit.Samples.exe \
+            --assembly samples/PeasyPilot.XUnit.Samples/bin/Release/net9.0/PeasyPilot.XUnit.Samples.exe
+
       - name: Run Tests
         run: dotnet test -c Release --no-build --logger "console;verbosity=normal" 2>&1 | tee test-output.log
         continue-on-error: true
