@@ -1,5 +1,6 @@
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Discovery;
+using PeasyPilot.Core.Execution;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Filters;
 using PeasyPilot.Core.ImpactAnalysis;
@@ -53,11 +54,15 @@ public static class CliRunner
         string[]? changedFiles = null;
         var format = "console";
         string? outputPath = null;
+        var assemblies = new List<string>();
 
         for (var i = 0; i < args.Length; i++)
         {
             switch (args[i])
             {
+                case "--assembly" or "-a":
+                    if (i + 1 < args.Length) assemblies.Add(args[++i]);
+                    break;
                 case "--filter" or "-f":
                     if (i + 1 < args.Length) filterName = args[++i];
                     break;
@@ -93,6 +98,11 @@ public static class CliRunner
             reporters.Add(new JUnitXmlReporter(outputPath));
         }
 
+        if (assemblies.Count > 0)
+        {
+            return await RunAssembliesAsync(assemblies, reporters);
+        }
+
         var pipelineOptions = new TestPipelineOptions
         {
             ChangedFiles = changedFiles,
@@ -115,6 +125,39 @@ public static class CliRunner
         Console.WriteLine($"[PeasyPilot CLI] Status: {result.Status} | Discovered: {result.DiscoveredCount} | Scheduled: {result.ScheduledCount} | Passed: {result.AggregateRunResult.Passed} | Failed: {result.AggregateRunResult.Failed}");
 
         return result.Status == TestRunStatus.Failed ? 1 : 0;
+    }
+
+    /// <summary>
+    /// Runs each test executable with its own report, merges the results and reports them.
+    /// Returns 1 when a test failed or when no test ran, and 2 when an executable could not be run.
+    /// </summary>
+    private static async Task<int> RunAssembliesAsync(IReadOnlyList<string> assemblies, IReadOnlyList<ITestReporter> reporters)
+    {
+        var runner = new MtpProcessRunner();
+        var runs = new List<TestRunResult>();
+
+        try
+        {
+            foreach (var assembly in assemblies)
+            {
+                Console.WriteLine($"[PeasyPilot CLI] Running {assembly}");
+                runs.Add(await runner.RunAsync(assembly));
+            }
+        }
+        catch (Exception ex) when (ex is FileNotFoundException or InvalidOperationException or TimeoutException)
+        {
+            Console.Error.WriteLine($"[PeasyPilot CLI] {ex.Message}");
+            return 2;
+        }
+
+        var merged = TestRunAggregator.Merge(runs);
+        foreach (var reporter in reporters)
+        {
+            await reporter.ReportAsync(merged);
+        }
+
+        Console.WriteLine($"[PeasyPilot CLI] Status: {merged.Status} | Passed: {merged.Passed} | Failed: {merged.Failed} | Skipped: {merged.Skipped}");
+        return merged.Status is TestRunStatus.Failed or TestRunStatus.NotStarted ? 1 : 0;
     }
 
     private static async Task<int> ShowHistoryAsync(ITestRunStore store)
