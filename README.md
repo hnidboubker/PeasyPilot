@@ -70,8 +70,12 @@ Each guide and reference is available in both English and French (🇫🇷 [FR])
 - **Integration testing with database fixtures**
 - **Intelligent test case generation (TestAssistant)**
 - **Automatic scaffolding for xUnit, NUnit, and TUnit**
-- CLI execution with filter and impact-analysis flags
-- CI-friendly JSON and JUnit report output
+- **Runs xUnit v3 and TUnit test executables (Microsoft Testing Platform) from one CLI**
+- **Runs NUnit test projects through `dotnet test`**
+- **Merged results across executables, with per-test detail**
+- **Impact analysis from Git: `--changed-since <ref>` runs only the affected test projects**
+- **Framework-free assertions with `PeasyAssert`**
+- CI-friendly JSON, JUnit and console reports, with failing tests listed
 
 ## Installation
 
@@ -468,7 +472,7 @@ public class UserRepositoryIntegrationTests : XUnitIntegrationTestFixture
 ### Fluent assertions
 
 ```csharp
-using PeasyPilot.Core.Assertions;
+using PeasyPilot.Core.Extensions;
 
 var result = Calculate(5, 3);
 
@@ -480,8 +484,23 @@ Assert.That(result)
 When the current test framework also exposes an `Assert` type, use the alias below to keep the PeasyPilot API accessible as `Assert.That(...)`:
 
 ```csharp
-using Assert = PeasyPilot.Core.Assertions.Assert;
+using Assert = PeasyPilot.Core.Extensions.Assert;
 ```
+
+### PeasyAssert (framework-free)
+
+`PeasyAssert` works with any test framework: a failure throws `AssertionException`, which every framework reports as a failure. The order is expected first, actual second.
+
+```csharp
+using PeasyPilot.Core.Assertions;
+
+PeasyAssert.Equal(8, Calculate(5, 3));
+PeasyAssert.Contains("SUMMARY", report);
+PeasyAssert.IsEmpty(failures);
+var ex = PeasyAssert.Throws<InvalidOperationException>(() => service.Run());
+```
+
+Available: `Equal`, `NotEqual`, `True`, `False`, `Null`, `NotNull`, `Same`, `Contains` (item, substring, predicate), `DoesNotContain`, `IsEmpty`, `NotEmpty`, `Single`, `IsType`, `IsAssignableFrom`, `All`, `Throws`, `ThrowsAsync`. `Equal` compares sequences item by item.
 
 ## BDD (Behavior-Driven Development)
 
@@ -549,22 +568,47 @@ services.AddPeasyPilotPipeline();
 
 ## CLI usage
 
+The CLI runs test executables and test projects, merges their results into one report, and sets its exit code from the run.
+
 ```bash
 # Show help
 peasypilot --help
 
-# Run only matching tests
-peasypilot --filter Customer
+# Run an xUnit v3 or TUnit test executable (Microsoft Testing Platform)
+peasypilot --assembly tests/MyApp.Tests/bin/Release/net9.0/MyApp.Tests
 
-# Run impact analysis on a changed file set
-peasypilot --changed-files CustomerService.cs,OrderService.cs
+# Run several executables and report one merged result
+peasypilot --assembly tests/A/bin/Release/net9.0/A --assembly tests/B/bin/Release/net9.0/B
 
-# Export JUnit XML results
-peasypilot --format junit --output test-results.xml
+# Run an NUnit test project (through dotnet test); required when the project targets several frameworks
+peasypilot --project tests/MyApp.NUnit.Tests/MyApp.NUnit.Tests.csproj --framework net9.0
 
-# View execution history
-peasypilot history
+# Run only what changed since a Git reference (needs --assembly or --project)
+peasypilot --changed-since origin/main --assembly tests/MyApp.Tests/bin/Release/net9.0/MyApp.Tests
+
+# Export results: JUnit XML (one testcase per test) or JSON
+peasypilot --assembly tests/MyApp.Tests/bin/Release/net9.0/MyApp.Tests --format junit --output test-results.xml
+peasypilot --assembly tests/MyApp.Tests/bin/Release/net9.0/MyApp.Tests --format json --output results.json
+
+# Propose a test suite for a type
+peasypilot suggest-tests --assembly ./bin/Release/net9.0/MyApp.dll --type MyApp.UserService
 ```
+
+| Option | Meaning |
+|---|---|
+| `-a, --assembly <path>` | Test executable to run. Repeatable. |
+| `-p, --project <csproj>` | Test project to run with `dotnet test`. Repeatable. |
+| `--framework <tfm>` | Target framework for `--project` (for example `net9.0`). Required when the project targets several. |
+| `--changed-since <ref>` | Run only the executables and projects whose tests are affected by the files changed since `<ref>`. Needs `--assembly` or `--project`. |
+| `-fmt, --format <format>` | `console` (default), `json` or `junit`. |
+| `-o, --output <path>` | File for the `json` or `junit` report. |
+
+Exit codes: `0` when all tests pass; `1` when a test fails or no test ran; `2` when nothing was executed (no executable or project given, a missing file, an unknown Git reference, or a project that targets several frameworks without `--framework`).
+
+Notes:
+- `--framework` here means a target framework (`net9.0`). In `suggest-tests`, `--framework` means the test framework to generate for (`xunit`, `nunit`, `tunit`).
+- Runs through `--assembly` or `--project` are not saved to `peasypilot history` yet.
+- Without `--assembly` or `--project`, the CLI refuses to report a run: it exits with code 2.
 
 ## Project structure
 
