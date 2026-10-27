@@ -33,9 +33,10 @@ jobs:
           dotnet build src/PeasyPilot.CLI/PeasyPilot.CLI.csproj -c Release --no-restore
           dotnet build samples/PeasyPilot.TUnit.Samples/PeasyPilot.TUnit.Samples.csproj -c Release --no-restore
           dotnet build samples/PeasyPilot.XUnit.Samples/PeasyPilot.XUnit.Samples.csproj -c Release --no-restore
+          # The runner is Linux: the test apphosts have no .exe extension (#113).
           dotnet src/PeasyPilot.CLI/bin/Release/net9.0/PeasyPilot.CLI.dll \
-            --assembly samples/PeasyPilot.TUnit.Samples/bin/Release/net9.0/PeasyPilot.TUnit.Samples.exe \
-            --assembly samples/PeasyPilot.XUnit.Samples/bin/Release/net9.0/PeasyPilot.XUnit.Samples.exe
+            --assembly samples/PeasyPilot.TUnit.Samples/bin/Release/net9.0/PeasyPilot.TUnit.Samples \
+            --assembly samples/PeasyPilot.XUnit.Samples/bin/Release/net9.0/PeasyPilot.XUnit.Samples
 
       - name: Run Tests
         # pipefail: without it the exit code is tee's, and a failing test would pass (#113).
