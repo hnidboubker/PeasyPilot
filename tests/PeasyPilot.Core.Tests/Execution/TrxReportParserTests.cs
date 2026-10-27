@@ -23,7 +23,7 @@ public class TrxReportParserTests
     [Fact]
     public void Parse_MixedRun_CountsEachOutcome()
     {
-        var (summary, _) = TrxReportParser.Parse(MixedRun);
+        var summary = TrxReportParser.Parse(MixedRun);
 
         XAssert.Equal(1, summary.Passed);
         XAssert.Equal(1, summary.Failed);
@@ -33,7 +33,7 @@ public class TrxReportParserTests
     [Fact]
     public void Parse_MixedRun_IsFailedAndSumsDurations()
     {
-        var (summary, _) = TrxReportParser.Parse(MixedRun);
+        var summary = TrxReportParser.Parse(MixedRun);
 
         XAssert.Equal(TestRunStatus.Failed, summary.Status);
         XAssert.Equal(TimeSpan.FromMilliseconds(30), summary.Duration);
@@ -42,7 +42,7 @@ public class TrxReportParserTests
     [Fact]
     public void Parse_MixedRun_KeepsNamesAndFailureMessage()
     {
-        var (_, tests) = TrxReportParser.Parse(MixedRun);
+        var tests = TrxReportParser.Parse(MixedRun).Tests;
 
         var failed = tests.Single(t => t.Name == "Divides");
         XAssert.Equal(TestRunStatus.Failed, failed.Status);
@@ -56,7 +56,8 @@ public class TrxReportParserTests
             <TestRun xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010"><Results /></TestRun>
             """;
 
-        var (summary, tests) = TrxReportParser.Parse(empty);
+        var summary = TrxReportParser.Parse(empty);
+        var tests = summary.Tests;
 
         XAssert.Equal(TestRunStatus.NotStarted, summary.Status);
         XAssert.IsEmpty(tests);

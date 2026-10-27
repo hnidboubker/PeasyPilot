@@ -1,6 +1,7 @@
 using System.Text;
 using System.Xml.Linq;
 using PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
 
 namespace PeasyPilot.Core.Reporting;
@@ -36,7 +37,8 @@ public sealed class JUnitXmlReporter : ITestReporter
                 new XAttribute("failures", result.Failed),
                 new XAttribute("skipped", result.Skipped),
                 new XAttribute("time", durationSeconds),
-                new XAttribute("timestamp", DateTime.UtcNow.ToString("o"))
+                new XAttribute("timestamp", DateTime.UtcNow.ToString("o")),
+                result.Tests.Select(ToTestCase)
             )
         );
 
@@ -55,5 +57,25 @@ public sealed class JUnitXmlReporter : ITestReporter
         }
 
         return xmlString;
+    }
+
+    private static XElement ToTestCase(TestResult test)
+    {
+        var lastDot = test.Name.LastIndexOf('.');
+        var element = new XElement("testcase",
+            new XAttribute("name", test.Name),
+            new XAttribute("classname", lastDot > 0 ? test.Name[..lastDot] : string.Empty),
+            new XAttribute("time", test.Duration.TotalSeconds.ToString("F3", System.Globalization.CultureInfo.InvariantCulture)));
+
+        if (test.Status == TestRunStatus.Failed)
+        {
+            element.Add(new XElement("failure", new XAttribute("message", test.Message ?? string.Empty)));
+        }
+        else if (test.Status == TestRunStatus.Skipped)
+        {
+            element.Add(new XElement("skipped"));
+        }
+
+        return element;
     }
 }

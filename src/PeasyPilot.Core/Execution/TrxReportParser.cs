@@ -13,33 +13,32 @@ public static class TrxReportParser
     private static readonly XNamespace Ns = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
 
     /// <summary>
-    /// Parses a TRX document into a run summary and one entry per executed test.
+    /// Parses a TRX document into a run result, with one entry per executed test.
     /// </summary>
     /// <param name="trxXml">The TRX document content.</param>
-    /// <returns>The run summary and the per-test results.</returns>
-    public static (TestRunResult Summary, IReadOnlyList<TestResult> Tests) Parse(string trxXml)
+    /// <returns>The run result, including its per-test results.</returns>
+    public static TestRunResult Parse(string trxXml)
     {
         ArgumentNullException.ThrowIfNull(trxXml);
 
         var tests = XDocument.Parse(trxXml)
             .Descendants(Ns + "UnitTestResult")
             .Select(ToTestResult)
-            .ToArray();
+            .ToList();
 
-        var summary = new TestRunResult
+        return new TestRunResult
         {
             Passed = tests.Count(t => t.Status == TestRunStatus.Passed),
             Failed = tests.Count(t => t.Status == TestRunStatus.Failed),
             Skipped = tests.Count(t => t.Status == TestRunStatus.Skipped),
             Duration = tests.Aggregate(TimeSpan.Zero, (total, t) => total + t.Duration),
-            Status = tests.Length == 0
+            Status = tests.Count == 0
                 ? TestRunStatus.NotStarted
                 : tests.Any(t => t.Status == TestRunStatus.Failed)
                     ? TestRunStatus.Failed
-                    : TestRunStatus.Passed
+                    : TestRunStatus.Passed,
+            Tests = tests
         };
-
-        return (summary, tests);
     }
 
     private static TestResult ToTestResult(XElement element)
