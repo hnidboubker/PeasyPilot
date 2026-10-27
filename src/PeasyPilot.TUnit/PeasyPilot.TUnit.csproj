@@ -4,11 +4,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsTestProject>false</IsTestProject>
-      <!-- <IsTestingPlatformApplication>true</IsTestingPlatformApplication> -->
+    <!-- <IsTestingPlatformApplication>true</IsTestingPlatformApplication> -->
     <!-- NuGet package metadata -->
     <IsPackable>true</IsPackable>
     <PackageId>PeasyPilot.TUnit</PackageId>
-    <Version>0.1.5</Version>
+    <Version>0.1.6</Version>
     <PackageIcon>Logo.png</PackageIcon>
     <Authors>NID BOUBKER Houssine</Authors>
     <Description>A modern, fast and flexible .NET testing framework.</Description>
