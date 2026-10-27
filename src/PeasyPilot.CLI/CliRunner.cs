@@ -55,6 +55,7 @@ public static class CliRunner
         var format = "console";
         string? outputPath = null;
         var assemblies = new List<string>();
+        string? changedSince = null;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -62,6 +63,9 @@ public static class CliRunner
             {
                 case "--assembly" or "-a":
                     if (i + 1 < args.Length) assemblies.Add(args[++i]);
+                    break;
+                case "--changed-since":
+                    if (i + 1 < args.Length) changedSince = args[++i];
                     break;
                 case "--filter" or "-f":
                     if (i + 1 < args.Length) filterName = args[++i];
@@ -98,8 +102,29 @@ public static class CliRunner
             reporters.Add(new JUnitXmlReporter(outputPath));
         }
 
+        if (changedSince is not null && assemblies.Count == 0)
+        {
+            Console.Error.WriteLine("[PeasyPilot CLI] --changed-since needs --assembly <path>. Nothing was executed.");
+            return 2;
+        }
+
         if (assemblies.Count > 0)
         {
+            if (changedSince is not null)
+            {
+                try
+                {
+                    var changed = await GitChangedFiles.ListSinceAsync(Directory.GetCurrentDirectory(), changedSince);
+                    assemblies = (await AssemblyImpactSelector.SelectAsync(assemblies, changed)).ToList();
+                    Console.WriteLine($"[PeasyPilot CLI] {changed.Count} changed file(s) since {changedSince}; running {assemblies.Count} executable(s).");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.Error.WriteLine($"[PeasyPilot CLI] {ex.Message}");
+                    return 2;
+                }
+            }
+
             return await RunAssembliesAsync(assemblies, reporters);
         }
 
