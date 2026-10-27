@@ -1,6 +1,6 @@
 using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Execution;
-using PeasyPilot.XUnit;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Execution;
@@ -25,9 +25,9 @@ public class TrxReportParserTests
     {
         var summary = TrxReportParser.Parse(MixedRun);
 
-        XAssert.Equal(1, summary.Passed);
-        XAssert.Equal(1, summary.Failed);
-        XAssert.Equal(1, summary.Skipped);
+        PeasyAssert.Equal(1, summary.Passed);
+        PeasyAssert.Equal(1, summary.Failed);
+        PeasyAssert.Equal(1, summary.Skipped);
     }
 
     [Fact]
@@ -35,8 +35,8 @@ public class TrxReportParserTests
     {
         var summary = TrxReportParser.Parse(MixedRun);
 
-        XAssert.Equal(TestRunStatus.Failed, summary.Status);
-        XAssert.Equal(TimeSpan.FromMilliseconds(30), summary.Duration);
+        PeasyAssert.Equal(TestRunStatus.Failed, summary.Status);
+        PeasyAssert.Equal(TimeSpan.FromMilliseconds(30), summary.Duration);
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public class TrxReportParserTests
         var tests = TrxReportParser.Parse(MixedRun).Tests;
 
         var failed = tests.Single(t => t.Name == "Divides");
-        XAssert.Equal(TestRunStatus.Failed, failed.Status);
-        XAssert.Equal("Expected 2 but was 3", failed.Message);
+        PeasyAssert.Equal(TestRunStatus.Failed, failed.Status);
+        PeasyAssert.Equal("Expected 2 but was 3", failed.Message);
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class TrxReportParserTests
         var summary = TrxReportParser.Parse(empty);
         var tests = summary.Tests;
 
-        XAssert.Equal(TestRunStatus.NotStarted, summary.Status);
-        XAssert.IsEmpty(tests);
+        PeasyAssert.Equal(TestRunStatus.NotStarted, summary.Status);
+        PeasyAssert.IsEmpty(tests);
     }
 }

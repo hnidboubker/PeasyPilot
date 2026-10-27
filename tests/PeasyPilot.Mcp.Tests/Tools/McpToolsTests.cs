@@ -1,4 +1,5 @@
 using PeasyPilot.Mcp.Tools;
+using PeasyPilot.Core.Assertions;
 using Xunit;
 
 namespace PeasyPilot.Mcp.Tests.Tools;
@@ -18,9 +19,9 @@ public class McpToolsTests
         var result = await tool.ExecuteAsync(parameters);
         dynamic dynamicResult = result;
 
-        Assert.True(dynamicResult.success);
-        Assert.Equal("NULL_REFERENCE", (string)dynamicResult.failureType);
-        Assert.Equal("CRITICAL", (string)dynamicResult.riskLevel);
+        PeasyAssert.True(dynamicResult.success);
+        PeasyAssert.Equal("NULL_REFERENCE", (string)dynamicResult.failureType);
+        PeasyAssert.Equal("CRITICAL", (string)dynamicResult.riskLevel);
     }
 
     [Fact]
@@ -30,15 +31,15 @@ public class McpToolsTests
         var parameters = new Dictionary<string, object>
         {
             { "testName", "SampleTest" },
-            { "errorMessage", "Assert.Equal failed: expected 10 but got 5" }
+            { "errorMessage", "PeasyAssert.Equal failed: expected 10 but got 5" }
         };
 
         var result = await tool.ExecuteAsync(parameters);
         dynamic dynamicResult = result;
 
-        Assert.True(dynamicResult.success);
-        Assert.Equal("ASSERTION_FAILED", (string)dynamicResult.failureType);
-        Assert.Equal("MEDIUM", (string)dynamicResult.riskLevel);
+        PeasyAssert.True(dynamicResult.success);
+        PeasyAssert.Equal("ASSERTION_FAILED", (string)dynamicResult.failureType);
+        PeasyAssert.Equal("MEDIUM", (string)dynamicResult.riskLevel);
     }
 
     [Fact]
@@ -54,9 +55,9 @@ public class McpToolsTests
         var result = await tool.ExecuteAsync(parameters);
         dynamic dynamicResult = result;
 
-        Assert.True(dynamicResult.success);
-        Assert.Equal("TIMEOUT", (string)dynamicResult.failureType);
-        Assert.Equal("HIGH", (string)dynamicResult.riskLevel);
+        PeasyAssert.True(dynamicResult.success);
+        PeasyAssert.Equal("TIMEOUT", (string)dynamicResult.failureType);
+        PeasyAssert.Equal("HIGH", (string)dynamicResult.riskLevel);
     }
 
     [Fact]
@@ -72,8 +73,8 @@ public class McpToolsTests
         var result = await tool.ExecuteAsync(parameters);
         dynamic dynamicResult = result;
 
-        Assert.True(dynamicResult.success);
-        Assert.Equal("MOCK_EXPECTATION", (string)dynamicResult.failureType);
+        PeasyAssert.True(dynamicResult.success);
+        PeasyAssert.Equal("MOCK_EXPECTATION", (string)dynamicResult.failureType);
     }
 
     [Fact]
@@ -89,9 +90,9 @@ public class McpToolsTests
         var result = await tool.ExecuteAsync(parameters);
         dynamic dynamicResult = result;
 
-        Assert.True(dynamicResult.success);
-        Assert.Equal("SETUP_ERROR", (string)dynamicResult.failureType);
-        Assert.Equal("HIGH", (string)dynamicResult.riskLevel);
+        PeasyAssert.True(dynamicResult.success);
+        PeasyAssert.Equal("SETUP_ERROR", (string)dynamicResult.failureType);
+        PeasyAssert.Equal("HIGH", (string)dynamicResult.riskLevel);
     }
 
     [Fact]
@@ -103,7 +104,7 @@ public class McpToolsTests
         var result = await tool.ExecuteAsync(parameters);
         dynamic dynamicResult = result;
 
-        Assert.False(dynamicResult.success);
+        PeasyAssert.False(dynamicResult.success);
     }
 
     [Fact]
@@ -115,7 +116,7 @@ public class McpToolsTests
         var result = await tool.ExecuteAsync(parameters);
         dynamic dynamicResult = result;
 
-        Assert.False(dynamicResult.success);
+        PeasyAssert.False(dynamicResult.success);
     }
 
     [Fact]
@@ -127,7 +128,7 @@ public class McpToolsTests
         var result = await tool.ExecuteAsync(parameters);
         dynamic dynamicResult = result;
 
-        Assert.False(dynamicResult.success);
+        PeasyAssert.False(dynamicResult.success);
     }
 
     [Fact]
@@ -139,6 +140,6 @@ public class McpToolsTests
         var result = await tool.ExecuteAsync(parameters);
         dynamic dynamicResult = result;
 
-        Assert.False(dynamicResult.success);
+        PeasyAssert.False(dynamicResult.success);
     }
 }

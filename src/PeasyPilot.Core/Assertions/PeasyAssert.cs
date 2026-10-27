@@ -10,8 +10,23 @@ public static class PeasyAssert
     /// <summary>
     /// Asserts that two values are equal.
     /// </summary>
-    public static void Equal<T>(T expected, T actual, string? message = null) =>
+    public static void Equal<T>(T expected, T actual, string? message = null)
+    {
+        // Sequences are compared item by item, as xUnit does; reference equality would fail for equal arrays.
+        object? left = expected;
+        object? right = actual;
+        if (left is System.Collections.IEnumerable leftItems and not string && right is System.Collections.IEnumerable rightItems and not string)
+        {
+            if (!leftItems.Cast<object?>().SequenceEqual(rightItems.Cast<object?>()))
+            {
+                throw new AssertionException(message ?? "Expected the same sequence, but the items differ.");
+            }
+
+            return;
+        }
+
         new AssertThat<T>(actual, message).IsEqualTo(expected);
+    }
 
     /// <summary>
     /// Asserts that two values are not equal.
@@ -50,8 +65,13 @@ public static class PeasyAssert
     /// <summary>
     /// Asserts that a value is not null.
     /// </summary>
-    public static void NotNull(object? value, string? message = null) =>
-        new AssertThat<object?>(value, message).IsNotNull();
+    public static void NotNull([System.Diagnostics.CodeAnalysis.NotNull] object? value, string? message = null)
+    {
+        if (value is null)
+        {
+            throw new AssertionException(message ?? "Expected a non-null value, but was null.");
+        }
+    }
 
     /// <summary>
     /// Asserts that a collection contains an item.
@@ -68,11 +88,10 @@ public static class PeasyAssert
     /// <summary>
     /// Asserts that a text contains a substring.
     /// </summary>
-    public static void Contains(string substring, string text, string? message = null)
+    public static void Contains(string substring, string? text, string? message = null)
     {
         ArgumentNullException.ThrowIfNull(substring);
-        ArgumentNullException.ThrowIfNull(text);
-        if (!text.Contains(substring, StringComparison.Ordinal))
+        if (text is null || !text.Contains(substring, StringComparison.Ordinal))
         {
             throw new AssertionException(message ?? $"Expected \"{text}\" to contain \"{substring}\".");
         }
@@ -159,5 +178,114 @@ public static class PeasyAssert
         }
 
         throw new AssertionException(message ?? $"Expected {typeof(TException).Name}, but nothing was thrown.");
+    }
+    /// <summary>
+    /// Asserts that every item of a collection passes the action.
+    /// </summary>
+    public static void All<T>(IEnumerable<T> collection, Action<T> action)
+    {
+        ArgumentNullException.ThrowIfNull(collection);
+        ArgumentNullException.ThrowIfNull(action);
+        foreach (var item in collection)
+        {
+            action(item);
+        }
+    }
+
+    /// <summary>
+    /// Asserts that a collection does not contain an item.
+    /// </summary>
+    public static void DoesNotContain<T>(T item, IEnumerable<T> collection, string? message = null)
+    {
+        ArgumentNullException.ThrowIfNull(collection);
+        if (collection.Contains(item))
+        {
+            throw new AssertionException(message ?? $"Expected the collection not to contain {item}.");
+        }
+    }
+
+    /// <summary>
+    /// Asserts that a text does not contain a substring.
+    /// </summary>
+    public static void DoesNotContain(string substring, string text, string? message = null)
+    {
+        ArgumentNullException.ThrowIfNull(substring);
+        ArgumentNullException.ThrowIfNull(text);
+        if (text.Contains(substring, StringComparison.Ordinal))
+        {
+            throw new AssertionException(message ?? $"Expected \"{text}\" not to contain \"{substring}\".");
+        }
+    }
+
+    /// <summary>
+    /// Asserts that a value is exactly of type <typeparamref name="T"/>, and returns it.
+    /// </summary>
+    public static T IsType<T>(object? value, string? message = null)
+    {
+        if (value is not T typed || value.GetType() != typeof(T))
+        {
+            throw new AssertionException(message ?? $"Expected exactly {typeof(T).Name}, but was {value?.GetType().Name ?? "null"}.");
+        }
+
+        return typed;
+    }
+
+    /// <summary>
+    /// Asserts that a value can be assigned to type <typeparamref name="T"/>, and returns it.
+    /// </summary>
+    public static T IsAssignableFrom<T>(object? value, string? message = null)
+    {
+        if (value is not T typed)
+        {
+            throw new AssertionException(message ?? $"Expected a value assignable to {typeof(T).Name}, but was {value?.GetType().Name ?? "null"}.");
+        }
+
+        return typed;
+    }
+    /// <summary>
+    /// Asserts that a text contains a substring, using the given comparison.
+    /// </summary>
+    public static void Contains(string substring, string? text, StringComparison comparison, string? message = null)
+    {
+        ArgumentNullException.ThrowIfNull(substring);
+        if (text is null || !text.Contains(substring, comparison))
+        {
+            throw new AssertionException(message ?? $"Expected \"{text}\" to contain \"{substring}\".");
+        }
+    }
+
+    /// <summary>
+    /// Asserts that at least one item of a collection satisfies the predicate.
+    /// </summary>
+    public static void Contains<T>(IEnumerable<T> collection, Func<T, bool> predicate, string? message = null)
+    {
+        ArgumentNullException.ThrowIfNull(collection);
+        ArgumentNullException.ThrowIfNull(predicate);
+        if (!collection.Any(predicate))
+        {
+            throw new AssertionException(message ?? "Expected an item matching the predicate.");
+        }
+    }
+    /// <summary>
+    /// Asserts that no item of a collection satisfies the predicate.
+    /// </summary>
+    public static void DoesNotContain<T>(IEnumerable<T> collection, Func<T, bool> predicate, string? message = null)
+    {
+        ArgumentNullException.ThrowIfNull(collection);
+        ArgumentNullException.ThrowIfNull(predicate);
+        if (collection.Any(predicate))
+        {
+            throw new AssertionException(message ?? "Expected no item matching the predicate.");
+        }
+    }
+    /// <summary>
+    /// Asserts that two references point to the same object.
+    /// </summary>
+    public static void Same<T>(T expected, T actual, string? message = null) where T : class
+    {
+        if (!ReferenceEquals(expected, actual))
+        {
+            throw new AssertionException(message ?? "Expected the same instance, but the references differ.");
+        }
     }
 }

@@ -1,6 +1,7 @@
 namespace PeasyPilot.Core.Tests.Reporting;
 
 using PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Reporting;
 using Xunit;
@@ -22,8 +23,8 @@ public class ReportingDiagnosticsTests
         var reporter = new ConsoleReporter();
         var output = await reporter.ReportAsync(result);
 
-        Assert.NotNull(output);
-        Assert.Contains("2", output);
+        PeasyAssert.NotNull(output);
+        PeasyAssert.Contains("2", output);
     }
 
     [Fact]
@@ -35,14 +36,14 @@ public class ReportingDiagnosticsTests
             ["CustomerServiceTests", "OrderServiceTests"],
             ["Initialize dependency before execution."]);
 
-        Assert.Equal("The test failed because the object was null.", diagnostic.Summary);
-        Assert.NotEmpty(diagnostic.Suggestions);
+        PeasyAssert.Equal("The test failed because the object was null.", diagnostic.Summary);
+        PeasyAssert.NotEmpty(diagnostic.Suggestions);
     }
 
     [Fact]
     public void ReporterAndDiagnosticContracts_ShouldBeCompatible()
     {
-        Assert.True(typeof(ITestReporter).IsInterface);
-        Assert.True(typeof(ITestDiagnostic).IsInterface);
+        PeasyAssert.True(typeof(ITestReporter).IsInterface);
+        PeasyAssert.True(typeof(ITestDiagnostic).IsInterface);
     }
 }

@@ -1,8 +1,8 @@
 using System.Xml.Linq;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Reporting;
-using PeasyPilot.XUnit;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Reporting;
@@ -29,10 +29,10 @@ public class JUnitXmlReporterTests
         var xml = await new JUnitXmlReporter().ReportAsync(run);
         var testcases = XDocument.Parse(xml).Descendants("testcase").ToList();
 
-        XAssert.Equal(3, testcases.Count);
-        XAssert.Equal("Shop.Orders", testcases[0].Attribute("classname")!.Value);
-        XAssert.Equal("boom", testcases[1].Element("failure")!.Attribute("message")!.Value);
-        XAssert.NotNull(testcases[2].Element("skipped"));
+        PeasyAssert.Equal(3, testcases.Count);
+        PeasyAssert.Equal("Shop.Orders", testcases[0].Attribute("classname")!.Value);
+        PeasyAssert.Equal("boom", testcases[1].Element("failure")!.Attribute("message")!.Value);
+        PeasyAssert.NotNull(testcases[2].Element("skipped"));
     }
 
     [Fact]
@@ -42,6 +42,6 @@ public class JUnitXmlReporterTests
 
         var xml = await new JUnitXmlReporter().ReportAsync(run);
 
-        XAssert.IsEmpty(XDocument.Parse(xml).Descendants("testcase"));
+        PeasyAssert.IsEmpty(XDocument.Parse(xml).Descendants("testcase"));
     }
 }

@@ -1,5 +1,4 @@
 using PeasyPilot.Core.Assertions;
-using PeasyPilot.XUnit;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Assertions;
@@ -9,7 +8,7 @@ public class PeasyAssertTests
     [Fact]
     public void Equal_DifferentValues_Throws()
     {
-        XAssert.Throws<AssertionException>(() => PeasyAssert.Equal(1, 2));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.Equal(1, 2));
     }
 
     [Fact]
@@ -21,15 +20,15 @@ public class PeasyAssertTests
     [Fact]
     public void True_False_Throws()
     {
-        XAssert.Throws<AssertionException>(() => PeasyAssert.True(false));
-        XAssert.Throws<AssertionException>(() => PeasyAssert.False(true));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.True(false));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.False(true));
     }
 
     [Fact]
     public void Null_NotNull_Throws()
     {
-        XAssert.Throws<AssertionException>(() => PeasyAssert.Null("x"));
-        XAssert.Throws<AssertionException>(() => PeasyAssert.NotNull(null));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.Null("x"));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.NotNull(null));
     }
 
     [Fact]
@@ -37,7 +36,7 @@ public class PeasyAssertTests
     {
         PeasyAssert.Contains(2, new[] { 1, 2, 3 });
         PeasyAssert.Contains("SUMMARY", "PEASYPILOT SUMMARY");
-        XAssert.Throws<AssertionException>(() => PeasyAssert.Contains("missing", "PEASYPILOT SUMMARY"));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.Contains("missing", "PEASYPILOT SUMMARY"));
     }
 
     [Fact]
@@ -45,16 +44,16 @@ public class PeasyAssertTests
     {
         PeasyAssert.IsEmpty(Array.Empty<int>());
         PeasyAssert.NotEmpty(new[] { 1 });
-        XAssert.Throws<AssertionException>(() => PeasyAssert.IsEmpty(new[] { 1 }));
-        XAssert.Throws<AssertionException>(() => PeasyAssert.NotEmpty(Array.Empty<int>()));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.IsEmpty(new[] { 1 }));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.NotEmpty(Array.Empty<int>()));
     }
 
     [Fact]
     public void Single_ReturnsTheOnlyItem_AndRejectsOtherCounts()
     {
-        XAssert.Equal(7, PeasyAssert.Single(new[] { 7 }));
-        XAssert.Throws<AssertionException>(() => PeasyAssert.Single(new[] { 1, 2 }));
-        XAssert.Throws<AssertionException>(() => PeasyAssert.Single(Array.Empty<int>()));
+        PeasyAssert.Equal(7, PeasyAssert.Single(new[] { 7 }));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.Single(new[] { 1, 2 }));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.Single(Array.Empty<int>()));
     }
 
     [Fact]
@@ -62,8 +61,8 @@ public class PeasyAssertTests
     {
         var ex = PeasyAssert.Throws<InvalidOperationException>(() => throw new InvalidOperationException("boom"));
 
-        XAssert.Equal("boom", ex.Message);
-        XAssert.Throws<AssertionException>(() => PeasyAssert.Throws<InvalidOperationException>(() => { }));
+        PeasyAssert.Equal("boom", ex.Message);
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.Throws<InvalidOperationException>(() => { }));
     }
 
     [Fact]
@@ -71,7 +70,54 @@ public class PeasyAssertTests
     {
         var ex = await PeasyAssert.ThrowsAsync<InvalidOperationException>(() => throw new InvalidOperationException("boom"));
 
-        XAssert.Equal("boom", ex.Message);
-        await XAssert.ThrowsAsync<AssertionException>(() => PeasyAssert.ThrowsAsync<InvalidOperationException>(() => Task.CompletedTask));
+        PeasyAssert.Equal("boom", ex.Message);
+        await PeasyAssert.ThrowsAsync<AssertionException>(() => PeasyAssert.ThrowsAsync<InvalidOperationException>(() => Task.CompletedTask));
+    }
+    [Fact]
+    public void All_RunsActionOnEveryItem()
+    {
+        var seen = new List<int>();
+
+        PeasyAssert.All(new[] { 1, 2 }, seen.Add);
+
+        PeasyAssert.Equal(2, seen.Count);
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.All(new[] { 1, 2 }, n => PeasyAssert.Equal(1, n)));
+    }
+
+    [Fact]
+    public void DoesNotContain_ItemAndSubstring_ChecksAbsence()
+    {
+        PeasyAssert.DoesNotContain(9, new[] { 1, 2 });
+        PeasyAssert.DoesNotContain("missing", "PEASYPILOT SUMMARY");
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.DoesNotContain("SUMMARY", "PEASYPILOT SUMMARY"));
+    }
+
+    [Fact]
+    public void IsType_ExactTypeOnly_AndIsAssignableFrom_AcceptsSubtypes()
+    {
+        PeasyAssert.IsType<string>("x");
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.IsType<object>("x"));
+        PeasyAssert.IsAssignableFrom<object>("x");
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.IsAssignableFrom<int>("x"));
+    }
+    [Fact]
+    public void Equal_Sequences_ComparesItemByItem()
+    {
+        PeasyAssert.Equal<IEnumerable<string>>(new[] { "-result-trx", "r.trx" }, new List<string> { "-result-trx", "r.trx" });
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.Equal(new[] { 1, 2 }, new[] { 1, 3 }));
+    }
+    [Fact]
+    public void DoesNotContain_Predicate_ChecksNoItemMatches()
+    {
+        PeasyAssert.DoesNotContain(new[] { 1, 2 }, n => n > 5);
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.DoesNotContain(new[] { 1, 2 }, n => n == 2));
+    }
+    [Fact]
+    public void Same_ReferenceEquality_AndNullText()
+    {
+        var item = new object();
+        PeasyAssert.Same(item, item);
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.Same(item, new object()));
+        PeasyAssert.Throws<AssertionException>(() => PeasyAssert.Contains("x", (string?)null));
     }
 }

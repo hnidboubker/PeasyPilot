@@ -1,6 +1,7 @@
 namespace PeasyPilot.Core.Tests.Orchestration;
 
 using PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Discovery;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Filters;
@@ -45,13 +46,13 @@ public class TestPipelineOrchestratorTests
         var result = await orchestrator.ExecutePipelineAsync(options);
 
         // Assert
-        Assert.Equal(3, result.DiscoveredCount);
-        Assert.Equal(2, result.ImpactedCount); // 2 CustomerService tests
-        Assert.Equal(1, result.ScheduledCount); // 1 CustomerService.Create_Valid test after filter
-        Assert.Single(result.TestResults);
-        Assert.Equal("CustomerService.Create_Valid", result.TestResults.First().Name);
-        Assert.Equal(TestRunStatus.Passed, result.Status);
-        Assert.Empty(result.Diagnostics); // No diagnostics since zero failures
+        PeasyAssert.Equal(3, result.DiscoveredCount);
+        PeasyAssert.Equal(2, result.ImpactedCount); // 2 CustomerService tests
+        PeasyAssert.Equal(1, result.ScheduledCount); // 1 CustomerService.Create_Valid test after filter
+        PeasyAssert.Single(result.TestResults);
+        PeasyAssert.Equal("CustomerService.Create_Valid", result.TestResults.First().Name);
+        PeasyAssert.Equal(TestRunStatus.Passed, result.Status);
+        PeasyAssert.IsEmpty(result.Diagnostics); // No diagnostics since zero failures
     }
 
     [Fact]
@@ -69,9 +70,9 @@ public class TestPipelineOrchestratorTests
 
         var json = await reporter.ReportAsync(runResult);
 
-        Assert.NotNull(json);
-        Assert.Contains("\"Passed\": 5", json);
-        Assert.Contains("\"Skipped\": 1", json);
+        PeasyAssert.NotNull(json);
+        PeasyAssert.Contains("\"Passed\": 5", json);
+        PeasyAssert.Contains("\"Skipped\": 1", json);
     }
 
     [Fact]
@@ -89,9 +90,9 @@ public class TestPipelineOrchestratorTests
 
         var xml = await reporter.ReportAsync(runResult);
 
-        Assert.NotNull(xml);
-        Assert.Contains("<testsuites>", xml);
-        Assert.Contains("failures=\"1\"", xml);
-        Assert.Contains("tests=\"5\"", xml);
+        PeasyAssert.NotNull(xml);
+        PeasyAssert.Contains("<testsuites>", xml);
+        PeasyAssert.Contains("failures=\"1\"", xml);
+        PeasyAssert.Contains("tests=\"5\"", xml);
     }
 }

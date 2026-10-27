@@ -1,4 +1,5 @@
 using PeasyPilot.TestAssistant.Catalog;
+using PeasyPilot.Core.Assertions;
 using Xunit;
 
 namespace PeasyPilot.TestAssistant.Tests.Catalog;
@@ -28,8 +29,8 @@ public class TestCatalogScannerTests
     {
         var cases = TestCatalogScanner.ScanSource(Source, "C:/repo/tests/OrderTests.cs");
 
-        Assert.Equal(3, cases.Count);
-        Assert.DoesNotContain(cases, c => c.Name.EndsWith("Helper"));
+        PeasyAssert.Equal(3, cases.Count);
+        PeasyAssert.DoesNotContain(cases, c => c.Name.EndsWith("Helper"));
     }
 
     [Fact]
@@ -37,7 +38,7 @@ public class TestCatalogScannerTests
     {
         var cases = TestCatalogScanner.ScanSource(Source, "C:/repo/tests/OrderTests.cs");
 
-        Assert.Equal("Shop.Tests.OrderTests.Adds", cases[0].Name);
+        PeasyAssert.Equal("Shop.Tests.OrderTests.Adds", cases[0].Name);
     }
 
     [Fact]
@@ -45,7 +46,7 @@ public class TestCatalogScannerTests
     {
         var cases = TestCatalogScanner.ScanSource(Source, @"C:\repo\tests\OrderTests.cs");
 
-        Assert.Equal("C:/repo/tests/OrderTests.cs", cases[0].Metadata["File"]);
+        PeasyAssert.Equal("C:/repo/tests/OrderTests.cs", cases[0].Metadata["File"]);
     }
 
     [Fact]
@@ -66,6 +67,6 @@ public class TestCatalogScannerTests
 
         var cases = TestCatalogScanner.ScanSource(nested, "x.cs");
 
-        Assert.Equal("Shop.Outer.Inner.Works", cases.Single().Name);
+        PeasyAssert.Equal("Shop.Outer.Inner.Works", cases.Single().Name);
     }
 }

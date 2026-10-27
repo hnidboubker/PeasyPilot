@@ -1,5 +1,5 @@
 using PeasyPilot.CLI;
-using PeasyPilot.XUnit;
+using PeasyPilot.Core.Assertions;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.CLI;
@@ -56,7 +56,7 @@ public class AssemblyImpactSelectorTests
             [shopExe, payExe],
             ["Shop/Tests/OrderServiceTests.cs"]);
 
-        XAssert.Equal(shopExe, XAssert.Single(selected));
+        PeasyAssert.Equal(shopExe, PeasyAssert.Single(selected));
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class AssemblyImpactSelectorTests
 
         var selected = await AssemblyImpactSelector.SelectAsync([shopExe, payExe], []);
 
-        XAssert.Equal(2, selected.Count);
+        PeasyAssert.Equal(2, selected.Count);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class AssemblyImpactSelectorTests
 
         var selected = await AssemblyImpactSelector.SelectAsync([shopExe, payExe], ["docs/readme.md"]);
 
-        XAssert.Equal(2, selected.Count);
+        PeasyAssert.Equal(2, selected.Count);
     }
 
     [Fact]
@@ -89,6 +89,6 @@ public class AssemblyImpactSelectorTests
 
         var selected = await AssemblyImpactSelector.SelectAsync([loose, shopExe], ["Shop/Tests/OrderServiceTests.cs"]);
 
-        XAssert.Contains(loose, selected);
+        PeasyAssert.Contains(loose, selected);
     }
 }

@@ -1,13 +1,13 @@
 namespace PeasyPilot.Core.Tests.CLI;
 
 using PeasyPilot.CLI;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Discovery;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Scheduling;
 using PeasyPilot.Core.Storage;
 using Xunit;
-using PeasyPilot.XUnit;
 
 public class CliRunnerTests
 {
@@ -15,7 +15,7 @@ public class CliRunnerTests
     public async Task RunAsync_HelpOption_ReturnsZeroExitCode()
     {
         var exitCode = await CliRunner.RunAsync(["--help"]);
-        XAssert.Equal(0, exitCode);
+        PeasyAssert.Equal(0, exitCode);
     }
 
     [Fact]
@@ -25,8 +25,8 @@ public class CliRunnerTests
 
         var exitCode = await CliRunner.RunAsync([], storeOverride: store);
 
-        XAssert.Equal(2, exitCode);
-        XAssert.IsEmpty(await store.GetRunHistoryAsync(limit: 10));
+        PeasyAssert.Equal(2, exitCode);
+        PeasyAssert.IsEmpty(await store.GetRunHistoryAsync(limit: 10));
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public class CliRunnerTests
         });
 
         var exitCode = await CliRunner.RunAsync(["history"], storeOverride: store);
-        XAssert.Equal(0, exitCode);
+        PeasyAssert.Equal(0, exitCode);
     }
 
     [Fact]
@@ -63,11 +63,11 @@ public class CliRunnerTests
             schedulerOverride: scheduler,
             storeOverride: store);
 
-        XAssert.Equal(0, exitCode);
+        PeasyAssert.Equal(0, exitCode);
 
         var history = await store.GetRunHistoryAsync();
-        XAssert.Single(history);
-        XAssert.Equal(1, history.First().PipelineResult.ScheduledCount);
+        PeasyAssert.Single(history);
+        PeasyAssert.Equal(1, history.First().PipelineResult.ScheduledCount);
     }
 
     [Fact]
@@ -88,10 +88,10 @@ public class CliRunnerTests
             schedulerOverride: scheduler,
             storeOverride: store);
 
-        XAssert.Equal(0, exitCode);
+        PeasyAssert.Equal(0, exitCode);
 
         var history = await store.GetRunHistoryAsync();
-        XAssert.Single(history);
-        XAssert.Equal(1, history.First().PipelineResult.ImpactedCount);
+        PeasyAssert.Single(history);
+        PeasyAssert.Equal(1, history.First().PipelineResult.ImpactedCount);
     }
 }

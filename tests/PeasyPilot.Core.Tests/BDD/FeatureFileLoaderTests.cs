@@ -1,6 +1,7 @@
 namespace PeasyPilot.Core.Tests.BDD;
 
 using PeasyPilot.BDD.FileLoading;
+using PeasyPilot.Core.Assertions;
 using Xunit;
 
 public class FeatureFileLoaderTests
@@ -17,10 +18,10 @@ public class FeatureFileLoaderTests
         var feature = await loader.LoadFromFileAsync(filePath);
 
         // Assert
-        Assert.NotNull(feature);
-        Assert.Equal("User Management", feature.Name);
-        Assert.NotEmpty(feature.Scenarios);
-        Assert.True(feature.Scenarios.Count >= 4, "Should have at least 4 scenarios");
+        PeasyAssert.NotNull(feature);
+        PeasyAssert.Equal("User Management", feature.Name);
+        PeasyAssert.NotEmpty(feature.Scenarios);
+        PeasyAssert.True(feature.Scenarios.Count >= 4, "Should have at least 4 scenarios");
     }
 
     [Fact]
@@ -35,12 +36,12 @@ public class FeatureFileLoaderTests
         var features = await loader.LoadFromDirectoryAsync(dirPath);
 
         // Assert
-        Assert.NotEmpty(features);
-        Assert.True(features.Count >= 2, "Should find at least 2 feature files");
+        PeasyAssert.NotEmpty(features);
+        PeasyAssert.True(features.Count >= 2, "Should find at least 2 feature files");
 
         var featureNames = features.Select(f => f.Name).ToList();
-        Assert.Contains("User Management", featureNames);
-        Assert.Contains("Order Processing", featureNames);
+        PeasyAssert.Contains("User Management", featureNames);
+        PeasyAssert.Contains("Order Processing", featureNames);
     }
 
     private static string GetSolutionRoot()
@@ -61,7 +62,7 @@ public class FeatureFileLoaderTests
         var loader = new GherkinFeatureFileLoader();
 
         // Act & Assert
-        await Assert.ThrowsAsync<FileNotFoundException>(
+        await PeasyAssert.ThrowsAsync<FileNotFoundException>(
             () => loader.LoadFromFileAsync("nonexistent.feature"));
     }
 
@@ -72,7 +73,7 @@ public class FeatureFileLoaderTests
         var loader = new GherkinFeatureFileLoader();
 
         // Act & Assert
-        await Assert.ThrowsAsync<DirectoryNotFoundException>(
+        await PeasyAssert.ThrowsAsync<DirectoryNotFoundException>(
             () => loader.LoadFromDirectoryAsync("nonexistent/directory"));
     }
 }

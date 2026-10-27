@@ -1,6 +1,7 @@
 namespace PeasyPilot.Core.Tests.Discovery;
 
 using PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Discovery;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.ImpactAnalysis;
@@ -21,8 +22,8 @@ public class DiscoverySchedulerImpactTests
 
         var tests = await discovery.DiscoverAsync();
 
-        Assert.Equal(2, tests.Count);
-        Assert.Equal("Customer.Register", tests.First().Name);
+        PeasyAssert.Equal(2, tests.Count);
+        PeasyAssert.Equal("Customer.Register", tests.First().Name);
     }
 
     [Fact]
@@ -37,8 +38,8 @@ public class DiscoverySchedulerImpactTests
 
         var results = await scheduler.ExecuteAsync(tests);
 
-        Assert.Equal(2, results.Count);
-        Assert.All(results, result => Assert.Equal(TestRunStatus.Passed, result.Status));
+        PeasyAssert.Equal(2, results.Count);
+        PeasyAssert.All(results, result => PeasyAssert.Equal(TestRunStatus.Passed, result.Status));
     }
 
     [Fact]
@@ -54,15 +55,15 @@ public class DiscoverySchedulerImpactTests
 
         var impacted = await analyzer.GetImpactedTestsAsync(["Customer"], tests);
 
-        Assert.Equal(2, impacted.Count);
-        Assert.All(impacted, test => Assert.Contains("Customer", test.Name, StringComparison.OrdinalIgnoreCase));
+        PeasyAssert.Equal(2, impacted.Count);
+        PeasyAssert.All(impacted, test => PeasyAssert.Contains("Customer", test.Name, StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
     public void Contracts_ShouldExistForDiscoveryAndScheduler()
     {
-        Assert.True(typeof(ITestDiscovery).IsInterface);
-        Assert.True(typeof(ITestScheduler).IsInterface);
-        Assert.True(typeof(ITestImpactAnalyzer).IsInterface);
+        PeasyAssert.True(typeof(ITestDiscovery).IsInterface);
+        PeasyAssert.True(typeof(ITestScheduler).IsInterface);
+        PeasyAssert.True(typeof(ITestImpactAnalyzer).IsInterface);
     }
 }

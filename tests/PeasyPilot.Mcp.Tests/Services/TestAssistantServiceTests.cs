@@ -1,4 +1,5 @@
 using PeasyPilot.Mcp.Services;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Mcp.Tools;
 using Xunit;
 
@@ -16,8 +17,8 @@ public class TestAssistantServiceTests
         var service = new TestAssistantService(registry);
         var result = await service.ExecuteToolAsync("mock_tool", new Dictionary<string, object>());
 
-        Assert.True(result.Success);
-        Assert.NotNull(result.Result);
+        PeasyAssert.True(result.Success);
+        PeasyAssert.NotNull(result.Result);
     }
 
     [Fact]
@@ -28,8 +29,8 @@ public class TestAssistantServiceTests
 
         var result = await service.ExecuteToolAsync("unknown_tool", new Dictionary<string, object>());
 
-        Assert.False(result.Success);
-        Assert.Contains("not found", result.ErrorMessage);
+        PeasyAssert.False(result.Success);
+        PeasyAssert.Contains("not found", result.ErrorMessage);
     }
 
     [Fact]
@@ -42,13 +43,13 @@ public class TestAssistantServiceTests
         var service = new TestAssistantService(registry);
         var result = await service.ExecuteToolAsync("mock_tool", new Dictionary<string, object>());
 
-        Assert.True(result.ExecutionTimeMs >= 0);
+        PeasyAssert.True(result.ExecutionTimeMs >= 0);
     }
 
     [Fact]
     public void ServiceConstructor_ThrowsWhenRegistryIsNull()
     {
-        Assert.Throws<ArgumentNullException>(() => new TestAssistantService(null!));
+        PeasyAssert.Throws<ArgumentNullException>(() => new TestAssistantService(null!));
     }
 
     private class MockTool : IMcpTool

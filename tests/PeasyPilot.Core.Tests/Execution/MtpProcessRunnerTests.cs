@@ -1,5 +1,5 @@
 using PeasyPilot.Core.Execution;
-using PeasyPilot.XUnit;
+using PeasyPilot.Core.Assertions;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Execution;
@@ -13,7 +13,7 @@ public class MtpProcessRunnerTests
 
         var args = MtpProcessRunner.ReportArguments(help, "report.trx");
 
-        XAssert.Equal(new[] { "-result-trx", "report.trx" }, args);
+        PeasyAssert.Equal(new[] { "-result-trx", "report.trx" }, args);
     }
 
     [Fact]
@@ -23,13 +23,13 @@ public class MtpProcessRunnerTests
 
         var args = MtpProcessRunner.ReportArguments(help, "report.trx");
 
-        XAssert.Equal(new[] { "--report-trx", "--report-trx-filename", "report.trx" }, args);
+        PeasyAssert.Equal(new[] { "--report-trx", "--report-trx-filename", "report.trx" }, args);
     }
 
     [Fact]
     public void ReportArguments_NoTrxOption_Throws()
     {
-        XAssert.Throws<InvalidOperationException>(() => MtpProcessRunner.ReportArguments("usage: nothing", "report.trx"));
+        PeasyAssert.Throws<InvalidOperationException>(() => MtpProcessRunner.ReportArguments("usage: nothing", "report.trx"));
     }
 
     [Fact]
@@ -37,6 +37,6 @@ public class MtpProcessRunnerTests
     {
         var runner = new MtpProcessRunner();
 
-        await XAssert.ThrowsAsync<FileNotFoundException>(() => runner.RunAsync("does-not-exist.exe"));
+        await PeasyAssert.ThrowsAsync<FileNotFoundException>(() => runner.RunAsync("does-not-exist.exe"));
     }
 }

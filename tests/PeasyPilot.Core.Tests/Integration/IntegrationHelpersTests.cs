@@ -1,11 +1,11 @@
 namespace PeasyPilot.Core.Tests.Integration;
 
 using System.Net;
+using PeasyPilot.Core.Assertions;
 
 using PeasyPilot.Integration.Fixtures;
 using PeasyPilot.Integration.Helpers;
 using Xunit;
-using PeasyPilot.XUnit;
 
 public class IntegrationHelpersTests
 {
@@ -21,14 +21,14 @@ public class IntegrationHelpersTests
         await db.Store.SeedAsync([new Product(1, "Laptop")]);
 
         var items = await db.Store.GetAllAsync<Product>();
-        XAssert.Single(items);
+        PeasyAssert.Single(items);
 
         // Act
         await db.ResetAsync();
         var itemsAfterReset = await db.Store.GetAllAsync<Product>();
 
         // Assert
-        XAssert.IsEmpty(itemsAfterReset);
+        PeasyAssert.IsEmpty(itemsAfterReset);
     }
 
     [Fact]
@@ -39,6 +39,6 @@ public class IntegrationHelpersTests
 
         // Act & Assert
         HttpTestClient.AssertStatusCode(responsePass, HttpStatusCode.OK);
-        XAssert.Throws<InvalidOperationException>(() => HttpTestClient.AssertStatusCode(responseFail, HttpStatusCode.OK));
+        PeasyAssert.Throws<InvalidOperationException>(() => HttpTestClient.AssertStatusCode(responseFail, HttpStatusCode.OK));
     }
 }

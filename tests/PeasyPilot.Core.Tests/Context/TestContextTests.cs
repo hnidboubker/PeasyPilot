@@ -1,6 +1,7 @@
 namespace PeasyPilot.Core.Tests.Context;
 
 using TestContext = PeasyPilot.Core.Context.TestContext;
+using PeasyPilot.Core.Assertions;
 using ITestContext = PeasyPilot.Core.Abstractions.ITestContext;
 using TestResult = PeasyPilot.Core.Models.TestResult;
 using PeasyPilot.Core.Context;
@@ -23,7 +24,7 @@ public class TestContextTests
         Parallel.For(0, 100, i =>
         {
             var value = context.GetOrAdd("key", () => "value");
-            Assert.Equal("value", value);
+            PeasyAssert.Equal("value", value);
         });
     }
 }

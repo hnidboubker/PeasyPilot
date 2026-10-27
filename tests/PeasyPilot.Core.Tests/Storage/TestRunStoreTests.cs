@@ -1,6 +1,7 @@
 namespace PeasyPilot.Core.Tests.Storage;
 
 using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Storage;
 using Xunit;
@@ -42,10 +43,10 @@ public class TestRunStoreTests
         var latest = await store.GetLatestRunAsync();
 
         // Assert
-        Assert.Equal(2, history.Count);
-        Assert.NotNull(latest);
-        Assert.Equal(record2.RunId, latest.RunId);
-        Assert.Equal(TestRunStatus.Failed, latest.PipelineResult.Status);
+        PeasyAssert.Equal(2, history.Count);
+        PeasyAssert.NotNull(latest);
+        PeasyAssert.Equal(record2.RunId, latest.RunId);
+        PeasyAssert.Equal(TestRunStatus.Failed, latest.PipelineResult.Status);
     }
 
     [Fact]
@@ -73,10 +74,10 @@ public class TestRunStoreTests
             var latest = await store.GetLatestRunAsync();
 
             // Assert
-            Assert.Single(history);
-            Assert.NotNull(latest);
-            Assert.Equal(record.RunId, latest.RunId);
-            Assert.Equal(3, latest.PipelineResult.DiscoveredCount);
+            PeasyAssert.Single(history);
+            PeasyAssert.NotNull(latest);
+            PeasyAssert.Equal(record.RunId, latest.RunId);
+            PeasyAssert.Equal(3, latest.PipelineResult.DiscoveredCount);
         }
         finally
         {

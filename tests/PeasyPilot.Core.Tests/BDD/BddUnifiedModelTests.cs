@@ -1,9 +1,9 @@
 namespace PeasyPilot.Core.Tests.BDD;
 
 using PeasyPilot.BDD;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
-using PeasyPilot.XUnit;
 
 using Xunit;
 
@@ -23,11 +23,11 @@ public class BddUnifiedModelTests
         var testCase = scenario.ToTestCase("Authentication");
 
         // XAssert
-        XAssert.Equal("Authentication - User Login", testCase.Name);
-        XAssert.Equal("Authentication", testCase.Category);
-        XAssert.Equal(TestKind.Bdd, testCase.Kind);
-        XAssert.Contains("Gherkin", testCase.Metadata.Keys);
-        XAssert.Equal("3", testCase.Metadata["StepCount"]);
+        PeasyAssert.Equal("Authentication - User Login", testCase.Name);
+        PeasyAssert.Equal("Authentication", testCase.Category);
+        PeasyAssert.Equal(TestKind.Bdd, testCase.Kind);
+        PeasyAssert.Contains("Gherkin", testCase.Metadata.Keys);
+        PeasyAssert.Equal("3", testCase.Metadata["StepCount"]);
     }
 
     [Fact]
@@ -52,10 +52,10 @@ public class BddUnifiedModelTests
         var result = await scenario.ExecuteAndAsTestResultAsync("Authentication");
 
         // XAssert
-        XAssert.Equal("Authentication - Password Reset", result.Name);
-        XAssert.Equal(TestRunStatus.Passed, result.Status);
-        XAssert.Null(result.Failure);
-        XAssert.Equal(2, executedSteps.Count);
+        PeasyAssert.Equal("Authentication - Password Reset", result.Name);
+        PeasyAssert.Equal(TestRunStatus.Passed, result.Status);
+        PeasyAssert.Null(result.Failure);
+        PeasyAssert.Equal(2, executedSteps.Count);
     }
 
     [Fact]
@@ -78,10 +78,10 @@ public class BddUnifiedModelTests
         var runResult = await feature.ExecuteAndAsTestRunResultAsync();
 
         // XAssert
-        XAssert.Equal(2, cases.Count);
-        XAssert.All(cases, c => XAssert.Equal(TestKind.Bdd, c.Kind));
-        XAssert.Equal(2, runResult.Passed);
-        XAssert.Equal(0, runResult.Failed);
-        XAssert.Equal(TestRunStatus.Passed, runResult.Status);
+        PeasyAssert.Equal(2, cases.Count);
+        PeasyAssert.All(cases, c => PeasyAssert.Equal(TestKind.Bdd, c.Kind));
+        PeasyAssert.Equal(2, runResult.Passed);
+        PeasyAssert.Equal(0, runResult.Failed);
+        PeasyAssert.Equal(TestRunStatus.Passed, runResult.Status);
     }
 }

@@ -1,4 +1,5 @@
 using Xunit;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.TestAssistant.Rules;
 using PeasyPilot.TestAssistant.Abstractions;
 
@@ -14,7 +15,7 @@ public class NumericValueRuleTests
     public void CanHandle_WithNumericType_ReturnsTrue(Type numericType)
     {
         var rule = new NumericValueRule();
-        Assert.True(rule.CanHandle(numericType));
+        PeasyAssert.True(rule.CanHandle(numericType));
     }
 
     [Fact]
@@ -24,8 +25,8 @@ public class NumericValueRuleTests
         var context = new ValueGenerationContext();
         var cases = rule.GenerateCases(typeof(int), context);
 
-        Assert.Contains(cases, c => c.ValueExpression == "0");
-        Assert.Contains(cases, c => c.ValueExpression == "-1");
+        PeasyAssert.Contains(cases, c => c.ValueExpression == "0");
+        PeasyAssert.Contains(cases, c => c.ValueExpression == "-1");
     }
 
     [Fact]
@@ -35,7 +36,7 @@ public class NumericValueRuleTests
         var context = new ValueGenerationContext();
         var cases = rule.GenerateCases(typeof(uint), context);
 
-        Assert.Contains(cases, c => c.ValueExpression == "0");
-        Assert.DoesNotContain(cases, c => c.ValueExpression == "-1");
+        PeasyAssert.Contains(cases, c => c.ValueExpression == "0");
+        PeasyAssert.DoesNotContain(cases, c => c.ValueExpression == "-1");
     }
 }

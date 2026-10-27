@@ -1,6 +1,7 @@
 namespace PeasyPilot.Core.Tests.Engines;
 
 using PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
 using Xunit;
@@ -24,9 +25,9 @@ public class TestEngineContractsTests
             ]
         };
 
-        Assert.Equal("Regression suite", request.Name);
-        Assert.Equal("net8.0", request.Metadata["target"]);
-        Assert.Equal(2, request.TestCases.Count);
+        PeasyAssert.Equal("Regression suite", request.Name);
+        PeasyAssert.Equal("net8.0", request.Metadata["target"]);
+        PeasyAssert.Equal(2, request.TestCases.Count);
     }
 
     [Fact]
@@ -41,9 +42,9 @@ public class TestEngineContractsTests
             Status = TestRunStatus.Passed
         };
 
-        Assert.Equal(3, result.Passed);
-        Assert.Equal(1, result.Failed);
-        Assert.Equal(1, result.Skipped);
-        Assert.Equal(TestRunStatus.Passed, result.Status);
+        PeasyAssert.Equal(3, result.Passed);
+        PeasyAssert.Equal(1, result.Failed);
+        PeasyAssert.Equal(1, result.Skipped);
+        PeasyAssert.Equal(TestRunStatus.Passed, result.Status);
     }
 }

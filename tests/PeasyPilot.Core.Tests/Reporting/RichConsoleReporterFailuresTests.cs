@@ -1,7 +1,7 @@
 using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Reporting;
-using PeasyPilot.XUnit;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Reporting;
@@ -25,10 +25,10 @@ public class RichConsoleReporterFailuresTests
 
         var output = await new RichConsoleReporter().ReportAsync(run);
 
-        XAssert.Contains("Failed tests:", output);
-        XAssert.Contains("Shop.Orders.Divides", output);
-        XAssert.Contains("Expected 2 but was 3", output);
-        XAssert.DoesNotContain("Shop.Orders.Adds", output);
+        PeasyAssert.Contains("Failed tests:", output);
+        PeasyAssert.Contains("Shop.Orders.Divides", output);
+        PeasyAssert.Contains("Expected 2 but was 3", output);
+        PeasyAssert.DoesNotContain("Shop.Orders.Adds", output);
     }
 
     [Fact]
@@ -38,6 +38,6 @@ public class RichConsoleReporterFailuresTests
 
         var output = await new RichConsoleReporter().ReportAsync(run);
 
-        XAssert.DoesNotContain("Failed tests:", output);
+        PeasyAssert.DoesNotContain("Failed tests:", output);
     }
 }

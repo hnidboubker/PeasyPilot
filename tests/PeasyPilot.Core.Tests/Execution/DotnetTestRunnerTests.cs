@@ -1,5 +1,5 @@
 using PeasyPilot.Core.Execution;
-using PeasyPilot.XUnit;
+using PeasyPilot.Core.Assertions;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Execution;
@@ -11,7 +11,7 @@ public class DotnetTestRunnerTests
     {
         var args = DotnetTestRunner.BuildArguments("tests/Shop.Tests.csproj", "results", null);
 
-        XAssert.Equal(
+        PeasyAssert.Equal(
             new[] { "test", "tests/Shop.Tests.csproj", "--logger", "trx;LogFileName=report.trx", "--results-directory", "results" },
             args);
     }
@@ -21,20 +21,20 @@ public class DotnetTestRunnerTests
     {
         var args = DotnetTestRunner.BuildArguments("tests/Shop.Tests.csproj", "results", "net9.0");
 
-        XAssert.Equal("--framework", args[^2]);
-        XAssert.Equal("net9.0", args[^1]);
+        PeasyAssert.Equal("--framework", args[^2]);
+        PeasyAssert.Equal("net9.0", args[^1]);
     }
 
     [Fact]
     public async Task RunAsync_MissingProject_ThrowsFileNotFound()
     {
-        await XAssert.ThrowsAsync<FileNotFoundException>(() => new DotnetTestRunner().RunAsync("does-not-exist.csproj"));
+        await PeasyAssert.ThrowsAsync<FileNotFoundException>(() => new DotnetTestRunner().RunAsync("does-not-exist.csproj"));
     }
 
     [Fact]
     public void TargetsSeveralFrameworks_MultiTargetProject_IsDetected()
     {
-        XAssert.True(DotnetTestRunner.TargetsSeveralFrameworks("<Project><PropertyGroup><TargetFrameworks>net8.0;net9.0</TargetFrameworks></PropertyGroup></Project>"));
-        XAssert.False(DotnetTestRunner.TargetsSeveralFrameworks("<Project><PropertyGroup><TargetFramework>net9.0</TargetFramework></PropertyGroup></Project>"));
+        PeasyAssert.True(DotnetTestRunner.TargetsSeveralFrameworks("<Project><PropertyGroup><TargetFrameworks>net8.0;net9.0</TargetFrameworks></PropertyGroup></Project>"));
+        PeasyAssert.False(DotnetTestRunner.TargetsSeveralFrameworks("<Project><PropertyGroup><TargetFramework>net9.0</TargetFramework></PropertyGroup></Project>"));
     }
 }

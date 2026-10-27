@@ -1,7 +1,7 @@
 using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Execution;
 using PeasyPilot.Core.Models;
-using PeasyPilot.XUnit;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Execution;
@@ -16,9 +16,9 @@ public class TestRunAggregatorTests
 
         var merged = TestRunAggregator.Merge([xunit, tunit]);
 
-        XAssert.Equal(3, merged.Passed);
-        XAssert.Equal(1, merged.Skipped);
-        XAssert.Equal(TimeSpan.FromSeconds(3), merged.Duration);
+        PeasyAssert.Equal(3, merged.Passed);
+        PeasyAssert.Equal(1, merged.Skipped);
+        PeasyAssert.Equal(TimeSpan.FromSeconds(3), merged.Duration);
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class TestRunAggregatorTests
 
         var merged = TestRunAggregator.Merge([first, second]);
 
-        XAssert.Equal(2, merged.Tests.Count);
+        PeasyAssert.Equal(2, merged.Tests.Count);
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class TestRunAggregatorTests
 
         var merged = TestRunAggregator.Merge([passing, failing]);
 
-        XAssert.Equal(TestRunStatus.Failed, merged.Status);
+        PeasyAssert.Equal(TestRunStatus.Failed, merged.Status);
     }
 
     [Fact]
@@ -48,6 +48,6 @@ public class TestRunAggregatorTests
     {
         var merged = TestRunAggregator.Merge([]);
 
-        XAssert.Equal(TestRunStatus.NotStarted, merged.Status);
+        PeasyAssert.Equal(TestRunStatus.NotStarted, merged.Status);
     }
 }

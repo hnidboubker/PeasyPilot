@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
+using PeasyPilot.Core.Assertions;
 
 using PeasyPilot.Core.Tests.Abstractions;
 using PeasyPilot.Integration.Fixtures;
-using PeasyPilot.XUnit;
 
 using Xunit;
 
@@ -34,13 +34,13 @@ public class IntegrationTestFixtureTests : XUnitIntegrationTestFixture
     [Fact]
     public void Services_IsAvailable()
     {
-        XAssert.NotNull(Services);
+        PeasyAssert.NotNull(Services);
     }
 
     [Fact]
     public void Database_IsAvailable()
     {
-        XAssert.NotNull(Database);
+        PeasyAssert.NotNull(Database);
     }
 
     [Fact]
@@ -48,19 +48,19 @@ public class IntegrationTestFixtureTests : XUnitIntegrationTestFixture
     {
         var service = GetService<ITestService>();
 
-        XAssert.NotNull(service);
-        XAssert.Equal("test-value", service.GetValue());
+        PeasyAssert.NotNull(service);
+        PeasyAssert.Equal("test-value", service.GetValue());
     }
 
     [Fact]
     public void GetService_WithUnregisteredType_Throws()
     {
-        var exception = XAssert.Throws<InvalidOperationException>(() =>
+        var exception = PeasyAssert.Throws<InvalidOperationException>(() =>
         {
             GetService<IUnregisteredService>();
         });
 
-        XAssert.Contains("No service for type", exception.Message);
+        PeasyAssert.Contains("No service for type", exception.Message);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class IntegrationTestFixtureTests : XUnitIntegrationTestFixture
         await ResetDatabaseAsync();
 
         // No exception thrown
-        XAssert.True(true);
+        PeasyAssert.True(true);
     }
 
     [Fact]
@@ -78,6 +78,6 @@ public class IntegrationTestFixtureTests : XUnitIntegrationTestFixture
         var service1 = GetService<ITestService>();
         var value1 = service1.GetValue();
 
-        XAssert.Equal("test-value", value1);
+        PeasyAssert.Equal("test-value", value1);
     }
 }

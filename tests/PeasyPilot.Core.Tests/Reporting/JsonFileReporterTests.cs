@@ -1,7 +1,7 @@
 using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Reporting;
-using PeasyPilot.XUnit;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.Reporting;
@@ -20,7 +20,7 @@ public class JsonFileReporterTests
 
         var json = await new JsonFileReporter().ReportAsync(run);
 
-        XAssert.Contains("Shop.Orders.Divides", json);
-        XAssert.Contains("Expected 2 but was 3", json);
+        PeasyAssert.Contains("Shop.Orders.Divides", json);
+        PeasyAssert.Contains("Expected 2 but was 3", json);
     }
 }

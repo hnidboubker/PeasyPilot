@@ -1,6 +1,6 @@
 using PeasyPilot.Core.ImpactAnalysis;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Models;
-using PeasyPilot.XUnit;
 using Xunit;
 
 namespace PeasyPilot.Core.Tests.ImpactAnalysis;
@@ -19,7 +19,7 @@ public class FileImpactAnalyzerTests
 
         var impacted = await new FileImpactAnalyzer().GetImpactedTestsAsync([], tests);
 
-        XAssert.Equal(2, impacted.Count);
+        PeasyAssert.Equal(2, impacted.Count);
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class FileImpactAnalyzerTests
 
         var impacted = await new FileImpactAnalyzer().GetImpactedTestsAsync(["src/Invoice.cs"], tests);
 
-        XAssert.Equal("Unknown", impacted.Single().Name);
+        PeasyAssert.Equal("Unknown", impacted.Single().Name);
     }
 
     [Fact]
@@ -39,7 +39,7 @@ public class FileImpactAnalyzerTests
 
         var impacted = await new FileImpactAnalyzer().GetImpactedTestsAsync(["tests/Shop/OrderServiceTests.cs"], tests);
 
-        XAssert.Equal("Order", impacted.Single().Name);
+        PeasyAssert.Equal("Order", impacted.Single().Name);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class FileImpactAnalyzerTests
 
         var impacted = await new FileImpactAnalyzer().GetImpactedTestsAsync(["src\\Shop\\OrderService.cs"], tests);
 
-        XAssert.Equal("Order", impacted.Single().Name);
+        PeasyAssert.Equal("Order", impacted.Single().Name);
     }
 
     [Fact]
@@ -57,7 +57,7 @@ public class FileImpactAnalyzerTests
     {
         var paths = GitChangedFiles.Parse("src/A.cs\r\nsrc\\B.cs\n\n");
 
-        XAssert.Equal(2, paths.Count);
-        XAssert.Equal("src/B.cs", paths[1]);
+        PeasyAssert.Equal(2, paths.Count);
+        PeasyAssert.Equal("src/B.cs", paths[1]);
     }
 }
