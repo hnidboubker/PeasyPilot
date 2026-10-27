@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
@@ -7,11 +6,10 @@
     <Nullable>enable</Nullable>
     <AssemblyName>PeasyPilot.Mcp</AssemblyName>
     <RootNamespace>PeasyPilot.Mcp</RootNamespace>
-
     <!-- NuGet package metadata -->
     <IsPackable>true</IsPackable>
     <PackageId>PeasyPilot.Mcp</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <PackageIcon>Logo.png</PackageIcon>
     <Authors>NID BOUBKER Houssine</Authors>
     <Description>A modern, fast and flexible .NET testing framework.</Description>
@@ -23,12 +21,11 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="../PeasyPilot.TestAssistant/PeasyPilot.TestAssistant.csproj" />
     <ProjectReference Include="../PeasyPilot.Core/PeasyPilot.Core.csproj" />
   </ItemGroup>
- <ItemGroup>
+  <ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   <ItemGroup>
