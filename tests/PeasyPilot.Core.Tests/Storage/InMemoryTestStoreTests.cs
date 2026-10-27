@@ -6,7 +6,7 @@ using TestResult = PeasyPilot.Core.Models.TestResult;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Storage;
 using Xunit;
-using Assert = Xunit.Assert;
+using PeasyPilot.XUnit;
 
 public class InMemoryTestStoreTests
 {
@@ -28,9 +28,9 @@ public class InMemoryTestStoreTests
         var result = await store.GetAllAsync<SampleUser>();
 
         // Assert
-        Assert.Equal(2, result.Count);
-        Assert.Contains(result, u => u.Name == "Alice");
-        Assert.Contains(result, u => u.Name == "Bob");
+        XAssert.Equal(2, result.Count);
+        XAssert.Contains(result, u => u.Name == "Alice");
+        XAssert.Contains(result, u => u.Name == "Bob");
     }
 
     [Fact]
@@ -47,8 +47,8 @@ public class InMemoryTestStoreTests
         var user = await store.FindAsync<SampleUser>(u => u.Id == 2);
 
         // Assert
-        Assert.NotNull(user);
-        Assert.Equal("Bob", user.Name);
+        XAssert.NotNull(user);
+        XAssert.Equal("Bob", user.Name);
     }
 
     [Fact]
@@ -63,14 +63,14 @@ public class InMemoryTestStoreTests
         var result = await store.GetAllAsync<SampleUser>();
 
         // Assert
-        Assert.Empty(result);
+        XAssert.IsEmpty(result);
     }
 
     [Fact]
     public void TestCase_DefaultsToUnitKind()
     {
         var testCase = new TestCase { Name = "SampleTest" };
-        Assert.Equal(TestKind.Unit, testCase.Kind);
+        XAssert.Equal(TestKind.Unit, testCase.Kind);
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class InMemoryTestStoreTests
     {
         var failure = new TestFailure
         {
-            Message = "Assert.Equal failed",
+            Message = "XAssert.Equal failed",
             Expected = "5",
             Actual = "10",
             StackTrace = "at Method()"
@@ -90,8 +90,8 @@ public class InMemoryTestStoreTests
             Failure = failure
         };
 
-        Assert.NotNull(result.Failure);
-        Assert.Equal("5", result.Failure.Expected);
-        Assert.Equal("10", result.Failure.Actual);
+        XAssert.NotNull(result.Failure);
+        XAssert.Equal("5", result.Failure.Expected);
+        XAssert.Equal("10", result.Failure.Actual);
     }
 }

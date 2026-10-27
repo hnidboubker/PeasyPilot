@@ -7,7 +7,7 @@ using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Scheduling;
 using PeasyPilot.Core.Storage;
 using Xunit;
-using Assert = Xunit.Assert;
+using PeasyPilot.XUnit;
 
 public class CliRunnerTests
 {
@@ -15,7 +15,7 @@ public class CliRunnerTests
     public async Task RunAsync_HelpOption_ReturnsZeroExitCode()
     {
         var exitCode = await CliRunner.RunAsync(["--help"]);
-        Assert.Equal(0, exitCode);
+        XAssert.Equal(0, exitCode);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class CliRunnerTests
         });
 
         var exitCode = await CliRunner.RunAsync(["history"], storeOverride: store);
-        Assert.Equal(0, exitCode);
+        XAssert.Equal(0, exitCode);
     }
 
     [Fact]
@@ -52,11 +52,11 @@ public class CliRunnerTests
             schedulerOverride: scheduler,
             storeOverride: store);
 
-        Assert.Equal(0, exitCode);
+        XAssert.Equal(0, exitCode);
 
         var history = await store.GetRunHistoryAsync();
-        Assert.Single(history);
-        Assert.Equal(1, history.First().PipelineResult.ScheduledCount);
+        XAssert.Single(history);
+        XAssert.Equal(1, history.First().PipelineResult.ScheduledCount);
     }
 
     [Fact]
@@ -77,10 +77,10 @@ public class CliRunnerTests
             schedulerOverride: scheduler,
             storeOverride: store);
 
-        Assert.Equal(0, exitCode);
+        XAssert.Equal(0, exitCode);
 
         var history = await store.GetRunHistoryAsync();
-        Assert.Single(history);
-        Assert.Equal(1, history.First().PipelineResult.ImpactedCount);
+        XAssert.Single(history);
+        XAssert.Equal(1, history.First().PipelineResult.ImpactedCount);
     }
 }

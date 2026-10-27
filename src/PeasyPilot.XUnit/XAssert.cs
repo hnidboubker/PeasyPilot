@@ -108,7 +108,7 @@ public static class XAssert
     public static void Null(object? obj) =>
         Assert.Null(obj);
 
-    public static void NotNull(object? obj) =>
+    public static void NotNull([System.Diagnostics.CodeAnalysis.NotNull] object? obj) =>
         Assert.NotNull(obj);
 
     public static void Contains<T>(this IEnumerable<T> collection, T item) =>
