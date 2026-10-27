@@ -14,10 +14,8 @@ public sealed class NUnitAdapter : ITestFrameworkAdapter
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return Task.FromResult<IReadOnlyCollection<TestCase>>([
-            new TestCase { Name = "PeasyPilot.NUnit.adapter", Category = "adapter" },
-            new TestCase { Name = "PeasyPilot.NUnit.discovery", Category = "adapter" }
-        ]);
+        // Discovers nothing until real discovery exists (#105); it never invents test cases.
+        return Task.FromResult<IReadOnlyCollection<TestCase>>([]);
     }
 
     public Task<TestRunResult> RunAsync(TestRunRequest request, CancellationToken cancellationToken = default)
@@ -25,18 +23,8 @@ public sealed class NUnitAdapter : ITestFrameworkAdapter
         ArgumentNullException.ThrowIfNull(request);
         cancellationToken.ThrowIfCancellationRequested();
 
-        var startedAt = DateTime.UtcNow;
-        var passed = request.TestCases.Count;
-        var failed = 0;
-        var skipped = 0;
-
-        return Task.FromResult(new TestRunResult
-        {
-            Passed = passed,
-            Failed = failed,
-            Skipped = skipped,
-            Duration = DateTime.UtcNow - startedAt,
-            Status = TestRunStatus.Passed
-        });
+        // Refuses instead of reporting a pass: this adapter does not execute tests yet (#105).
+        return Task.FromException<TestRunResult>(new NotSupportedException(
+            "The NUnit adapter does not execute tests yet. Use the --assembly runner."));
     }
 }

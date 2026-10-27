@@ -2,6 +2,7 @@ namespace PeasyPilot.TUnit.Tests;
 
 using global::TUnit;
 using PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Models;
 using PeasyPilot.NUnit;
 using PeasyPilot.TUnit;
 using PeasyPilot.XUnit;
@@ -49,5 +50,15 @@ public class FrameworkAdapterTests
         await TAssert.NotNull(x);
         await TAssert.NotNull(n);
         await TAssert.NotNull(t);
+    }
+
+    [Test]
+    public async Task Adapters_RunAsync_RefusesToReportPass()
+    {
+        var request = new TestRunRequest { Name = "run", TestCases = [new TestCase { Name = "A.B" }] };
+
+        await TAssert.ThrowsAsync<NotSupportedException>(() => new XUnitAdapter().RunAsync(request));
+        await TAssert.ThrowsAsync<NotSupportedException>(() => new NUnitAdapter().RunAsync(request));
+        await TAssert.ThrowsAsync<NotSupportedException>(() => new TUnitAdapter().RunAsync(request));
     }
 }

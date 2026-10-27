@@ -45,6 +45,17 @@ public sealed class RichConsoleReporter : ITestReporter
         sb.AppendLine($"  {Yellow}Skipped:{Reset}  {result.Skipped}");
         sb.AppendLine($"  {Bold}Duration:{Reset} {result.Duration.TotalMilliseconds:F0} ms");
 
+        var failures = result.Tests.Where(test => test.Status == TestRunStatus.Failed).ToList();
+        if (failures.Count > 0)
+        {
+            sb.AppendLine($"  {Red}{Bold}Failed tests:{Reset}");
+            foreach (var failure in failures)
+            {
+                var message = string.IsNullOrWhiteSpace(failure.Message) ? string.Empty : $" — {failure.Message}";
+                sb.AppendLine($"    {Red}✗{Reset} {failure.Name}{message}");
+            }
+        }
+
         var output = sb.ToString();
         if (!UseColor())
         {
