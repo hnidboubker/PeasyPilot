@@ -46,7 +46,7 @@ public class WebApplicationTestFactory<TStartup> : WebApplicationFactory<TStartu
     /// Configures the web host builder directly.
     /// Use this for advanced scenarios.
     /// </summary>
-    public WebApplicationTestFactory<TStartup> WithWebHostBuilder(
+    public new WebApplicationTestFactory<TStartup> WithWebHostBuilder(
         Action<IWebHostBuilder> configure)
     {
         _configureWebHost = configure;

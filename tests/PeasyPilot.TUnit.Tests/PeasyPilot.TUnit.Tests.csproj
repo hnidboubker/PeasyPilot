@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -18,5 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\PeasyPilot.TUnit\PeasyPilot.TUnit.csproj" />
+    <ProjectReference Include="..\..\src\PeasyPilot.XUnit\PeasyPilot.XUnit.csproj" />
+    <ProjectReference Include="..\..\src\PeasyPilot.NUnit\PeasyPilot.NUnit.csproj" />
   </ItemGroup>
 </Project>

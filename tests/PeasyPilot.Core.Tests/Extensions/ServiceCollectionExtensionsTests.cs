@@ -1,10 +1,13 @@
 namespace PeasyPilot.Core.Tests.Extensions;
 
+using TestContext = PeasyPilot.Core.Context.TestContext;
+using PeasyPilot.Core.Assertions;
+using ITestContext = PeasyPilot.Core.Abstractions.ITestContext;
+using TestResult = PeasyPilot.Core.Models.TestResult;
 using Microsoft.Extensions.DependencyInjection;
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Extensions;
 using Xunit;
-using Assert = Xunit.Assert;
 
 public class ServiceCollectionExtensionsTests
 {
@@ -23,8 +26,8 @@ public class ServiceCollectionExtensionsTests
         var provider = services.BuildServiceProvider();
 
         // Assert
-        Assert.NotNull(provider.GetService<ITestContext>());
-        Assert.NotNull(provider.GetService<ITestEngine>());
+        PeasyAssert.NotNull(provider.GetService<ITestContext>());
+        PeasyAssert.NotNull(provider.GetService<ITestEngine>());
     }
 
     [Fact]
@@ -38,13 +41,13 @@ public class ServiceCollectionExtensionsTests
         var provider = services.BuildServiceProvider();
 
         // Assert
-        Assert.NotNull(provider.GetService<ITestContext>());
-        Assert.NotNull(provider.GetService<ITestEngine>());
-        Assert.NotNull(provider.GetService<ITestDiscovery>());
-        Assert.NotNull(provider.GetService<ITestScheduler>());
-        Assert.NotNull(provider.GetService<ITestImpactAnalyzer>());
-        Assert.NotNull(provider.GetService<ITestRunStore>());
-        Assert.NotNull(provider.GetService<ITestPipelineOrchestrator>());
-        Assert.NotNull(provider.GetService<ITestReporter>());
+        PeasyAssert.NotNull(provider.GetService<ITestContext>());
+        PeasyAssert.NotNull(provider.GetService<ITestEngine>());
+        PeasyAssert.NotNull(provider.GetService<ITestDiscovery>());
+        PeasyAssert.NotNull(provider.GetService<ITestScheduler>());
+        PeasyAssert.NotNull(provider.GetService<ITestImpactAnalyzer>());
+        PeasyAssert.NotNull(provider.GetService<ITestRunStore>());
+        PeasyAssert.NotNull(provider.GetService<ITestPipelineOrchestrator>());
+        PeasyAssert.NotNull(provider.GetService<ITestReporter>());
     }
 }

@@ -1,7 +1,7 @@
 using PeasyPilot.TestAssistant.Analysis;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.TestAssistant.Models;
 using PeasyPilot.TestAssistant.Planning;
-using PeasyPilot.XUnit;
 
 using Xunit;
 
@@ -17,10 +17,10 @@ public class Tier2Tests
 
         var plan = builder.BuildPlan(model);
 
-        XAssert.NotNull(plan);
-        XAssert.Equal("TestClass", plan.TypeName);
-        XAssert.Equal("TestMethod", plan.MethodName);
-        XAssert.True(plan.TotalEstimatedTests > 0);
+        PeasyAssert.NotNull(plan);
+        PeasyAssert.Equal("TestClass", plan.TypeName);
+        PeasyAssert.Equal("TestMethod", plan.MethodName);
+        PeasyAssert.True(plan.TotalEstimatedTests > 0);
     }
 
     [Fact]
@@ -46,7 +46,7 @@ public class Tier2Tests
 
         var plan = builder.BuildPlan(model);
 
-        XAssert.True(plan.TotalEstimatedTests >= 2);
+        PeasyAssert.True(plan.TotalEstimatedTests >= 2);
     }
 
     [Fact]
@@ -71,8 +71,8 @@ public class Tier2Tests
 
         var plan = builder.BuildPlan(model);
 
-        XAssert.True(plan.RiskScore > 0);
-        XAssert.True(plan.RiskScore <= 10);
+        PeasyAssert.True(plan.RiskScore > 0);
+        PeasyAssert.True(plan.RiskScore <= 10);
     }
 
     [Fact]
@@ -89,8 +89,8 @@ public class Tier2Tests
 
         var plan = builder.BuildPlan(model);
 
-        XAssert.NotEmpty(plan.CoverageGaps);
-        XAssert.Contains("Missing happy path scenario", plan.CoverageGaps);
+        PeasyAssert.NotEmpty(plan.CoverageGaps);
+        PeasyAssert.Contains("Missing happy path scenario", plan.CoverageGaps);
     }
 
     [Fact]
@@ -110,7 +110,7 @@ public class Tier2Tests
 
         var plan = builder.BuildPlan(model);
 
-        XAssert.True(plan.RequiresIntegration);
+        PeasyAssert.True(plan.RequiresIntegration);
     }
 
     [Fact]
@@ -130,7 +130,7 @@ public class Tier2Tests
 
         var plan = builder.BuildPlan(model);
 
-        XAssert.True(plan.RequiresMocking);
+        PeasyAssert.True(plan.RequiresMocking);
     }
 
     [Fact]
@@ -150,7 +150,7 @@ public class Tier2Tests
 
         var enriched = builder.EnrichPlan(plan, dependencies);
 
-        XAssert.True(enriched.RequiresIntegration);
+        PeasyAssert.True(enriched.RequiresIntegration);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class Tier2Tests
 
         var enriched = builder.EnrichPlan(plan, dependencies);
 
-        XAssert.True(enriched.RequiresMocking);
+        PeasyAssert.True(enriched.RequiresMocking);
     }
 
     [Fact]
@@ -190,8 +190,8 @@ public class Tier2Tests
 
         var coverage = scorer.CalculateCoverage(model);
 
-        XAssert.True(coverage > 0);
-        XAssert.True(coverage <= 1);
+        PeasyAssert.True(coverage > 0);
+        PeasyAssert.True(coverage <= 1);
     }
 
     [Fact]
@@ -216,7 +216,7 @@ public class Tier2Tests
 
         var count = scorer.EstimateTestCount(model);
 
-        XAssert.True(count >= 2);
+        PeasyAssert.True(count >= 2);
     }
 
     private MethodTestModel CreateMethodTestModel() =>

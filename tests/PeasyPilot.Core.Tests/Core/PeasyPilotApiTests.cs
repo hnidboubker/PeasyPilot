@@ -1,6 +1,7 @@
 namespace PeasyPilot.Core.Tests.Core;
 
 using static PeasyPilot.Core.TestRunner;
+using PeasyPilot.Core.Assertions;
 using Xunit;
 
 public class PeasyPilotApiTests
@@ -11,10 +12,10 @@ public class PeasyPilotApiTests
         var result = Test("sum is correct", () =>
         {
             var value = 2 + 3;
-            Assert.Equal(5, value);
+            PeasyAssert.Equal(5, value);
         });
 
-        Assert.Equal(PeasyPilot.Core.Eums.TestRunStatus.Passed, result.Status);
-        Assert.Equal(1, result.Passed);
+        PeasyAssert.Equal(PeasyPilot.Core.Eums.TestRunStatus.Passed, result.Status);
+        PeasyAssert.Equal(1, result.Passed);
     }
 }

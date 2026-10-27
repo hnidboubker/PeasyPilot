@@ -1,4 +1,5 @@
 using Xunit;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.TestAssistant.Analysis;
 using PeasyPilot.TestAssistant.Models;
 
@@ -14,9 +15,9 @@ public class ReflectionTestScenarioAnalyzerTests
 
         var proposal = analyzer.Analyze(typeof(SimpleTestClass), options);
 
-        Assert.NotNull(proposal);
-        Assert.Equal("SimpleTestClass", proposal.TargetType);
-        Assert.NotEmpty(proposal.TestCases);
+        PeasyAssert.NotNull(proposal);
+        PeasyAssert.Equal("SimpleTestClass", proposal.TargetType);
+        PeasyAssert.NotEmpty(proposal.TestCases);
     }
 
     [Fact]
@@ -27,8 +28,8 @@ public class ReflectionTestScenarioAnalyzerTests
 
         var proposal = analyzer.Analyze(typeof(SimpleTestClass), options);
 
-        Assert.NotNull(proposal.TargetNamespace);
-        Assert.Contains("PeasyPilot.TestAssistant.Tests", proposal.TargetNamespace);
+        PeasyAssert.NotNull(proposal.TargetNamespace);
+        PeasyAssert.Contains("PeasyPilot.TestAssistant.Tests", proposal.TargetNamespace);
     }
 
     // Test fixture

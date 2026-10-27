@@ -31,8 +31,24 @@ public class TAssertTests
         await TAssert.NotNull("not null");
 
     [Test]
-    public void Throws_WithThrowingAction_Passes() =>
-        TAssert.Throws<InvalidOperationException>(() => throw new InvalidOperationException());
+    public async Task Throws_WithThrowingAction_Passes() =>
+        await TAssert.Throws<InvalidOperationException>(() => throw new InvalidOperationException());
+
+    [Test]
+    public async Task Throws_WithNonThrowingAction_Fails()
+    {
+        var failed = false;
+        try
+        {
+            await TAssert.Throws<InvalidOperationException>(() => { });
+        }
+        catch (Exception)
+        {
+            failed = true;
+        }
+
+        await TAssert.True(failed);
+    }
 
     [Test]
     public async Task IsEmpty_WithEmptyCollection_Passes() =>

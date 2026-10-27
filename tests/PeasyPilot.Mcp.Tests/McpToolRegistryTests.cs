@@ -1,4 +1,5 @@
 using PeasyPilot.Mcp.Services;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Mcp.Tools;
 using Xunit;
 
@@ -14,13 +15,13 @@ public class McpToolRegistryTests
 
         var allTools = registry.GetAllTools().ToList();
 
-        Assert.NotEmpty(allTools);
-        Assert.Contains(allTools, t => t.Name == "analyze_code");
-        Assert.Contains(allTools, t => t.Name == "generate_tests");
-        Assert.Contains(allTools, t => t.Name == "run_tests");
-        Assert.Contains(allTools, t => t.Name == "challenge_tests");
-        Assert.Contains(allTools, t => t.Name == "analyze_failure");
-        Assert.Contains(allTools, t => t.Name == "generate_and_run_tests");
+        PeasyAssert.NotEmpty(allTools);
+        PeasyAssert.Contains(allTools, t => t.Name == "analyze_code");
+        PeasyAssert.Contains(allTools, t => t.Name == "generate_tests");
+        PeasyAssert.Contains(allTools, t => t.Name == "run_tests");
+        PeasyAssert.Contains(allTools, t => t.Name == "challenge_tests");
+        PeasyAssert.Contains(allTools, t => t.Name == "analyze_failure");
+        PeasyAssert.Contains(allTools, t => t.Name == "generate_and_run_tests");
     }
 
     [Fact]
@@ -31,8 +32,8 @@ public class McpToolRegistryTests
 
         var analyzeTool = registry.GetTool("analyze_code");
 
-        Assert.NotNull(analyzeTool);
-        Assert.Equal("analyze_code", analyzeTool.Name);
+        PeasyAssert.NotNull(analyzeTool);
+        PeasyAssert.Equal("analyze_code", analyzeTool.Name);
     }
 
     [Fact]
@@ -43,7 +44,7 @@ public class McpToolRegistryTests
 
         var tool = registry.GetTool("unknown_tool");
 
-        Assert.Null(tool);
+        PeasyAssert.Null(tool);
     }
 
     [Fact]
@@ -55,8 +56,8 @@ public class McpToolRegistryTests
         registry.Register(customTool);
         var retrieved = registry.GetTool("test_tool");
 
-        Assert.NotNull(retrieved);
-        Assert.Same(customTool, retrieved);
+        PeasyAssert.NotNull(retrieved);
+        PeasyAssert.Same(customTool, retrieved);
     }
 
     private class TestTool : IMcpTool

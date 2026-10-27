@@ -1,9 +1,12 @@
 namespace PeasyPilot.Core.Tests.Storage;
 
+using TestContext = PeasyPilot.Core.Context.TestContext;
+using PeasyPilot.Core.Assertions;
+using ITestContext = PeasyPilot.Core.Abstractions.ITestContext;
+using TestResult = PeasyPilot.Core.Models.TestResult;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Storage;
 using Xunit;
-using Assert = Xunit.Assert;
 
 public class InMemoryTestStoreTests
 {
@@ -25,9 +28,9 @@ public class InMemoryTestStoreTests
         var result = await store.GetAllAsync<SampleUser>();
 
         // Assert
-        Assert.Equal(2, result.Count);
-        Assert.Contains(result, u => u.Name == "Alice");
-        Assert.Contains(result, u => u.Name == "Bob");
+        PeasyAssert.Equal(2, result.Count);
+        PeasyAssert.Contains(result, u => u.Name == "Alice");
+        PeasyAssert.Contains(result, u => u.Name == "Bob");
     }
 
     [Fact]
@@ -44,8 +47,8 @@ public class InMemoryTestStoreTests
         var user = await store.FindAsync<SampleUser>(u => u.Id == 2);
 
         // Assert
-        Assert.NotNull(user);
-        Assert.Equal("Bob", user.Name);
+        PeasyAssert.NotNull(user);
+        PeasyAssert.Equal("Bob", user.Name);
     }
 
     [Fact]
@@ -60,14 +63,14 @@ public class InMemoryTestStoreTests
         var result = await store.GetAllAsync<SampleUser>();
 
         // Assert
-        Assert.Empty(result);
+        PeasyAssert.IsEmpty(result);
     }
 
     [Fact]
     public void TestCase_DefaultsToUnitKind()
     {
         var testCase = new TestCase { Name = "SampleTest" };
-        Assert.Equal(TestKind.Unit, testCase.Kind);
+        PeasyAssert.Equal(TestKind.Unit, testCase.Kind);
     }
 
     [Fact]
@@ -75,7 +78,7 @@ public class InMemoryTestStoreTests
     {
         var failure = new TestFailure
         {
-            Message = "Assert.Equal failed",
+            Message = "PeasyAssert.Equal failed",
             Expected = "5",
             Actual = "10",
             StackTrace = "at Method()"
@@ -87,8 +90,8 @@ public class InMemoryTestStoreTests
             Failure = failure
         };
 
-        Assert.NotNull(result.Failure);
-        Assert.Equal("5", result.Failure.Expected);
-        Assert.Equal("10", result.Failure.Actual);
+        PeasyAssert.NotNull(result.Failure);
+        PeasyAssert.Equal("5", result.Failure.Expected);
+        PeasyAssert.Equal("10", result.Failure.Actual);
     }
 }

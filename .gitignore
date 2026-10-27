@@ -469,3 +469,6 @@ passation.md
 !.reflexion/.gitkeep
 
 build.yml
+
+# Local .NET SDK state (sentinels, workload advertising cache)
+.dotnet-home/

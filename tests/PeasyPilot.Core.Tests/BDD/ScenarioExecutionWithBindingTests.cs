@@ -1,8 +1,8 @@
 using PeasyPilot.BDD;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.BDD.Execution;
 using PeasyPilot.BDD.FileLoading;
 using PeasyPilot.BDD.StepDefinitions;
-using PeasyPilot.XUnit;
 
 using Xunit;
 
@@ -40,19 +40,19 @@ public class ScenarioExecutionWithBindingTests
 
         // Load feature file
         var feature = await loader.LoadFromFileAsync(featurePath);
-        XAssert.NotNull(feature);
+        PeasyAssert.NotNull(feature);
 
         // Find first scenario
         var scenario = feature.Scenarios.First();
-        XAssert.NotNull(scenario);
+        PeasyAssert.NotNull(scenario);
 
         // Act
         var result = await executor.ExecuteAsync(scenario, serviceProvider);
 
         // Assert
-        XAssert.NotNull(result);
+        PeasyAssert.NotNull(result);
         // Todo faire fonctionner celui je pense qu'il une E
-        XAssert.True(result.Status == ScenarioStatus.Passed || result.Status == ScenarioStatus.Failed,
+        PeasyAssert.True(result.Status == ScenarioStatus.Passed || result.Status == ScenarioStatus.Failed,
             $"Scenario execution resulted in: {result.Status}. Error: {result.ErrorMessage}");
     }
 
@@ -76,8 +76,8 @@ public class ScenarioExecutionWithBindingTests
         var result = await executor.ExecuteAsync(scenario, serviceProvider);
 
         // Assert
-        XAssert.NotNull(result);
-        XAssert.Equal("Test with parameters", result.ScenarioName);
+        PeasyAssert.NotNull(result);
+        PeasyAssert.Equal("Test with parameters", result.ScenarioName);
     }
 
     /// <summary>

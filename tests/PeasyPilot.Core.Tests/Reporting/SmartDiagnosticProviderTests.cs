@@ -1,10 +1,10 @@
 namespace PeasyPilot.Core.Tests.Reporting;
 
 using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Reporting;
 using Xunit;
-using Assert = Xunit.Assert;
 
 public class SmartDiagnosticProviderTests
 {
@@ -24,9 +24,9 @@ public class SmartDiagnosticProviderTests
         var diagnostic = await provider.DiagnoseAsync(result);
 
         // Assert
-        Assert.NotNull(diagnostic);
-        Assert.Contains("cleanly", diagnostic.Summary);
-        Assert.Empty(diagnostic.Suggestions);
+        PeasyAssert.NotNull(diagnostic);
+        PeasyAssert.Contains("cleanly", diagnostic.Summary);
+        PeasyAssert.IsEmpty(diagnostic.Suggestions);
     }
 
     [Fact]
@@ -45,8 +45,8 @@ public class SmartDiagnosticProviderTests
         var diagnostic = await provider.DiagnoseAsync(result);
 
         // Assert
-        Assert.NotNull(diagnostic);
-        Assert.Contains("2 test failure", diagnostic.Summary);
-        Assert.NotEmpty(diagnostic.Suggestions);
+        PeasyAssert.NotNull(diagnostic);
+        PeasyAssert.Contains("2 test failure", diagnostic.Summary);
+        PeasyAssert.NotEmpty(diagnostic.Suggestions);
     }
 }

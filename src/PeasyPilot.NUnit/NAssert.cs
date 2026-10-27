@@ -95,10 +95,10 @@ public static class NAssert
     public static void DoesNotContain<T>(T item, ICollection<T> collection) =>
         Assert.That(collection, global::NUnit.Framework.Does.Not.Contain(item));
 
-    public static void Throws<TException>(TestDelegate code) where TException : Exception =>
+    public static void Throws<TException>(Action code) where TException : Exception =>
         Assert.Throws<TException>(code);
 
-    public static void ThrowsAsync<TException>(AsyncTestDelegate code) where TException : Exception =>
+    public static void ThrowsAsync<TException>(Func<Task> code) where TException : Exception =>
         Assert.ThrowsAsync<TException>(code);
 
     public static void Greater<T>(T expected, T actual) where T : IComparable =>

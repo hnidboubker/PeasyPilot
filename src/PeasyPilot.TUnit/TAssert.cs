@@ -33,9 +33,9 @@ public class TAssertThat<T>
     public async Task IsNull() =>
         await Assert.That(_value).IsNull();
 
-    /// <summary>
-    /// Asserts that the value is not null.
-    /// </summary>
+    // <summary>
+    // Asserts that the value is not null.
+    // </summary>
     //public async Task IsNotNull() where T : class =>
     //    await Assert.That(_value).IsNotNull();
 
@@ -105,9 +105,9 @@ public class TAssertThat<T>
     public async Task IsAssignableTo<TTarget>() =>
         await Assert.That(_value).IsAssignableTo<TTarget>();
 
-    /// <summary>
-    /// Asserts that the value is of the specified type.
-    /// </summary>
+    // <summary>
+    // Asserts that the value is of the specified type.
+    // </summary>
     //public async Task IsOfType<TTarget>() =>
     //    await Assert.That(_value).IsOfType<TTarget>();
 
@@ -206,14 +206,17 @@ public static class TAssert
     /// <summary>
     /// Asserts that an action throws an exception.
     /// </summary>
-    public static void Throws<TException>(Action code) where TException : Exception =>
+    public static Task Throws<TException>(Action code) where TException : Exception
+    {
         Assert.Throws<TException>(code);
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     /// Asserts that an async function throws an exception.
     /// </summary>
-    public static Task ThrowsAsync<TException>(Func<Task> code) where TException : Exception =>
-        Assert.ThrowsAsync<TException>(code);
+    public static async Task ThrowsAsync<TException>(Func<Task> code) where TException : Exception =>
+        await Assert.ThrowsAsync<TException>(code);
 
     /// <summary>
     /// Asserts that a collection is empty.

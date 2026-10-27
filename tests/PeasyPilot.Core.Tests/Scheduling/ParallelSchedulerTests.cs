@@ -1,10 +1,10 @@
 namespace PeasyPilot.Core.Tests.Scheduling;
 
 using PeasyPilot.Core.Eums;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Models;
 using PeasyPilot.Core.Scheduling;
 using Xunit;
-using Assert = Xunit.Assert;
 
 public class ParallelSchedulerTests
 {
@@ -24,7 +24,7 @@ public class ParallelSchedulerTests
         var results = await scheduler.ExecuteAsync(tests);
 
         // Assert
-        Assert.Equal(10, results.Count);
-        Assert.All(results, r => Assert.Equal(TestRunStatus.Passed, r.Status));
+        PeasyAssert.Equal(10, results.Count);
+        PeasyAssert.All(results, r => PeasyAssert.Equal(TestRunStatus.Passed, r.Status));
     }
 }

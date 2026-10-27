@@ -11,7 +11,7 @@ public class UserBuilderXUnitTests : PeasyPilotTestBase
 {
     private UserService _service = null!;
 
-    public override async Task InitializeAsync()
+    public override async ValueTask InitializeAsync()
     {
         await base.InitializeAsync();
         _service = new UserService();

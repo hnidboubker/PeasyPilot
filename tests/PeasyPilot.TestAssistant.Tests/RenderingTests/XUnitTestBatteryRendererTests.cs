@@ -1,4 +1,5 @@
 using Xunit;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.TestAssistant.Rendering;
 using PeasyPilot.TestAssistant.Models;
 using PeasyPilot.TestAssistant.Abstractions;
@@ -30,18 +31,18 @@ public class XUnitTestBatteryRendererTests
 
         var code = renderer.Render(proposal, new RenderOptions { OutputNamespace = "MyApp.Tests" });
 
-        Assert.NotEmpty(code);
-        Assert.Contains("using Xunit;", code);
-        Assert.Contains("public class CalculatorTests", code);
-        Assert.Contains("[Fact]", code);
-        Assert.Contains("Add_WithPositiveNumbers_ReturnsSum", code);
+        PeasyAssert.NotEmpty(code);
+        PeasyAssert.Contains("using Xunit;", code);
+        PeasyAssert.Contains("public class CalculatorTests", code);
+        PeasyAssert.Contains("[Fact]", code);
+        PeasyAssert.Contains("Add_WithPositiveNumbers_ReturnsSum", code);
     }
 
     [Fact]
     public void RenderKey_ReturnsXunit()
     {
         var renderer = new XUnitTestBatteryRenderer();
-        Assert.Equal("xunit", renderer.RenderKey);
+        PeasyAssert.Equal("xunit", renderer.RenderKey);
     }
 
     [Fact]
@@ -67,9 +68,9 @@ public class XUnitTestBatteryRendererTests
 
         var code = renderer.Render(proposal, new RenderOptions { OutputNamespace = "MyApp.Tests" });
 
-        Assert.Contains("public override async Task InitializeAsync()", code);
-        Assert.Contains("await base.InitializeAsync();", code);
-        Assert.Contains("_subject = new StringUtils();", code);
-        Assert.DoesNotContain("public override void Setup()", code);
+        PeasyAssert.Contains("public override async Task InitializeAsync()", code);
+        PeasyAssert.Contains("await base.InitializeAsync();", code);
+        PeasyAssert.Contains("_subject = new StringUtils();", code);
+        PeasyAssert.DoesNotContain("public override void Setup()", code);
     }
 }

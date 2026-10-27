@@ -1,5 +1,6 @@
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Discovery;
+using PeasyPilot.Core.Execution;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Filters;
 using PeasyPilot.Core.ImpactAnalysis;
@@ -53,11 +54,27 @@ public static class CliRunner
         string[]? changedFiles = null;
         var format = "console";
         string? outputPath = null;
+        var assemblies = new List<string>();
+        var projects = new List<string>();
+        string? framework = null;
+        string? changedSince = null;
 
         for (var i = 0; i < args.Length; i++)
         {
             switch (args[i])
             {
+                case "--assembly" or "-a":
+                    if (i + 1 < args.Length) assemblies.Add(args[++i]);
+                    break;
+                case "--project" or "-p":
+                    if (i + 1 < args.Length) projects.Add(args[++i]);
+                    break;
+                case "--framework":
+                    if (i + 1 < args.Length) framework = args[++i];
+                    break;
+                case "--changed-since":
+                    if (i + 1 < args.Length) changedSince = args[++i];
+                    break;
                 case "--filter" or "-f":
                     if (i + 1 < args.Length) filterName = args[++i];
                     break;
@@ -82,7 +99,7 @@ public static class CliRunner
 
         var orchestrator = new TestPipelineOrchestrator(discovery, scheduler, impactAnalyzer);
 
-        var reporters = new List<ITestReporter> { new ConsoleReporter() };
+        var reporters = new List<ITestReporter> { new RichConsoleReporter() };
 
         if (format == "json" || (!string.IsNullOrEmpty(outputPath) && outputPath.EndsWith(".json", StringComparison.OrdinalIgnoreCase)))
         {
@@ -91,6 +108,42 @@ public static class CliRunner
         else if (format == "junit" || (!string.IsNullOrEmpty(outputPath) && outputPath.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)))
         {
             reporters.Add(new JUnitXmlReporter(outputPath));
+        }
+
+        if (changedSince is not null && assemblies.Count == 0 && projects.Count == 0)
+        {
+            Console.Error.WriteLine("[PeasyPilot CLI] --changed-since needs --assembly or --project. Nothing was executed.");
+            return 2;
+        }
+
+        if (assemblies.Count > 0 || projects.Count > 0)
+        {
+            if (changedSince is not null)
+            {
+                try
+                {
+                    var changed = await GitChangedFiles.ListSinceAsync(Directory.GetCurrentDirectory(), changedSince);
+                    var selected = (await AssemblyImpactSelector.SelectAsync([.. assemblies, .. projects], changed)).ToList();
+                    assemblies = selected.Where(path => !path.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)).ToList();
+                    projects = selected.Where(path => path.EndsWith(".csproj", StringComparison.OrdinalIgnoreCase)).ToList();
+                    Console.WriteLine($"[PeasyPilot CLI] {changed.Count} changed file(s) since {changedSince}; running {selected.Count} target(s).");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.Error.WriteLine($"[PeasyPilot CLI] {ex.Message}");
+                    return 2;
+                }
+            }
+
+            return await RunAssembliesAsync(assemblies, projects, framework, reporters);
+        }
+
+        // Without test executables there is nothing real to run: the built-in discovery and scheduler
+        // are placeholders that report every test as passed (#112). Refuse to report a green result.
+        if (discoveryOverride is null && schedulerOverride is null)
+        {
+            Console.Error.WriteLine("[PeasyPilot CLI] No test executable given. Use --assembly <path> to run tests. Nothing was executed.");
+            return 2;
         }
 
         var pipelineOptions = new TestPipelineOptions
@@ -115,6 +168,50 @@ public static class CliRunner
         Console.WriteLine($"[PeasyPilot CLI] Status: {result.Status} | Discovered: {result.DiscoveredCount} | Scheduled: {result.ScheduledCount} | Passed: {result.AggregateRunResult.Passed} | Failed: {result.AggregateRunResult.Failed}");
 
         return result.Status == TestRunStatus.Failed ? 1 : 0;
+    }
+
+    /// <summary>
+    /// Runs each test executable with its own report, merges the results and reports them.
+    /// Returns 1 when a test failed or when no test ran, and 2 when an executable could not be run.
+    /// </summary>
+    private static async Task<int> RunAssembliesAsync(
+        IReadOnlyList<string> assemblies,
+        IReadOnlyList<string> projects,
+        string? framework,
+        IReadOnlyList<ITestReporter> reporters)
+    {
+        var runner = new MtpProcessRunner();
+        var projectRunner = new DotnetTestRunner();
+        var runs = new List<TestRunResult>();
+
+        try
+        {
+            foreach (var assembly in assemblies)
+            {
+                Console.WriteLine($"[PeasyPilot CLI] Running {assembly}");
+                runs.Add(await runner.RunAsync(assembly));
+            }
+
+            foreach (var project in projects)
+            {
+                Console.WriteLine($"[PeasyPilot CLI] Running project {project}");
+                runs.Add(await projectRunner.RunAsync(project, framework));
+            }
+        }
+        catch (Exception ex) when (ex is FileNotFoundException or InvalidOperationException or TimeoutException)
+        {
+            Console.Error.WriteLine($"[PeasyPilot CLI] {ex.Message}");
+            return 2;
+        }
+
+        var merged = TestRunAggregator.Merge(runs);
+        foreach (var reporter in reporters)
+        {
+            await reporter.ReportAsync(merged);
+        }
+
+        Console.WriteLine($"[PeasyPilot CLI] Status: {merged.Status} | Passed: {merged.Passed} | Failed: {merged.Failed} | Skipped: {merged.Skipped}");
+        return merged.Status is TestRunStatus.Failed or TestRunStatus.NotStarted ? 1 : 0;
     }
 
     private static async Task<int> ShowHistoryAsync(ITestRunStore store)

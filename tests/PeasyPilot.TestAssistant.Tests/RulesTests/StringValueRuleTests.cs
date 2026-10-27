@@ -1,4 +1,5 @@
 using Xunit;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.TestAssistant.Rules;
 using PeasyPilot.TestAssistant.Abstractions;
 
@@ -10,7 +11,7 @@ public class StringValueRuleTests
     public void CanHandle_WithStringType_ReturnsTrue()
     {
         var rule = new StringValueRule();
-        Assert.True(rule.CanHandle(typeof(string)));
+        PeasyAssert.True(rule.CanHandle(typeof(string)));
     }
 
     [Fact]
@@ -20,7 +21,7 @@ public class StringValueRuleTests
         var context = new ValueGenerationContext();
         var cases = rule.GenerateCases(typeof(string), context);
 
-        Assert.NotEmpty(cases);
-        Assert.True(cases.Count >= 2);
+        PeasyAssert.NotEmpty(cases);
+        PeasyAssert.True(cases.Count >= 2);
     }
 }

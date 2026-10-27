@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.RegularExpressions;
 using PeasyPilot.Core.Abstractions;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Models;
@@ -16,6 +17,8 @@ public sealed class RichConsoleReporter : ITestReporter
     private const string Red = "\u001b[31m";
     private const string Yellow = "\u001b[33m";
     private const string Cyan = "\u001b[36m";
+
+    private static readonly Regex AnsiEscape = new(@"\u001b\[[0-9;]*m");
 
     /// <inheritdoc />
     public Task<string> ReportAsync(TestRunResult result, CancellationToken cancellationToken = default)
@@ -42,9 +45,29 @@ public sealed class RichConsoleReporter : ITestReporter
         sb.AppendLine($"  {Yellow}Skipped:{Reset}  {result.Skipped}");
         sb.AppendLine($"  {Bold}Duration:{Reset} {result.Duration.TotalMilliseconds:F0} ms");
 
+        var failures = result.Tests.Where(test => test.Status == TestRunStatus.Failed).ToList();
+        if (failures.Count > 0)
+        {
+            sb.AppendLine($"  {Red}{Bold}Failed tests:{Reset}");
+            foreach (var failure in failures)
+            {
+                var message = string.IsNullOrWhiteSpace(failure.Message) ? string.Empty : $" — {failure.Message}";
+                sb.AppendLine($"    {Red}✗{Reset} {failure.Name}{message}");
+            }
+        }
+
         var output = sb.ToString();
+        if (!UseColor())
+        {
+            output = AnsiEscape.Replace(output, string.Empty);
+        }
+
         Console.WriteLine(output);
 
         return Task.FromResult(output);
     }
+
+    // Colors only when writing to a terminal, and never when NO_COLOR is set (https://no-color.org).
+    private static bool UseColor() =>
+        !Console.IsOutputRedirected && string.IsNullOrEmpty(Environment.GetEnvironmentVariable("NO_COLOR"));
 }

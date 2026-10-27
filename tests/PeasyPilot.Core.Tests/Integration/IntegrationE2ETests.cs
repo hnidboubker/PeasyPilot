@@ -1,9 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
+using PeasyPilot.Core.Assertions;
 
 using PeasyPilot.Core.Tests.Abstractions;
 using PeasyPilot.Core.Tests.Models;
 using PeasyPilot.Integration.Fixtures;
-using PeasyPilot.XUnit;
 
 using Xunit;
 
@@ -42,15 +42,15 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         var userId = await service.CreateUserAsync("Alice", "alice@example.com");
 
         // Assert: User created with valid ID
-        XAssert.True(userId > 0);
+        PeasyAssert.True(userId > 0);
 
         // Act: Retrieve user
         var user = await service.GetUserAsync(userId);
 
         // Assert: User retrieved with correct data
-        XAssert.NotNull(user);
-        XAssert.Equal("Alice", user.Name);
-        XAssert.Equal("alice@example.com", user.Email);
+        PeasyAssert.NotNull(user);
+        PeasyAssert.Equal("Alice", user.Name);
+        PeasyAssert.Equal("alice@example.com", user.Email);
     }
 
     [Fact]
@@ -61,23 +61,23 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         // Test 1: Create first user
         var user1Id = await service.CreateUserAsync("Bob", "bob@example.com");
         var user1 = await service.GetUserAsync(user1Id);
-        XAssert.Equal("Bob", user1.Name);
+        PeasyAssert.Equal("Bob", user1.Name);
 
         // Test 2: Reset database
         await ResetAllAsync();
 
         // Assert: Database is empty after reset
         var usersAfterReset = await service.GetAllUsersAsync();
-        XAssert.IsEmpty(usersAfterReset);
+        PeasyAssert.IsEmpty(usersAfterReset);
 
         // Test 3: Create second user (fresh state)
         var user2Id = await service.CreateUserAsync("Carol", "carol@example.com");
         var user2 = await service.GetUserAsync(user2Id);
-        XAssert.Equal("Carol", user2.Name);
+        PeasyAssert.Equal("Carol", user2.Name);
 
         // Assert: Only one user exists (no bleed from test 1)
         var allUsers = await service.GetAllUsersAsync();
-        XAssert.Single(allUsers);
+        PeasyAssert.Single(allUsers);
     }
 
     [Fact]
@@ -94,13 +94,13 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         var allUsers = await service.GetAllUsersAsync();
 
         // Assert: All users retrieved
-        XAssert.Equal(3, allUsers.Count);
+        PeasyAssert.Equal(3, allUsers.Count);
 
         // Act: Get specific user
         var user2 = await service.GetUserAsync(2);
 
         // Assert: Correct user retrieved
-        XAssert.Equal("User2", user2.Name);
+        PeasyAssert.Equal("User2", user2.Name);
     }
 
     [Fact]
@@ -109,16 +109,16 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         var repo = GetService<IUserRepository>();
         var service = GetService<IUserService>();
 
-        XAssert.NotNull(repo);
-        XAssert.NotNull(service);
+        PeasyAssert.NotNull(repo);
+        PeasyAssert.NotNull(service);
 
         // Act: Add via repository directly
         await repo.AddAsync(new E2EUser { Name = "Direct", Email = "direct@example.com" });
 
         // Assert: Service sees the data
         var allUsers = await service.GetAllUsersAsync();
-        XAssert.NotEmpty(allUsers);
-        XAssert.True(allUsers.Any(u => u.Name == "Direct"));
+        PeasyAssert.NotEmpty(allUsers);
+        PeasyAssert.True(allUsers.Any(u => u.Name == "Direct"));
     }
 
     [Fact]
@@ -129,17 +129,17 @@ public class IntegrationE2ETests : XUnitIntegrationTestFixture
         // Cycle 1
         await service.CreateUserAsync("First", "first@example.com");
         var countFirst = (await service.GetAllUsersAsync()).Count;
-        XAssert.Equal(1, countFirst);
+        PeasyAssert.Equal(1, countFirst);
 
         // Reset
         await ResetAllAsync();
         var countAfterReset = (await service.GetAllUsersAsync()).Count;
-        XAssert.IsEmpty(await service.GetAllUsersAsync());
+        PeasyAssert.IsEmpty(await service.GetAllUsersAsync());
 
         // Cycle 2
         await service.CreateUserAsync("Second", "second@example.com");
         var countSecond = (await service.GetAllUsersAsync()).Count;
-        XAssert.Equal(1, countSecond);
+        PeasyAssert.Equal(1, countSecond);
 
         // Isolation verified: no bleed between cycles
     }

@@ -41,9 +41,9 @@ public class XAssertThat<T>
     public void IsNotNull() =>
         Assert.NotNull(_value);
 
-    /// <summary>
-    /// Asserts that the collection is empty.
-    /// </summary>
+    // <summary>
+    // Asserts that the collection is empty.
+    // </summary>
     //public void IsEmpty() =>
     //    Assert.Empty((IEnumerable)_value!);
 
@@ -108,7 +108,7 @@ public static class XAssert
     public static void Null(object? obj) =>
         Assert.Null(obj);
 
-    public static void NotNull(object? obj) =>
+    public static void NotNull([System.Diagnostics.CodeAnalysis.NotNull] object? obj) =>
         Assert.NotNull(obj);
 
     public static void Contains<T>(this IEnumerable<T> collection, T item) =>
@@ -124,7 +124,7 @@ public static class XAssert
     public static void Contains<T>(T item, IEnumerable<T> collection) =>
         Assert.Contains(item, collection);
 
-    public static void Contains(this string text, string substring) =>
+    public static void Contains(string substring, string text) =>
        Assert.Contains(substring, text);
 
     public static void DoesNotContain<T>(T item, IEnumerable<T> collection) =>

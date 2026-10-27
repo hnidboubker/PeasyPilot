@@ -32,4 +32,9 @@ public class TestRunResult
     /// Gets or sets the final status of the run.
     /// </summary>
     public TestRunStatus Status { get; set; }
+
+    /// <summary>
+    /// Gets or sets the outcome of each executed test. Empty when only totals are known.
+    /// </summary>
+    public List<TestResult> Tests { get; set; } = new();
 }

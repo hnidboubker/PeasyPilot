@@ -1,4 +1,5 @@
 using PeasyPilot.Mcp.Protocol;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Mcp.Services;
 using Xunit;
 
@@ -10,7 +11,7 @@ public class McpServerTests
     public void McpServer_CreatesInstance()
     {
         var server = new McpServer();
-        Assert.NotNull(server);
+        PeasyAssert.NotNull(server);
     }
 
     [Fact]
@@ -31,9 +32,9 @@ public class McpServerTests
 
         var result = await (Task<JsonRpcResponse?>)method!.Invoke(server, new object[] { message })!;
 
-        Assert.NotNull(result);
-        Assert.Equal("1", result.Id);
-        Assert.Null(result.Error);
+        PeasyAssert.NotNull(result);
+        PeasyAssert.Equal("1", result.Id);
+        PeasyAssert.Null(result.Error);
     }
 
     [Fact]
@@ -66,9 +67,9 @@ public class McpServerTests
 
         var result = await (Task<JsonRpcResponse?>)method!.Invoke(server, new object[] { listMsg })!;
 
-        Assert.NotNull(result);
-        Assert.Equal("2", result.Id);
-        Assert.Null(result.Error);
+        PeasyAssert.NotNull(result);
+        PeasyAssert.Equal("2", result.Id);
+        PeasyAssert.Null(result.Error);
     }
 
     [Fact]
@@ -88,9 +89,9 @@ public class McpServerTests
 
         var result = await (Task<JsonRpcResponse?>)method!.Invoke(server, new object[] { message })!;
 
-        Assert.NotNull(result);
-        Assert.NotNull(result.Error);
-        Assert.Contains("not initialized", result.Error.Message);
+        PeasyAssert.NotNull(result);
+        PeasyAssert.NotNull(result.Error);
+        PeasyAssert.Contains("not initialized", result.Error.Message);
     }
 
     [Fact]
@@ -110,7 +111,7 @@ public class McpServerTests
 
         var result = await (Task<JsonRpcResponse?>)method!.Invoke(server, new object[] { message })!;
 
-        Assert.NotNull(result);
-        Assert.NotNull(result.Error);
+        PeasyAssert.NotNull(result);
+        PeasyAssert.NotNull(result.Error);
     }
 }

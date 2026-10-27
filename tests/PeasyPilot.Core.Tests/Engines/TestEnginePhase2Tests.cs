@@ -1,6 +1,7 @@
 namespace PeasyPilot.Core.Tests.Engines;
 
 using PeasyPilot.Core.Abstractions;
+using PeasyPilot.Core.Assertions;
 using PeasyPilot.Core.Engines;
 using PeasyPilot.Core.Eums;
 using PeasyPilot.Core.Filters;
@@ -25,10 +26,10 @@ public class TestEnginePhase2Tests
 
         var result = await engine.RunAsync(request);
 
-        Assert.Equal(2, result.Passed);
-        Assert.Equal(0, result.Failed);
-        Assert.Equal(0, result.Skipped);
-        Assert.Equal(TestRunStatus.Passed, result.Status);
+        PeasyAssert.Equal(2, result.Passed);
+        PeasyAssert.Equal(0, result.Failed);
+        PeasyAssert.Equal(0, result.Skipped);
+        PeasyAssert.Equal(TestRunStatus.Passed, result.Status);
     }
 
     [Fact]
@@ -37,7 +38,7 @@ public class TestEnginePhase2Tests
         var filter = new NameTestFilter("customer");
         var test = new TestCase { Name = "CustomerRegistration" };
 
-        Assert.True(filter.Matches(test));
+        PeasyAssert.True(filter.Matches(test));
     }
 
     private sealed class StubFrameworkAdapter : ITestFrameworkAdapter

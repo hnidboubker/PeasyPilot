@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsTestProject>true</IsTestProject>
@@ -9,11 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
-    <PackageReference Include="xunit.runner.visualstudio">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="xunit.v3" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="Moq" />
   </ItemGroup>
@@ -28,4 +26,8 @@
     <ProjectReference Include="..\..\src\PeasyPilot.Unit\PeasyPilot.Unit.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- CS1591: missing XML docs; xUnit1051: CancellationToken advice (TestContext) not used in test/sample code -->
+    <NoWarn>$(NoWarn);CS1591;xUnit1051</NoWarn>
+  </PropertyGroup>
 </Project>
