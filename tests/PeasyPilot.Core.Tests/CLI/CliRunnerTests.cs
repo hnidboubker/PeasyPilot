@@ -19,6 +19,17 @@ public class CliRunnerTests
     }
 
     [Fact]
+    public async Task RunAsync_NoAssemblyAndNoOverride_RefusesToReportPassed()
+    {
+        var store = new FileTestRunStore(Path.Combine(Path.GetTempPath(), "peasypilot-tests", Guid.NewGuid().ToString("N")));
+
+        var exitCode = await CliRunner.RunAsync([], storeOverride: store);
+
+        XAssert.Equal(2, exitCode);
+        XAssert.IsEmpty(await store.GetRunHistoryAsync(limit: 10));
+    }
+
+    [Fact]
     public async Task RunAsync_HistoryCommand_DisplaysHistoryAndReturnsZero()
     {
         var store = new InMemoryTestRunStore();

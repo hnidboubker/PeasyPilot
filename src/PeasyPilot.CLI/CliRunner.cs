@@ -103,6 +103,14 @@ public static class CliRunner
             return await RunAssembliesAsync(assemblies, reporters);
         }
 
+        // Without test executables there is nothing real to run: the built-in discovery and scheduler
+        // are placeholders that report every test as passed (#112). Refuse to report a green result.
+        if (discoveryOverride is null && schedulerOverride is null)
+        {
+            Console.Error.WriteLine("[PeasyPilot CLI] No test executable given. Use --assembly <path> to run tests. Nothing was executed.");
+            return 2;
+        }
+
         var pipelineOptions = new TestPipelineOptions
         {
             ChangedFiles = changedFiles,
